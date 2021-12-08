@@ -58,6 +58,7 @@ zscale = ZScaleInterval()
 ## fit each star with the PSF to get its brightness and position.
 stds, seconds, peaks, xs, ys = [], [], [], [], []
 cutouts = []
+rem_cutouts = []
 for i in range(len(X_ALL)):
     #if len(xs)>25: break
 
@@ -110,7 +111,8 @@ for i in range(len(X_ALL)):
         seconds.append(second_highest)
         xs.append(x)
         ys.append(y)
-        cutouts.append(rem_cutout[:])
+        cutouts.append(cutout[:])
+        rem_cutouts.append(rem_cutout[:])
         #if x in goodFits[:, 4]:
         #    w = np.where(goodFits[:,4]==x)
         #    print(w)
