@@ -148,7 +148,7 @@ def HSCgetStars_main(dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = '
 
     #if len(sys.argv)>2:
     #    exit()
-
+    '''
     fig1 = pyl.figure(1)
     pyl.scatter(stds, seconds)
     pyl.xlabel('Stds')
@@ -160,5 +160,5 @@ def HSCgetStars_main(dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = '
     pyl.ylabel('Second Peaks')
 
     pyl.show()
-
+    '''
     return 1
