@@ -133,7 +133,13 @@ cutouts = np.array(cutouts)
 
 
 ## save the fits data to file.
-outFile = dir+'/'+inputFile.replace('.fits', '_savedFits.pickle')
+# save original cutouts
+outFile = dir+'/'+inputFile.replace('.fits', '_cutouts_savedFits.pickle')
+print("Saving to", outFile)
+with open(outFile, 'wb+') as han:
+    pick.dump([std, seconds, peaks, xs, ys, cutouts], han)
+# save cutouts with PSF removed
+outFile = dir+'/'+inputFile.replace('.fits', 'rem_cutouts_savedFits.pickle')
 print("Saving to", outFile)
 with open(outFile, 'wb+') as han:
     pick.dump([std, seconds, peaks, xs, ys, cutouts], han)

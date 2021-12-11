@@ -37,7 +37,7 @@ if len(sys.argv)>2:
 
 
 ## load the fits saves
-outFile = dir+'/'+inputFile.replace('.fits', '_savedFits.pickle')
+outFile = dir+'/'+inputFile.replace('.fits', '_cutouts_savedFits.pickle')
 with open(outFile, 'rb') as han:
     [stds, seconds, peaks, xs, ys, cutouts] = pick.load(han)
 
