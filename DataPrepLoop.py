@@ -42,9 +42,9 @@ for k in range(216652,216814,2):
 
         
         # if PSF already exists, and just interested in top 25, is it more efficient just to grab from header?
-        #if os.path.isfile(outFile):
-        #    print('HSCgetStars already successfully run, skipping to HSCpolishPSF')
-        #else: 
-        HSCgetStars_main(dir = file_dir, inputFile = file_in, psfFile = file_psf)
+        if os.path.isfile(outFile):
+            print('HSCgetStars already successfully run, skipping to HSCpolishPSF')
+        else: 
+            HSCgetStars_main(dir = file_dir, inputFile = file_in, psfFile = file_psf)
 
         #HSCpolishPSF_main(dir=file_dir, inputFile=file_in, plotting=False)
