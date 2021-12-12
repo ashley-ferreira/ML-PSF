@@ -59,7 +59,6 @@ def HSCpolishPSF_main(dir='20191120', inputFile='rS1i04545.fits'):
     args = np.argsort(dist)
     best = args[:25]
 
-
     #### generate the new psf
 
     with fits.open(dir+'/'+inputFile) as han:
