@@ -47,4 +47,4 @@ for k in range(219502,219620,2):
         else: 
             HSCgetStars_main(dir = file_dir, inputFile = file_in, psfFile = file_psf)
 
-        HSCpolishPSF_main(dir=file_dir, inputFile=file_in)
+        #HSCpolishPSF_main(dir=file_dir, inputFile=file_in)
