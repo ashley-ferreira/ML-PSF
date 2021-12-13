@@ -12,7 +12,7 @@ for k in range(219502,219620,2):
         print('not including')
         continue 
     
-    file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr' # can generalize $USER in future
+    file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03071/HSC-R2/corr' # can generalize $USER in future
 
     for i in range(0,103):
         if i == 9:
