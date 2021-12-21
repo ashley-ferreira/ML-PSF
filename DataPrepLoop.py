@@ -6,7 +6,7 @@ import os
 
 invalid_files = [216676]
 
-for k in range(216700, 216814,2):  #May26 216652 216814, wrong numbers?
+for k in range(216702, 216814,2):  #May26 216652 216814, wrong numbers?
     print(k)
     if k in invalid_files:
         print('not including')
