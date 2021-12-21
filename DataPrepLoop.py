@@ -6,13 +6,13 @@ import os
 
 invalid_files = [216676]
 
-for k in range(216700, 216814,2):  #May26 216652 216814
+for k in range(216700, 216814,2):  #May26 216652 216814, wrong numbers?
     print(k)
     if k in invalid_files:
         print('not including')
         continue 
     
-    file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03071/HSC-R2/corr' # can generalize $USER in future
+    file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03068/HSC-R2/corr' # can generalize $USER in future
 
     for i in range(0,103):
         if i == 9:
