@@ -8,7 +8,7 @@ import sys, os
 
 def HSCgetStars_main(dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = 'rS1i04545.psf.fits'):
 
-    print(len(sys.argv))
+    #print(len(sys.argv))
     if len(sys.argv)>3:
         dir = sys.argv[1]
         inputFile = sys.argv[2]
@@ -65,7 +65,7 @@ def HSCgetStars_main(dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = '
 
 
         x, y = X_ALL[i], Y_ALL[i]
-        print(f'Fitting good source {x}, {y}')
+        #print(f'Fitting good source {x}, {y}')
 
         x_int, y_int = int(x), int(y)
         if not (x_int>cutoutWidth+2 and y_int>cutoutWidth+2 and x_int<(B-cutoutWidth-2) and y_int<(A-cutoutWidth-2)):
@@ -92,7 +92,7 @@ def HSCgetStars_main(dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = '
 
         if fitPars  is not None:
 
-            print(fitPars)
+            #print(fitPars)
             (aa,bb) = cutout.shape
 
             model_cutout = goodPSF.plant(fitPars[0], fitPars[1], fitPars[2], cutout*0.0,returnModel=True,addNoise=False)
@@ -120,8 +120,8 @@ def HSCgetStars_main(dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = '
             #else:
             #    Fits.append([-1, -1])
 
-            print('Second Highest', second_highest, stds[-1])
-            print()
+            #print('Second Highest', second_highest, stds[-1])
+            #print()
 
     std = np.array(stds)
     seconds = np.array(seconds)
