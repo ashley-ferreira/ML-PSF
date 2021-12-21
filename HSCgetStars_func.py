@@ -34,7 +34,7 @@ def HSCgetStars_main(dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = '
     scamp.makeParFiles.writeParam(numAps=1) #numAps is thenumber of apertures that you want to use. Here we use 1
 
     fits.writeto('junk.fits', img_data, header=header, overwrite=True)
-    scamp.runSex('HSC.sex', 'junk.fits' ,options={'CATALOG_NAME':f'{dir}/{inputFile}.cat'},verbose=True)
+    scamp.runSex('HSC.sex', 'junk.fits' ,options={'CATALOG_NAME':f'{dir}/{inputFile}.cat'})#,verbose=True)
     catalog = scamp.getCatalog(f'{dir}/{inputFile}.cat',paramFile='def.param')
     os.system('rm junk.fits')
 
@@ -48,6 +48,7 @@ def HSCgetStars_main(dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = '
     ## load the PSF that Wes generated at an earlier point. This is not a great PSF!
     goodPSF = psf.modelPSF(restore=dir+'/'+psfFile)
     fwhm = goodPSF.FWHM()
+    print('########################## FWHM ######################')
     print(fwhm)
 
     cutoutWidth = max(30, int(5*fwhm))
