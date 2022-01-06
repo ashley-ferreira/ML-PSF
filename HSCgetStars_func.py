@@ -6,7 +6,7 @@ import pickle as pick
 import sys, os
 
 
-def HSCgetStars_main(dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = 'rS1i04545.psf.fits'):
+def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = 'rS1i04545.psf.fits'):
 
     #print(len(sys.argv))
     if len(sys.argv)>3:
@@ -51,7 +51,10 @@ def HSCgetStars_main(dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = '
     print('########################## FWHM ######################')
     print(fwhm)
 
-    cutoutWidth = max(30, int(5*fwhm))
+    if fixed_cutout_len == 0:
+        cutoutWidth = max(30, int(5*fwhm))
+    else:
+        cutoutWidth = fixed_cutout_len//2
 
     zscale = ZScaleInterval()
 
@@ -144,7 +147,7 @@ def HSCgetStars_main(dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = '
     with open(outFile, 'wb+') as han:
         pick.dump([std, seconds, peaks, xs, ys, cutouts], han)
 
-
+    print('cutouts shape: ', cutouts.shape)
 
     #if len(sys.argv)>2:
     #    exit()

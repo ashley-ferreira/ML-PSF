@@ -43,4 +43,4 @@ for k in range(216702,216814,2):
         outFile = file_dir + '/' + file_in.replace('.fits', '_cutouts_savedFits.pickle')
 
         
-        HSCgetStars_main(dir = file_dir, inputFile = file_in, psfFile = file_psf)
+        HSCgetStars_main(fixed_cutout_len = 111, dir = file_dir, inputFile = file_in, psfFile = file_psf)
