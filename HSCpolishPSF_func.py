@@ -86,7 +86,7 @@ def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545
 
     cutoutWidth = fixed_cutout_len // 2 # or adapt to f*fwhm if zero
     count = 0
-    for x,y in zip(xs,ys,stds,seconds,dist): 
+    for x,y in zip(xs,ys): 
         y_int = int(y)
         x_int = int(x)
         cutout = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
