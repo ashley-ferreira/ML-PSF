@@ -6,7 +6,7 @@ import os
 
 invalid_files = [216676]
 
-for k in range(219514,219620,2): 
+for k in range(219516,219620,2): 
     print(k)
     if k in invalid_files:
         print('not including')
@@ -22,6 +22,9 @@ for k in range(219514,219620,2):
             print('chip 32 half broken, not including')
             continue
         elif i == 19:
+            print('skipping chip 19')
+            continue
+        elif i == 29:
             print('skipping chip 19')
             continue
         elif i == 70 and k == 216700:
