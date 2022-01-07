@@ -28,16 +28,19 @@ def getCluster(stds, seconds, eps=0.01, min_samples=5 ):
     return (clust, labels, clump_stds)
 
 
-def HSCpolishPSF_main(dir='20191120', inputFile='rS1i04545.fits'):
+def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545.fits', cutout_file=''):
  
-    if len(sys.argv)>2:
-        dir = sys.argv[1]
-        inputFile = sys.argv[2]
+    #if len(sys.argv)>2:
+    #    dir = sys.argv[1]
+    #    inputFile = sys.argv[2]
 
 
 
     ## load the fits saves
-    outFile = dir+'/'+inputFile.replace('.fits', '_cutouts_savedFits.pickle')
+    if fixed_cutout_len != 0:
+        outFile = dir+'/'+inputFile.replace('.fits', + str(fixed_cutout_len) + '_cutouts_savedFits.pickle')
+    else:
+        outFile = dir+'/'+inputFile.replace('.fits', '_cutouts_savedFits.pickle')
     with open(outFile, 'rb') as han:
         [stds, seconds, peaks, xs, ys, cutouts] = pick.load(han)
 
@@ -60,7 +63,6 @@ def HSCpolishPSF_main(dir='20191120', inputFile='rS1i04545.fits'):
     best = args[:25]
 
     #### generate the new psf
-
     with fits.open(dir+'/'+inputFile) as han:
         img_data = han[1].data
         header = han[0].header
@@ -81,5 +83,23 @@ def HSCpolishPSF_main(dir='20191120', inputFile='rS1i04545.fits'):
     newPSFFile = dir+'/psfStars/'+inputFile.replace('.fits','.goodPSF.fits')
     print('Saving to', newPSFFile)
     goodPSF.psfStore(newPSFFile, psfV2=True)
+
+    cutoutWidth = fixed_cutout_len // 2 # or adapt to f*fwhm if zero
+    count = 0
+    for x,y in zip(xs,ys,stds,seconds,dist): 
+        y_int = int(y)
+        x_int = int(x)
+        cutout = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
+
+        print(cutout.shape)
+
+        label = 0
+        count +=1 
+        if x in xs[best]: # just redo the cutout
+            label = 1
+
+        final_file = dir+'/NN_data_' + str(fixed_cutout_len) + '/'+inputFile.replace('.fits', str(count) + '_cutoutData.pickle')
+        with open(final_file, 'wb+') as han:
+            pick.dump([count, cutout, label], han)
 
     return 1
