@@ -44,7 +44,8 @@ def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545
     with open(outFile, 'rb') as han:
         [stds, seconds, peaks, xs, ys, cutouts] = pick.load(han)
 
-    if len(cutouts)>25:
+
+    if cutouts.shape == (111,111):
         zscale = ZScaleInterval()
 
         ## select only those stars with really low STD
