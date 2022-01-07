@@ -40,7 +40,7 @@ def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545
     #if fixed_cutout_len != 0:
     #   outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_cutouts_savedFits.pickle')
     #else:
-    outFile = dir+'/'+inputFile.replace('.fits', '_cutouts_savedFits.pickle')
+    outFile = dir+'/'+inputFile.replace('.fits', '_savedFits.pickle')
     with open(outFile, 'rb') as han:
         [stds, seconds, peaks, xs, ys, cutouts] = pick.load(han)
 
