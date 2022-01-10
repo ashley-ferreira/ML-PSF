@@ -99,7 +99,7 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
             #print(fitPars)
             (aa,bb) = cutout.shape
             print(aa, bb)
-            if aa == 111 and bb == 111:
+            if int(aa) == 111 and int(bb) == 111:
 
                 model_cutout = goodPSF.plant(fitPars[0], fitPars[1], fitPars[2], cutout*0.0,returnModel=True,addNoise=False)
                 pixel_weights = 1.0/(np.abs(model_cutout)+1.0)
