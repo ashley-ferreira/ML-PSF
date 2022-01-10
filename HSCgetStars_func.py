@@ -117,10 +117,9 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
                 seconds.append(second_highest)
                 xs.append(x)
                 ys.append(y)
-                fwhm.append()
                 cutouts.append(cutout[:])
                 rem_cutouts.append(rem_cutout[:])
-                files.append()
+
                 #if x in goodFits[:, 4]:
                 #    w = np.where(goodFits[:,4]==x)
                 #    print(w)
