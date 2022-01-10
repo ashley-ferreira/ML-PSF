@@ -27,7 +27,7 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
                         threshold=5.,
                         zpt=27.8,
                         aperture=20.,
-                        min_radius=2.0,
+                        min_radius=2.0, 
                         catalogType='FITS_LDAC',
                         saturate=64000)
     scamp.makeParFiles.writeConv()
@@ -75,56 +75,62 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
             continue
 
         cutout = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
+        print(cutout.shape)
+            if cutout.shape == (111, 111):
+            peak = np.max(cutout[cutoutWidth-1:cutoutWidth+2, cutoutWidth-1:cutoutWidth+2])
+            peaks.append(peak)
 
-        peak = np.max(cutout[cutoutWidth-1:cutoutWidth+2, cutoutWidth-1:cutoutWidth+2])
-        peaks.append(peak)
-
-        #background estimate
-        bgf = bgFinder.bgFinder(cutout)
-        bg_estimate = bgf()
-
-
-        try:
-            fitter = MCMCfit.LSfitter(goodPSF, cutout)
-            fitPars = fitter.fitWithModelPSF(cutoutWidth, cutoutWidth, m_in=10.0,
-                                            fitWidth = 7, ftol = 1.49e-6, verbose = False)
-            if fitPars[2]<=0:
-                fitPars=None
-        except:
-            fitPars = None
-
-        if fitPars  is not None:
-
-            #print(fitPars)
-            (aa,bb) = cutout.shape
-
-            model_cutout = goodPSF.plant(fitPars[0], fitPars[1], fitPars[2], cutout*0.0,returnModel=True,addNoise=False)
-            pixel_weights = 1.0/(np.abs(model_cutout)+1.0)
-            pixel_weights /= np.sum(pixel_weights)
-
-            rem_cutout = goodPSF.remove(fitPars[0], fitPars[1], fitPars[2], cutout,useLinePSF=False)
-
-            weighted_std = np.sum(pixel_weights*(rem_cutout - np.mean(rem_cutout))**2)/np.sum(model_cutout)*(aa*bb)
-
-            sorted = np.sort(rem_cutout.reshape(aa*bb))
-            second_highest = sorted[-2]
+            #background estimate
+            bgf = bgFinder.bgFinder(cutout)
+            bg_estimate = bgf()
 
 
-            stds.append(weighted_std)
-            seconds.append(second_highest)
-            xs.append(x)
-            ys.append(y)
-            cutouts.append(cutout[:])
-            rem_cutouts.append(rem_cutout[:])
-            #if x in goodFits[:, 4]:
-            #    w = np.where(goodFits[:,4]==x)
-            #    print(w)
-            #    Fits.append([goodFits[:, 2][w], goodFits[:, 3][w]])
-            #else:
-            #    Fits.append([-1, -1])
+            try:
+                fitter = MCMCfit.LSfitter(goodPSF, cutout)
+                fitPars = fitter.fitWithModelPSF(cutoutWidth, cutoutWidth, m_in=10.0,
+                                                fitWidth = 7, ftol = 1.49e-6, verbose = False)
+                if fitPars[2]<=0:
+                    fitPars=None
+            except:
+                fitPars = None
 
-            #print('Second Highest', second_highest, stds[-1])
-            #print()
+            if fitPars  is not None:
+
+                #print(fitPars)
+                (aa,bb) = cutout.shape
+
+                model_cutout = goodPSF.plant(fitPars[0], fitPars[1], fitPars[2], cutout*0.0,returnModel=True,addNoise=False)
+                pixel_weights = 1.0/(np.abs(model_cutout)+1.0)
+                pixel_weights /= np.sum(pixel_weights)
+
+                rem_cutout = goodPSF.remove(fitPars[0], fitPars[1], fitPars[2], cutout,useLinePSF=False)
+
+                weighted_std = np.sum(pixel_weights*(rem_cutout - np.mean(rem_cutout))**2)/np.sum(model_cutout)*(aa*bb)
+
+                sorted = np.sort(rem_cutout.reshape(aa*bb))
+                second_highest = sorted[-2]
+
+
+                stds.append(weighted_std)
+                seconds.append(second_highest)
+                xs.append(x)
+                ys.append(y)
+                fwhm.append()
+                cutouts.append(cutout[:])
+                rem_cutouts.append(rem_cutout[:])
+                files.append()
+                #if x in goodFits[:, 4]:
+                #    w = np.where(goodFits[:,4]==x)
+                #    print(w)
+                #    Fits.append([goodFits[:, 2][w], goodFits[:, 3][w]])
+                #else:
+                #    Fits.append([-1, -1])
+
+                #print('Second Highest', second_highest, stds[-1])
+                #print()
+            
+            else:
+                print('EXCLUDED')
 
     std = np.array(stds)
     seconds = np.array(seconds)
@@ -137,15 +143,15 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
 
     ## save the fits data to file.
     # save original cutouts
-    outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_cutouts_savedFits.pickle')
+    outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_metadata_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
-        pick.dump([std, seconds, peaks, xs, ys, cutouts], han)
+        pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile], han)
     # save cutouts with PSF removed
-    outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_rem_cutouts_savedFits.pickle')
+    outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_metadata_rem_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
-        pick.dump([std, seconds, peaks, xs, ys, cutouts], han)
+        pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile], han)
 
     print('cutouts shape: ', cutouts.shape)
 
