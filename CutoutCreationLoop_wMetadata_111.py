@@ -48,5 +48,6 @@ for k in range(219530,219620,2): # 219530,219620,2 done with all metadata, then 
             
             HSCgetStars_main(fixed_cutout_len = 111, dir = file_dir, inputFile = file_in, psfFile = file_psf)
 
-    except:
+    except Exception as e: # hits warning?
         print('FAILURE')
+        print(e)
