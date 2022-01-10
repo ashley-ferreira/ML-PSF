@@ -76,7 +76,7 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
 
         cutout = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
         print(cutout.shape)
-            if cutout.shape == (111, 111):
+        if cutout.shape == (111, 111):
             peak = np.max(cutout[cutoutWidth-1:cutoutWidth+2, cutoutWidth-1:cutoutWidth+2])
             peaks.append(peak)
 
