@@ -76,28 +76,30 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
 
         cutout = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
         print(cutout.shape)
-        if cutout.shape == (111, 111):
-            peak = np.max(cutout[cutoutWidth-1:cutoutWidth+2, cutoutWidth-1:cutoutWidth+2])
-            peaks.append(peak)
+        
+        peak = np.max(cutout[cutoutWidth-1:cutoutWidth+2, cutoutWidth-1:cutoutWidth+2])
+        peaks.append(peak)
 
-            #background estimate
-            bgf = bgFinder.bgFinder(cutout)
-            bg_estimate = bgf()
+        #background estimate
+        bgf = bgFinder.bgFinder(cutout)
+        bg_estimate = bgf()
 
 
-            try:
-                fitter = MCMCfit.LSfitter(goodPSF, cutout)
-                fitPars = fitter.fitWithModelPSF(cutoutWidth, cutoutWidth, m_in=10.0,
-                                                fitWidth = 7, ftol = 1.49e-6, verbose = False)
-                if fitPars[2]<=0:
-                    fitPars=None
-            except:
-                fitPars = None
+        try:
+            fitter = MCMCfit.LSfitter(goodPSF, cutout)
+            fitPars = fitter.fitWithModelPSF(cutoutWidth, cutoutWidth, m_in=10.0,
+                                            fitWidth = 7, ftol = 1.49e-6, verbose = False)
+            if fitPars[2]<=0:
+                fitPars=None
+        except:
+            fitPars = None
 
-            if fitPars  is not None:
+        if fitPars  is not None:
 
-                #print(fitPars)
-                (aa,bb) = cutout.shape
+            #print(fitPars)
+            (aa,bb) = cutout.shape
+            print(aa, bb)
+            if aa == 111 and bb == 111:
 
                 model_cutout = goodPSF.plant(fitPars[0], fitPars[1], fitPars[2], cutout*0.0,returnModel=True,addNoise=False)
                 pixel_weights = 1.0/(np.abs(model_cutout)+1.0)
