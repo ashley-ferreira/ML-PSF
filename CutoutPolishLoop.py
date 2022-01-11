@@ -43,6 +43,11 @@ for k in range(219530,219620,2):
         file_in = 'CORR-0' + str(k) + '-' + num_str + '.fits'
         file_psf = 'psfStars/CORR-0' + str(k) + '-' + num_str + '.psf_cleaned.fits'
 
+        fixed_cutout_len = 111
         outFile = file_dir + '/' + file_in.replace('.fits', '_metadata_cutouts_savedFits.pickle')
+        #final_file = dir+'/NN_data_' + str(fixed_cutout_len) + '/'+file_in.replace('.fits', str(count) + '_metadata_cutoutData.pickle')
         
+        #if os.path.isfile(finalFile):
+        #    print('HSCpolishPSF already successfully run, skipping to next')
+        #else:
         HSCpolishPSF_main(fixed_cutout_len = 111, dir = file_dir, inputFile = file_in, cutout_file = outFile)

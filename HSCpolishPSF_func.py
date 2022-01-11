@@ -55,8 +55,10 @@ def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545
         metadata_dict['fwhm'] = fwhm 
         metadata_dict['inputFile'] = inputFile
 
-
-        if cutouts.shape >= (111,111):
+        
+        len_c = len(cutouts)
+        print(cutouts.shape)
+        if cutouts.shape == (len_c, 111,111): # some non 111,111 let in from getstars
             zscale = ZScaleInterval()
 
             ## select only those stars with really low STD
