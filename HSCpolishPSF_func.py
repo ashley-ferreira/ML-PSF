@@ -83,10 +83,15 @@ def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545
             starChooser=psfStarChooser.starChooser(img_data,
                                                 xs[best],ys[best],
                                                 xs[best]*500,xs[best]*1.0)
-            (goodFits, goodMeds, goodSTDs) = starChooser(30,200,noVisualSelection=True,autoTrim=False,
-                                                        bgRadius=15, quickFit = False,
-                                                        printStarInfo = True,
-                                                        repFact = 5, ftol=1.49012e-08)
+
+            try:
+                (goodFits, goodMeds, goodSTDs) = starChooser(30,200,noVisualSelection=True,autoTrim=False,
+                                                            bgRadius=15, quickFit = False,
+                                                            printStarInfo = True,
+                                                            repFact = 5, ftol=1.49012e-08)
+            except:
+                print('error with starChooser, conitnuing to next cutout')
+                return 0
 
             goodPSF = psf.modelPSF(np.arange(61),np.arange(61), alpha=goodMeds[2],beta=goodMeds[3],repFact=10)
             goodPSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
