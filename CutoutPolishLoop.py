@@ -6,7 +6,7 @@ import os
 
 invalid_files = [216676]
 
-for k in range(219530,219620,2): 
+for k in range(219530,219580,2): 
     print(k)
     if k in invalid_files:
         print('not including')
