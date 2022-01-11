@@ -6,7 +6,7 @@ import os
 
 invalid_files = [216676]
 
-for k in range(219518,219620,2): 
+for k in range(219530,219620,2): 
     print(k)
     if k in invalid_files:
         print('not including')
@@ -43,6 +43,6 @@ for k in range(219518,219620,2):
         file_in = 'CORR-0' + str(k) + '-' + num_str + '.fits'
         file_psf = 'psfStars/CORR-0' + str(k) + '-' + num_str + '.psf_cleaned.fits'
 
-        outFile = file_dir + '/' + file_in.replace('.fits', '_cutouts_savedFits.pickle')
+        outFile = file_dir + '/' + file_in.replace('.fits', '_metadata_cutouts_savedFits.pickle')
         
         HSCpolishPSF_main(fixed_cutout_len = 111, dir = file_dir, inputFile = file_in, cutout_file = outFile)
