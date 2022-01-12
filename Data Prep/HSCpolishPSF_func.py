@@ -118,7 +118,7 @@ def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545
                 if x in xs[best]: # just redo the cutout
                     label = 1
 
-                final_file = dir+'/NN_data_' + str(fixed_cutout_len) + '/'+inputFile.replace('.fits', str(count) + '_metadata_cutoutData.pickle')
+                final_file = dir+'/NN_data_metadata_' + str(fixed_cutout_len) + '/'+inputFile.replace('.fits', str(count) + '_metadata_cutoutData.pickle')
                 with open(final_file, 'wb+') as han:
                     pick.dump([count, cutout, label, metadata_dict], han)
 

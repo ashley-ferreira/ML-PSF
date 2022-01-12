@@ -7,7 +7,7 @@ import os
 invalid_files = [216676]
 
 
-for k in range(219540,219620,2): # 219530,219620,2 done with all metadata, then use good psf for best stars
+for k in range(219580,219620,2): # 219530,219620,2 done with all metadata, then use good psf for best stars
     print(k)
 
     try:
