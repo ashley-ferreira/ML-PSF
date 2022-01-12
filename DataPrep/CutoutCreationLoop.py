@@ -46,7 +46,7 @@ for k in range(start_indx, end_indx, 2):
             file_in = 'CORR-0' + str(k) + '-' + num_str + '.fits'
             file_psf = 'psfStars/CORR-0' + str(k) + '-' + num_str + '.psf_cleaned.fits'
 
-            if rewrite_cutouts == True and 
+            #if rewrite_cutouts == True and 
             
             HSCgetStars_main(fixed_cutout_len = 111, dir = file_dir, inputFile = file_in, psfFile = file_psf)
 
