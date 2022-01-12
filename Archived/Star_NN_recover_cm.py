@@ -1,4 +1,3 @@
-#### these are the major imports that you'll probably need
 import os
 import time
 import sys
@@ -96,20 +95,9 @@ from astropy.visualization import interval
 from trippy import tzscale
 from trippy.trippy_utils import expand2d, downSample2d
 
-#import seaborn as sns
-
-# GIT TEST
-
-
-####section for setting up some flags and hyperparameters
-batch_size = 16 # try diff batch size?
+batch_size = 16 
 dropout_rate = 0.2
-test_fraction = 0.05 # from 0.05
-#num_epochs = 10
-
-## initializing random seeds for reproducability
-# tf.random.set_seed(1234)
-# keras.utils.set_random_seed(1234)
+test_fraction = 0.05 
 np.random.seed(432)
 
 good_cutouts = [] # label 1
@@ -127,15 +115,13 @@ if True:
     mean = np.nanmean(cutouts)
     cutouts -= mean
     cutouts /= std
-    # And just to be sure you aren’t picking up any bad values, after regularization:
     w_bad = np.where(np.isnan(cutouts))
     cutouts[w_bad] = 0.0
 
     with open(file_dir + '/regularization_data.pickle', 'wb+') as han:
         pickle.dump([std, mean], han)
 
-### now divide the cutouts array into training and testing datasets.
-skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)#, random_state=41)
+skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)
 print(skf)
 skf.split(cutouts, labels)
 
@@ -157,7 +143,7 @@ print("test loss, test acc:", results)
 zscale = ZScaleInterval()
 
 X_test = np.squeeze(X_test, axis=3)
-print(X_test.shape) # doesnt look squeezed?
+print(X_test.shape)
 
 y_test_binary = np.argmax(y_test_binary, axis = 1)
 preds_test_binary = np.argmax(preds_test, axis = 1)

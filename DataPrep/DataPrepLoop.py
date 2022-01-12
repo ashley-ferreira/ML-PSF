@@ -4,13 +4,10 @@ from HSCgetStars_func import HSCgetStars_main
 from HSCpolishPSF_func import HSCpolishPSF_main
 import os
 
-invalid_files = [216676]
+fixed_cutout_len = 111
 
 for k in range(219502,219620,2): 
     print(k)
-    if k in invalid_files:
-        print('not including')
-        continue 
     
     file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr' # can generalize $USER in future
 
@@ -22,10 +19,8 @@ for k in range(219502,219620,2):
             print('chip 32 half broken, not including')
             continue
         elif i == 19:
-            print('skipping chip 19')
+            print('skipping chip 19') #use try thing instead
             continue
-        elif i == 70 and k == 216700:
-            continue 
 
         if i<10:
             num_str = '00' + str(i)
@@ -40,7 +35,13 @@ for k in range(219502,219620,2):
         file_in = 'CORR-0' + str(k) + '-' + num_str + '.fits'
         file_psf = 'psfStars/CORR-0' + str(k) + '-' + num_str + '.psf_cleaned.fits'
 
-        #outFile = file_dir + '/' + file_in.replace('.fits', '_cutouts_savedFits.pickle')
+        outFile = file_dir + '/' + file_in.replace('.fits', + str(fixed_cutout_len)  +'_cutouts_savedFits.pickle')
 
         
-        HSCgetStars_main(fixed_cutout_len = 111, dir = file_dir, inputFile = file_in, psfFile = file_psf)
+        # if PSF already exists, and just interested in top 25, is it more efficient just to grab from header?
+        if os.path.isfile(outFile):
+            print('HSCgetStars already successfully run, skipping to HSCpolishPSF')
+        else: 
+            HSCgetStars_main(fixed_cutout_len=fixed_cutout_len, dir = file_dir, inputFile = file_in, psfFile = file_psf)
+
+        HSCpolishPSF_main(fixed_cutout_len=fixed_cutout_len, dir=file_dir, inputFile=file_in, cutout_file=outFile)
