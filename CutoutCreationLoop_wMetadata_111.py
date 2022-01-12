@@ -7,7 +7,7 @@ import os
 invalid_files = [216676]
 
 
-for k in range(219530,219620,2): # 219530,219620,2 done with all metadata, then use good psf for best stars
+for k in range(219540,219620,2): # 219530,219620,2 done with all metadata, then use good psf for best stars
     print(k)
 
     try:
@@ -48,6 +48,6 @@ for k in range(219530,219620,2): # 219530,219620,2 done with all metadata, then 
             
             HSCgetStars_main(fixed_cutout_len = 111, dir = file_dir, inputFile = file_in, psfFile = file_psf)
 
-    except Exception as e: # hits warning?
+    except Exception as e: 
         print('FAILURE')
         print(e)
