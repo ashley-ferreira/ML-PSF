@@ -6,24 +6,8 @@ import os
 
 #invalid_files = [216676]
 
-val = input("Change default values? (Y/N): ")
-if val == 'Y':
-    rewrite_cutouts_str = input("Rewrite cutouts? (Y/N): ")
-    if rewrite_cutouts_str == 'Y':
-        rewrite_cutouts = True 
-    else: 
-        rewrite_cutouts = False
-    fixed_cutout_len = input("Change default values? (Y/N): ")
-    val = input("Change default values? (Y/N): ")
-    val = input("Change default values? (Y/N): ")
-
-# rewrite cutouts?
-else:
-    fixed_cutout_len = 111 
-    rewrite_cutouts = False 
-    night_dir = '03074'
-    start_indx = 219580 
-    end_indx = 219620
+start_indx = 219582
+end_indx = 219620 
 
 
 for k in range(start_indx, end_indx, 2):
