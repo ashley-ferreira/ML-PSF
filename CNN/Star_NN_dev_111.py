@@ -255,10 +255,10 @@ elif data_load == 'scratch':
         random_bad_cutouts = bad_cutouts[random_indices, :]
         bad_cutouts = np.expand_dims(random_bad_cutouts, axis=3)
         
-        random_bad_x_arr = bad_x_arr[random_indices, :]
-        random_bad_y_arr = bad_y_arr[random_indices, :]
-        random_bad_fwhm_arr = bad_fwhm_arr[random_indices, :]
-        random_bad_inputFile_arr = bad_inputFile_arr[random_indices, :]
+        random_bad_x_arr = bad_x_arr[random_indices]
+        random_bad_y_arr = bad_y_arr[random_indices]
+        random_bad_fwhm_arr = bad_fwhm_arr[random_indices]
+        random_bad_inputFile_arr = bad_inputFile_arr[random_indices]
 
         # add label 0
         label_bad = np.zeros(num_good_cutouts)
