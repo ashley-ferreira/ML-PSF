@@ -106,7 +106,7 @@ data_load = str(sys.argv[2]) # can ask for specific presaved filename later
 num_epochs = int(sys.argv[3])
 
 ####section for setting up some flags and hyperparameters
-batch_size = 16 # try diff batch size?
+batch_size = 256 # try diff batch size?
 dropout_rate = 0.2
 test_fraction = 0.05 # from 0.05
 #num_epochs = 10
