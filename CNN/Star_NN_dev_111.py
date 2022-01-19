@@ -119,6 +119,9 @@ np.random.seed(432)
 good_cutouts = [] # label 1
 bad_cutouts = [] # label 0
 cutout_len = []
+fwhm_lst = []
+x_lst = []
+y_lst = []
 
 zscale = ZScaleInterval()
 
@@ -144,7 +147,7 @@ def padding(array, xx, yy):
 file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 
 if data_load == 'presaved':
-    with open(file_dir + '/111_metadata_defaultLen.pickle', 'rb') as han:
+    with open(file_dir + '/jan18_111_metadata_defaultLen.pickle', 'rb') as han:
         [cutouts, labels] = pickle.load(han) # need count too?
 
     cutouts = np.asarray(cutouts).astype('float32')
@@ -169,7 +172,7 @@ elif data_load == 'scratch':
 
     files_counted = 0
     try:
-        for filename in os.listdir(file_dir+ '/NN_data_111'):
+        for filename in os.listdir(file_dir+ '/NN_data_metadata_111'):
             if filename.endswith("metadata_cutoutData.pickle"):
                 #print(files_counted, size_of_data)
                 if files_counted >= size_of_data:
@@ -178,7 +181,7 @@ elif data_load == 'scratch':
                 #print('file being processed: ', filename)
 
                 with open(file_dir + '/NN_data_111/' + filename, 'rb') as f:
-                    [n, cutout, label, metadata_dict] = pickle.load(f)
+                    [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
                 ''' 
                 (c1, c2) = zscale.get_limits(cutout)
                 normer4 = interval.ManualInterval(c1,c2)
@@ -253,8 +256,7 @@ elif data_load == 'scratch':
     print(str(files_counted) + ' processed so far')
     print(str(len(cutouts)) + ' files used')
 
-    # REGULARIZE????
-    with open(file_dir + '/' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
+    with open(file_dir + '/jan18_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
         pickle.dump([cutouts, labels], han)
 
     cutouts = np.asarray(cutouts).astype('float32')
