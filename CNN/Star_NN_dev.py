@@ -1,104 +1,28 @@
-#### these are the major imports that you'll probably need
 import os
+from os import path
 import time
+from datetime import date 
 import sys
-
-import random
-"""Import the basics: numpy, pandas, matplotlib, etc."""
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as pyl
-import matplotlib.gridspec as gridspec
 import pickle
-"""Import keras and other ML tools"""
+
 import tensorflow as tf
-import keras
-
-from keras.models import Model, load_model, Sequential
-from keras.layers import Input, Dense, Activation, ZeroPadding2D, BatchNormalization, Flatten, Conv3D, Conv2D, MaxPool3D, MaxPool2D
-from keras.layers.core import Dropout, Lambda
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-#from keras.utils import to_categorical
-from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
-"""Import scikit learn tools"""
-from sklearn.model_selection import train_test_split, cross_val_score, KFold
-from sklearn.metrics import confusion_matrix, accuracy_score # plot_confusion_matrix, ConfusionMatrixDisplay
-from sklearn.utils.multiclass import unique_labels
-from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
-from sklearn.utils import class_weight
-"""Import astropy libraries"""
-from astropy.io import fits
-from astropy.wcs import WCS
-from astropy.nddata import Cutout2D
-from astropy.visualization import interval
-from astropy.visualization import interval, ZScaleInterval
-
-
-from trippy import tzscale
-from trippy.trippy_utils import expand2d, downSample2d
-
-import glob
-
-from keras.utils import np_utils
-
-import numpy as np, astropy.io.fits as pyf,pylab as pyl
-from trippy import psf, pill, psfStarChooser
-from trippy import scamp,MCMCfit
-import scipy as sci
-from os import path
-import sys
-from astropy.visualization import interval, ZScaleInterval
-
-from astropy.io import fits
-from astropy.wcs import WCS
-from astropy.nddata import Cutout2D
-from astropy.visualization import interval
-
-import numpy as np, astropy.io.fits as pyf,pylab as pyl
-from trippy import psf, pill, psfStarChooser
-from trippy import scamp,MCMCfit
-import scipy as sci
-from os import path
-import sys
-from astropy.visualization import interval, ZScaleInterval
-
-
-import random
-"""Import the basics: numpy, pandas, matplotlib, etc."""
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as pyl
-import matplotlib.gridspec as gridspec
-import pickle
-"""Import keras and other ML tools"""
-import tensorflow as tf
-import keras
-
-from keras.models import Model, load_model, Sequential
-from keras.layers import Input, Dense, Activation, ZeroPadding2D, BatchNormalization, Flatten, Conv3D, Conv2D, MaxPool3D, MaxPool2D
-from keras.layers.core import Dropout, Lambda
-from keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.optimizers import Adam
-#from keras.utils import to_categorical
-from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
-"""Import scikit learn tools"""
-from sklearn.model_selection import train_test_split, cross_val_score, KFold
-from sklearn.metrics import confusion_matrix, accuracy_score # plot_confusion_matrix, ConfusionMatrixDisplay
+
+import keras
+from keras.models import Sequential
+from keras.layers import Dense, BatchNormalization, Flatten, Conv2D, MaxPool2D
+from keras.layers.core import Dropout
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+
+from sklearn.metrics import confusion_matrix
 from sklearn.utils.multiclass import unique_labels
-from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
+from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils import class_weight
-"""Import astropy libraries"""
-from astropy.io import fits
-from astropy.wcs import WCS
-from astropy.nddata import Cutout2D
-from astropy.visualization import interval
+from sklearn.utils.multiclass import unique_labels
 
-from trippy import tzscale
-from trippy.trippy_utils import expand2d, downSample2d
-
-#import seaborn as sns
-
-# GIT TEST
+from astropy.visualization import interval, ZScaleInterval
 
 balanced_data_method = str(sys.argv[1]) # even or weight
 data_load = str(sys.argv[2]) # can ask for specific presaved filename later
@@ -316,9 +240,6 @@ for train_index, test_index in skf.split(cutouts, labels):
     fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
 
 ### define the CNN
-# below is a network I used for KBO classification from image data.
-# you'll need to modify this to use 2D convolutions, rather than 3D.
-# the Maxpool lines will also need to use axa kernels rather than axaxa
 def convnet_model(input_shape, training_labels, unique_labs, dropout_rate=dropout_rate):
 
     model = Sequential()
@@ -391,13 +312,14 @@ elif balanced_data_method == 'weight':
 end = time.time()
 print('Process completed in', round(end-start, 2), ' seconds')
 # save details of model and regulatization data in here too
-cn_model.save(file_dir + '/Saved_Model/model' + str(end))
+today = date.today()
+date_trained = today.strftime("%b-%d-%Y")
+cn_model.save(file_dir + '/Saved_Model_/model_' + str(end))
+with open(file_dir + '/Saved_Model/jan19_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
+        pickle.dump([cutouts, labels, xs, ys, fwhm, files], han)
 
 
-"""
-Plot accuracy/loss versus epoch
-"""
-
+# plot accuracy/loss versus epoch
 fig = pyl.figure(figsize=(10,3))
 
 ax1 = pyl.subplot(121)
