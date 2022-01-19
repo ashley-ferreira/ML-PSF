@@ -60,10 +60,7 @@ def main():
                 continue 
             elif i == 32:
                 print('chip 32 half broken, not including')
-                continue
-            elif i == 19:
-                print('skipping chip 19') #use try thing instead
-                continue
+                continue 
 
             num_str = int_to_str(i)
 
@@ -72,15 +69,17 @@ def main():
 
             outFile = file_dir + '/' + file_in.replace('.fits', + str(fixed_cutout_len)  +'_cutouts_savedFits.pickle')
 
-            
-            # if PSF already exists, and just interested in top 25, is it more efficient just to grab from header?
-            if os.path.isfile(outFile):
-                print('HSCgetStars already successfully run, skipping to HSCpolishPSF')
-            else: 
-                HSCgetStars_main(fixed_cutout_len=fixed_cutout_len, dir = file_dir, inputFile = file_in, psfFile = file_psf)
+            try:
+                # if PSF already exists, and just interested in top 25, is it more efficient just to grab from header?
+                if os.path.isfile(outFile):
+                    print('HSCgetStars already successfully run, skipping to HSCpolishPSF')
+                else: 
+                    HSCgetStars_main(fixed_cutout_len=fixed_cutout_len, dir = file_dir, inputFile = file_in, psfFile = file_psf)
 
-            HSCpolishPSF_main(fixed_cutout_len=fixed_cutout_len, dir=file_dir, inputFile=file_in, cutout_file=outFile)
-
+                HSCpolishPSF_main(fixed_cutout_len=fixed_cutout_len, dir=file_dir, inputFile=file_in, cutout_file=outFile)
+            except Exception as e: 
+                print('FAILURE')
+                print(e)    
 
 if __name__ == '__main__':
     main()

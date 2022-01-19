@@ -2,6 +2,7 @@
 import os
 import time
 import sys
+import heapq
 
 import random
 """Import the basics: numpy, pandas, matplotlib, etc."""
@@ -474,6 +475,7 @@ pyl.show()
 fig2.savefig(file_dir+'/NN_plots/'+'NN_confusionMatrix' + str(end) + '.png')
 pyl.clf()
 
+fwhms_test_misclass = []
 for i in range(len(preds_test)):
     #print(y_test[i])
     #print(preds_test[i])
@@ -481,10 +483,10 @@ for i in range(len(preds_test)):
     #pyl.show()
     #pyl.close()
     
-    if y_test[i] == 1:
-        pass
-    #    print('GOOD STAR LABEL')
-    #    print(preds_test[i])
+    if y_test[i] == 1 and preds_test[i][0] > 0.5:
+        fwhms_test_misclass.append(fwhms_test[i])
+        #    print('GOOD STAR LABEL')
+        #    print(preds_test[i])
         # been regularized so diff?
         #(c1, c2) = zscale.get_limits(y_test[i])
         #normer3 = interval.ManualInterval(c1,c2)
@@ -493,13 +495,22 @@ for i in range(len(preds_test)):
         #pyl.close()
         pass
 
-    elif preds_test[i][1] > 0.5:
-        (c1, c2) = zscale.get_limits(X_test[i])
-        normer5 = interval.ManualInterval(c1,c2)
-        pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
-        pyl.imshow(normer5(X_test[i]))
-        pyl.show()
-        pyl.close()
+    elif y_test[i] == 0 and preds_test[i][1] > 0.5:
+        fwhms_test_misclass.append(fwhms_test[i])
+        #(c1, c2) = zscale.get_limits(X_test[i])
+        #normer5 = interval.ManualInterval(c1,c2)
+        #pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
+        #pyl.imshow(normer5(X_test[i]))
+        #pyl.show()
+        #pyl.close()
        
 
     
+pyl.hist(fwhms_test, label = 'FWHM of full test set', bins=bins, alpha=0.5) 
+pyl.hist(fwhms_test_misclass, label = 'FWHM of misclassed test set', bins=bins, alpha=0.5) 
+pyl.xlabel('FWHM')
+pyl.ylabel('Count')
+pyl.legend(loc='best')
+pyl.show()
+pyl.close()
+pyl.clf()
