@@ -180,7 +180,7 @@ elif data_load == 'scratch':
                 print(files_counted, size_of_data)
                 #print('file being processed: ', filename)
 
-                with open(file_dir + '/NN_data_111/' + filename, 'rb') as f:
+                with open(file_dir + '/NN_data_metadata_111/' + filename, 'rb') as f:
                     [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
                 ''' 
                 (c1, c2) = zscale.get_limits(cutout)
