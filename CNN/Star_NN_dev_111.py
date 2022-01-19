@@ -105,7 +105,7 @@ balanced_data_method = str(sys.argv[1]) # even or weight
 data_load = str(sys.argv[2]) # can ask for specific presaved filename later
 num_epochs = int(sys.argv[3])
 
-####section for setting up some flags and hyperparameters
+# sset hyperparameters
 batch_size = 256 # try diff batch size?
 dropout_rate = 0.2
 test_fraction = 0.05 # from 0.05
@@ -503,8 +503,7 @@ for i in range(len(preds_test)):
         #pyl.imshow(normer5(X_test[i]))
         #pyl.show()
         #pyl.close()
-       
-
+    
     
 pyl.hist(fwhms_test, label = 'FWHM of full test set', bins=bins, alpha=0.5) 
 pyl.hist(fwhms_test_misclass, label = 'FWHM of misclassed test set', bins=bins, alpha=0.5) 
@@ -514,3 +513,18 @@ pyl.legend(loc='best')
 pyl.show()
 pyl.close()
 pyl.clf()
+
+misclass_80p = 0
+for i in range(len(preds_test)):
+    # need top 25 confidence
+    if y_test[i] == 0 and preds_test[i][1] > 0.8:
+        (c1, c2) = zscale.get_limits(X_test[i])
+        normer5 = interval.ManualInterval(c1,c2)
+        pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
+        pyl.imshow(normer5(X_test[i]))
+        pyl.show()
+        pyl.close()
+        misclass_80p += 1
+
+print('number of isclassed good stars above 80 percent confidence:', misclass_80p)
+print('out of total test set size (50/50 split) =', len(preds_test))
