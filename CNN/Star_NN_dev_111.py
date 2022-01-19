@@ -119,9 +119,14 @@ np.random.seed(432)
 good_cutouts = [] # label 1
 bad_cutouts = [] # label 0
 cutout_len = []
-fwhm_lst = []
-x_lst = []
-y_lst = []
+good_fwhm_lst = []
+good_x_lst = []
+good_y_lst = []
+good_inputFile_lst = []
+bad_fwhm_lst = []
+bad_x_lst = []
+bad_y_lst = []
+bad_inputFile_lst = []
 
 zscale = ZScaleInterval()
 
@@ -198,9 +203,17 @@ elif data_load == 'scratch':
                     #if l1 == 111 and l2 == 111:
                     if cutout.shape == (111,111):
                         if label == 1:
+                            good_x_lst.append(x)
+                            good_y_lst.append(y)
+                            good_fwhm_lst.append(fwhm)
+                            good_inputFile_lst.append(inputFile)
                             good_cutouts.append(cutout)
                             files_counted += 1
                         elif label == 0:
+                            bad_x_lst.append(x)
+                            bad_y_lst.append(y)
+                            bad_fwhm_lst.append(fwhm)
+                            bad_inputFile_lst.append(inputFile)
                             bad_cutouts.append(cutout)
                             #files_counted += 1
                         else:
@@ -217,6 +230,14 @@ elif data_load == 'scratch':
 
     # keep all good cutouts
     num_good_cutouts = len(good_cutouts)
+    good_x_arr = np.array(good_x_lst)
+    good_y_arr = np.array(good_y_lst)
+    good_fwhm_arr = np.array(good_fwhm_lst)
+    good_inputFile_arr = np.array(good_inputFile_lst)
+    bad_x_arr = np.array(bad_x_lst)
+    bad_y_arr = np.array(bad_y_lst)
+    bad_fwhm_arr = np.array(bad_fwhm_lst)
+    bad_inputFile_arr = np.array(bad_inputFile_lst)
 
     good_cutouts = np.array(good_cutouts)#, dtype=object)
     print(good_cutouts.shape)
@@ -233,11 +254,16 @@ elif data_load == 'scratch':
         random_indices = np.random.choice(number_of_rows, size=num_good_cutouts, replace=False)
         random_bad_cutouts = bad_cutouts[random_indices, :]
         bad_cutouts = np.expand_dims(random_bad_cutouts, axis=3)
+        
+        random_bad_x_arr = bad_x_arr[random_indices, :]
+        random_bad_y_arr = bad_y_arr[random_indices, :]
+        random_bad_fwhm_arr = bad_fwhm_arr[random_indices, :]
+        random_bad_inputFile_arr = bad_inputFile_arr[random_indices, :]
 
         # add label 0
         label_bad = np.zeros(num_good_cutouts)
 
-    elif balanced_data_method == 'weight':
+    elif balanced_data_method == 'weight': # NEED TO ADD METADATA
         label_bad = np.zeros(len(bad_cutouts))
         bad_cutouts = np.expand_dims(bad_cutouts, axis=3)
         #class_weights = {0: , 1: }
@@ -245,8 +271,13 @@ elif data_load == 'scratch':
     else:
         print('invalidid argv[1] must be: "even, "weights"')
 
+
     # combine arrays 
     cutouts = np.concatenate((good_cutouts, bad_cutouts))
+    fwhms = np.concatenate((good_fwhm_arr, random_bad_fwhm_arr))
+    files = np.concatenate((good_inputFile_arr, random_bad_fwhm_arr))
+    xs = np.concatenate((good_x_arr, random_bad_x_arr))
+    ys = np.concatenate((good_y_arr, random_bad_y_arr))
 
     # make label array for all
     labels = np.concatenate((label_good, label_bad))
@@ -257,7 +288,7 @@ elif data_load == 'scratch':
     print(str(len(cutouts)) + ' files used')
 
     with open(file_dir + '/jan18_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
-        pickle.dump([cutouts, labels], han)
+        pickle.dump([cutouts, labels, xs, ys, fwhm, files], han)
 
     cutouts = np.asarray(cutouts).astype('float32')
     std = np.nanstd(cutouts)
@@ -276,10 +307,13 @@ skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)#, random_state
 print(skf)
 skf.split(cutouts, labels)
 
-print(cutouts.shape) # this should work dim wise??
+print(cutouts.shape) # why does it need both?
 for train_index, test_index in skf.split(cutouts, labels):
     X_train, X_test = cutouts[train_index], cutouts[test_index]
     y_train, y_test = labels[train_index], labels[test_index]
+    xs_train, xs_test = xs[train_index], xs[test_index]
+    files_train, files_test = files[train_index], files[test_index]
+    fwhm_train, fwhm_test = fwhm[train_index], fwhm[test_index]
 
 ### define the CNN
 # below is a network I used for KBO classification from image data.
