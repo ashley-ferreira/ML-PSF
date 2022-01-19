@@ -517,6 +517,7 @@ pyl.close()
 pyl.clf()
 
 misclass_80p = 0
+good_class_80p = 0
 for i in range(len(preds_test)):
     # need top 25 confidence
     if y_test[i] == 0 and preds_test[i][1] > 0.8:
@@ -527,6 +528,9 @@ for i in range(len(preds_test)):
         pyl.show()
         pyl.close()
         misclass_80p += 1
+    elif y_test[i] == 1 and preds_test[i][1] > 0.8:
+        good_class_80p += 1
 
-print('number of isclassed good stars above 80 percent confidence:', misclass_80p)
-print('out of total test set size (50/50 split) =', len(preds_test))
+print('number of misclassed good stars above 80 percent confidence:', misclass_80p)
+print('number of correctly classified good stars above 80 percent confidence', good_class_80p)
+print('out of total test set size (50/50 split):', len(preds_test))
