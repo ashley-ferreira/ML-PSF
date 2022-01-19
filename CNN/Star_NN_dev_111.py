@@ -485,6 +485,7 @@ for i in range(len(preds_test)):
     
     if y_test[i] == 1 and preds_test[i][0] > 0.5:
         fwhms_test_misclass.append(fwhms_test[i])
+        print(fwhms_test[i])
         #    print('GOOD STAR LABEL')
         #    print(preds_test[i])
         # been regularized so diff?
@@ -497,6 +498,7 @@ for i in range(len(preds_test)):
 
     elif y_test[i] == 0 and preds_test[i][1] > 0.5:
         fwhms_test_misclass.append(fwhms_test[i])
+        print(fwhms_test[i]) # noen in this class?
         #(c1, c2) = zscale.get_limits(X_test[i])
         #normer5 = interval.ManualInterval(c1,c2)
         #pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
@@ -504,9 +506,9 @@ for i in range(len(preds_test)):
         #pyl.show()
         #pyl.close()
     
-    
-pyl.hist(fwhms_test, label = 'FWHM of full test set', bins=bins, alpha=0.5) 
-pyl.hist(fwhms_test_misclass, label = 'FWHM of misclassed test set', bins=bins, alpha=0.5) 
+print(fwhms_test)    
+pyl.hist(fwhms_test, label = 'FWHM of full test set', bins='auto', alpha=0.5) 
+pyl.hist(fwhms_test_misclass, label = 'FWHM of misclassed test set', bins='auto', alpha=0.5) 
 pyl.xlabel('FWHM')
 pyl.ylabel('Count')
 pyl.legend(loc='best')
