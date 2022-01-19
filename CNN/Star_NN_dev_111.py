@@ -313,7 +313,7 @@ for train_index, test_index in skf.split(cutouts, labels):
     y_train, y_test = labels[train_index], labels[test_index]
     xs_train, xs_test = xs[train_index], xs[test_index]
     files_train, files_test = files[train_index], files[test_index]
-    fwhm_train, fwhm_test = fwhm[train_index], fwhm[test_index]
+    fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
 
 ### define the CNN
 # below is a network I used for KBO classification from image data.
