@@ -54,12 +54,10 @@ def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545
         metadata_dict['ys'] = ys 
         metadata_dict['fwhm'] = fwhm 
         metadata_dict['inputFile'] = inputFile
-
         
         len_c = len(cutouts)
         print(cutouts.shape)
         if cutouts.shape == (len_c, 111,111): # some non 111,111 let in from getstars
-            zscale = ZScaleInterval()
 
             ## select only those stars with really low STD
             w = np.where(stds/np.std(stds)<0.001)
@@ -120,9 +118,11 @@ def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545
 
                 final_file = dir+'/NN_data_metadata_' + str(fixed_cutout_len) + '/'+inputFile.replace('.fits', str(count) + '_metadata_cutoutData.pickle')
                 with open(final_file, 'wb+') as han:
-                    pick.dump([count, cutout, label, metadata_dict], han)
-
+                    pick.dump([count, cutout, label, y, x, fwhm, inputFile], han)
+        else:
+            print('########## FLAGGED ##########')
         return 1
+
 
     except Exception as e: 
         print('FAILURE')
