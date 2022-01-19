@@ -288,7 +288,7 @@ elif data_load == 'scratch':
     print(str(files_counted) + ' processed so far')
     print(str(len(cutouts)) + ' files used')
 
-    with open(file_dir + '/jan19_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
+    with open(file_dir + '/jan19_small_test_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
         pickle.dump([cutouts, labels, xs, ys, fwhm, files], han)
 
     cutouts = np.asarray(cutouts).astype('float32')
