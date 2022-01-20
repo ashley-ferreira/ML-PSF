@@ -198,7 +198,7 @@ elif data_load == 'scratch':
                 pyl.close()
                 '''
                 #print(inputFile)
-                imgFile = int(inputFile[7:12]) #'CORR-0' + str(k) + '-' + num_str + '.fits'
+                imgFile = int(inputFile[6:12]) #'CORR-0' + str(k) + '-' + num_str + '.fits'
                 print(imgFile)
                 # TEMPORARY
                 if len(cutout) > 0 and not(imgFile in withheld_img):
