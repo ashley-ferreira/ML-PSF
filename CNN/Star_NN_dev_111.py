@@ -129,6 +129,8 @@ bad_x_lst = []
 bad_y_lst = []
 bad_inputFile_lst = []
 
+withheld_img = [219580, 219582, 219584, 219586, 219588]
+
 zscale = ZScaleInterval()
 
 def padding(array, xx, yy):
@@ -154,7 +156,7 @@ file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2
 
 if data_load == 'presaved':
     with open(file_dir + '/jan19_40k_111_metadata_defaultLen.pickle', 'rb') as han:
-        [cutouts, labels, xs, ys, fwhm, files] = pickle.load(han) # need count too?
+        [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) # need count too?
 
     cutouts = np.asarray(cutouts).astype('float32')
     std = np.nanstd(cutouts)
@@ -195,8 +197,11 @@ elif data_load == 'scratch':
                 pyl.show()
                 pyl.close()
                 '''
+                print(inputFile)
+                imgFile = 
+                print(imgFile)
                 # TEMPORARY
-                if len(cutout) > 0:
+                if len(cutout) > 0 and not(imgFile in withheld_img):
                     #l1 = len(cutout[0])
                     #l2 = len(cutout[:][0])
                     #print(l1,l2)
@@ -222,6 +227,9 @@ elif data_load == 'scratch':
                         print(cutout.shape)
                     else:
                         continue
+
+                else:
+                    print('Saving cutouts from ',imgFile,' for validation')
     except BreakException:
         pass
 
@@ -289,7 +297,7 @@ elif data_load == 'scratch':
     print(str(len(cutouts)) + ' files used')
 
     with open(file_dir + '/jan19_40k_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
-        pickle.dump([cutouts, labels, xs, ys, fwhm, files], han)
+        pickle.dump([cutouts, labels, xs, ys, fwhms, files], han)
 
     cutouts = np.asarray(cutouts).astype('float32')
     std = np.nanstd(cutouts)
@@ -500,7 +508,7 @@ for i in range(len(preds_test)):
     elif y_test[i] == 0 and preds_test[i][1] > 0.5:
         fwhms_test_misclass.append(fwhms_test[i])
         print(fwhms_test[i]) # noen in this class?
-        #(c1, c2) = zscale.get_limits(X_test[i])
+        (c1, c2) = zscale.get_limits(X_test[i])
         normer5 = interval.ManualInterval(c1,c2)
         pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
         pyl.imshow(normer5(X_test[i]))
