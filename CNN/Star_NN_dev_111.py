@@ -106,7 +106,7 @@ data_load = str(sys.argv[2]) # can ask for specific presaved filename later
 num_epochs = int(sys.argv[3])
 
 # sset hyperparameters
-batch_size = 256 # try diff batch size?
+batch_size = 16 # try diff batch size?
 dropout_rate = 0.2
 test_fraction = 0.05 # from 0.05
 #num_epochs = 10
@@ -153,7 +153,7 @@ def padding(array, xx, yy):
 file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 
 if data_load == 'presaved':
-    with open(file_dir + '/jan18_111_metadata_defaultLen.pickle', 'rb') as han:
+    with open(file_dir + '/jan19_40k_111_metadata_defaultLen.pickle', 'rb') as han:
         [cutouts, labels] = pickle.load(han) # need count too?
 
     cutouts = np.asarray(cutouts).astype('float32')
