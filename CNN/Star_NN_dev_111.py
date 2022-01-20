@@ -197,7 +197,7 @@ elif data_load == 'scratch':
                 pyl.show()
                 pyl.close()
                 '''
-                print(inputFile)
+                #print(inputFile)
                 imgFile = int(inputFile[7:12]) #'CORR-0' + str(k) + '-' + num_str + '.fits'
                 print(imgFile)
                 # TEMPORARY
@@ -224,7 +224,7 @@ elif data_load == 'scratch':
                             #files_counted += 1
                         else:
                             print('ERROR: label is not 1 or 0')
-                        print(cutout.shape)
+                        #print(cutout.shape)
                     else:
                         continue
 
