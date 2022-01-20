@@ -167,8 +167,8 @@ if data_load == 'presaved':
     w_bad = np.where(np.isnan(cutouts))
     cutouts[w_bad] = 0.0
 
-    #with open(file_dir + '/regularization_data.pickle', 'wb+') as han:
-    #    pickle.dump([std, mean], han)
+    with open(file_dir + '/regularization_data.pickle', 'wb+') as han:
+        pickle.dump([std, mean], han)
 
 elif data_load == 'scratch':
     
@@ -307,6 +307,9 @@ elif data_load == 'scratch':
     # And just to be sure you aren’t picking up any bad values, after regularization:
     w_bad = np.where(np.isnan(cutouts))
     cutouts[w_bad] = 0.0
+
+    with open(file_dir + '/regularization_data.pickle', 'wb+') as han:
+        pickle.dump([std, mean], han)
 
 else: 
     print('invalid data load method, must be "scratch" or "presaved"')

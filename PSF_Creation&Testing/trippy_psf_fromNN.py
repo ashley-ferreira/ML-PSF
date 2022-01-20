@@ -123,9 +123,6 @@ for i in range(len(cutouts_best)):
         pyl.imshow(normer3(cutouts_best[i]))
         pyl.show()
         pyl.close()
-
-
-
     
 print('######################################################')
 print('number of good stars selected for psf: ', num_good_stars)
