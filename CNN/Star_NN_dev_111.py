@@ -154,7 +154,7 @@ file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2
 
 if data_load == 'presaved':
     with open(file_dir + '/jan19_40k_111_metadata_defaultLen.pickle', 'rb') as han:
-        [cutouts, labels] = pickle.load(han) # need count too?
+        [cutouts, labels, xs, ys, fwhm, files] = pickle.load(han) # need count too?
 
     cutouts = np.asarray(cutouts).astype('float32')
     std = np.nanstd(cutouts)
