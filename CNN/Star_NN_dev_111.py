@@ -489,22 +489,23 @@ for i in range(len(preds_test)):
         #    print('GOOD STAR LABEL')
         #    print(preds_test[i])
         # been regularized so diff?
-        #(c1, c2) = zscale.get_limits(y_test[i])
-        #normer3 = interval.ManualInterval(c1,c2)
-        #pyl.imshow(X_test[i])
-        #pyl.show()
-        #pyl.close()
+        (c1, c2) = zscale.get_limits(y_test[i])
+        normer3 = interval.ManualInterval(c1,c2)
+        pyl.title('labeled good star, predicted bad star at conf=' + str(preds_test[i][1]))
+        pyl.imshow(X_test[i])
+        pyl.show()
+        pyl.close()
         pass
 
     elif y_test[i] == 0 and preds_test[i][1] > 0.5:
         fwhms_test_misclass.append(fwhms_test[i])
         print(fwhms_test[i]) # noen in this class?
         #(c1, c2) = zscale.get_limits(X_test[i])
-        #normer5 = interval.ManualInterval(c1,c2)
-        #pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
-        #pyl.imshow(normer5(X_test[i]))
-        #pyl.show()
-        #pyl.close()
+        normer5 = interval.ManualInterval(c1,c2)
+        pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
+        pyl.imshow(normer5(X_test[i]))
+        pyl.show()
+        pyl.close()
     
 print(fwhms_test)    
 pyl.hist(fwhms_test, label = 'FWHM of full test set', bins='auto', alpha=0.5) 
