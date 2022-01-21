@@ -64,7 +64,7 @@ try:
             with open(file_dir + '/NN_data_metadata_111/' + filename, 'rb') as f:
                 [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
 
-            imgFile = int(inputFile[7:12])
+            imgFile = int(inputFile[6:12])
             if len(cutout) > 0 and imgFile in withheld_img:
                 if cutout.shape == (111,111):
                     if label == 1:
