@@ -206,7 +206,7 @@ for i in range(len(preds_test)):
         (c1, c2) = zscale.get_limits(y_test[i])
         normer3 = interval.ManualInterval(c1,c2)
         pyl.title('labeled good star, predicted bad star at conf=' + str(preds_test[i][1]))
-        pyl.imshow(X_test[i])
+        pyl.imshow(normer3(X_test[i]))
         pyl.show()
         pyl.close()
         pass
