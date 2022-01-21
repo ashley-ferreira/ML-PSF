@@ -237,14 +237,13 @@ good_class_80p = 0
 for i in range(len(preds_test)):
     # need top 25 confidence
     if y_test[i] == 0 and preds_test[i][1] > 0.95:
-        '''
         (c1, c2) = zscale.get_limits(X_test[i])
         normer5 = interval.ManualInterval(c1,c2)
         pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
         pyl.imshow(normer5(X_test[i]))
         pyl.show()
         pyl.close()
-        '''
+        
         misclass_80p += 1
     elif y_test[i] == 1 and preds_test[i][1] > 0.95:
         good_class_80p += 1
