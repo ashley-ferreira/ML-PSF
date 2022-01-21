@@ -25,8 +25,8 @@ from sklearn.utils.multiclass import unique_labels
 
 from astropy.visualization import interval, ZScaleInterval
 
-withheld_img = [219580, 219582, 219584, 219586, 219588]
-validation_size = 100
+withheld_img = [219580, 219582, 219584, 219586, 219588] # add mpre img
+validation_size = 1000 # make bigger to 10k
 size_of_data = validation_size//2
 file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
@@ -134,8 +134,8 @@ with open(model_dir + '/regularization_data.pickle', 'rb') as han:
 
 cutouts -= mean
 cutouts /= std
-w_bad = np.where(np.isnan(cutouts))
-cutouts[w_bad] = 0.0
+#w_bad = np.where(np.isnan(cutouts))
+#cutouts[w_bad] = 0.0
 
 # load model
                                         
