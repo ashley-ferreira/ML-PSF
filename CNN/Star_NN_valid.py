@@ -27,6 +27,7 @@ from astropy.visualization import interval, ZScaleInterval
 
 withheld_img = [219580, 219582, 219584, 219586, 219588]
 validation_size = 100
+size_of_data = validation_size//2
 file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 
