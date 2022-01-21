@@ -139,7 +139,7 @@ cutouts /= std
 
 # load model
                                         
-cn_model = keras.models.load_model(model_dir + '/Saved_Model/dec13_model')
+cn_model = keras.models.load_model(model_dir + '/Saved_Model/model1642735464.135405')
 
 
 # show stats analsys
