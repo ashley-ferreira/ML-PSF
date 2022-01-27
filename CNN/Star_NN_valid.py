@@ -252,7 +252,7 @@ good_class_80p = 0
 
 # likely automatic way to do this but i didn't easily find
 #confidence_step = 0.01
-confidence_queries = np.arange(0.5, 1, 0.01)
+confidence_queries = np.arange(0.5, 1, 0.001)
 good_star_acc = []
 bad_star_acc = []
 
@@ -288,8 +288,11 @@ for c in confidence_queries:
     good_star_acc.append(good_stars_correct/good_stars_above_c)
     bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
 
-pyl.plot(confidence_queries, good_star_acc)
-pyl.plot(confidence_queries, bad_star_acc)
+pyl.plot(confidence_queries, good_star_acc, label='good star classificantion')
+pyl.plot(confidence_queries, bad_star_acc, label='bad star clasification')
+pyl.legend()
+pyl.xlabel('Confidence')
+pyl.ylabel('Accuracy')
 pyl.show()
 pyl.close()
 pyl.clf()
