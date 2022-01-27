@@ -319,7 +319,8 @@ pyl.clf()
 # differnent orientation then in the video?
 xy = np.arange(0,1, confidence_step)
 #perfect_ROC = np.concatenate(([0],np.ones(int(1/confidence_step)-1)))
-perfect_ROC = np.concatenate(([0],np.ones(len(confidence_queries)-1)))
+perfect_ROC = np.ones(len(fp_rate))
+perfect_ROC[0] = 0
 
 pyl.title('ROC Curve')
 pyl.plot(xy, xy, '--', label='random chance refence line')
@@ -332,7 +333,9 @@ pyl.show()
 pyl.close()
 pyl.clf()
 
-perfect_PR = np.concatenate((np.ones(len(confidence_queries)-1), [0]))
+#perfect_PR = np.concatenate((np.ones(len(confidence_queries)-1), [0]))
+perfect_PR = np.ones(len(fp_rate))
+perfect_PR[len(perfect_PR)-1] = 0
 
 pyl.title('PR Curve')
 pyl.plot(recall, perfect_PR, '--', label='perfect classifier')
