@@ -25,6 +25,8 @@ from sklearn.utils.multiclass import unique_labels
 
 from astropy.visualization import interval, ZScaleInterval
 
+import matplotlib as mpl
+
 # look in model for trained on and withheld imgs total 219580-219620
 withheld_img = range(219580,) # more than all you have? RANDOM SELECT
 #withheld_img = [219580, 219582, 219584, 219586, 219588] # add mpre img
@@ -198,7 +200,7 @@ for (i, j), z in np.ndenumerate(cm):
     pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
 
 pyl.title('Confusion matrix')
-pyl.colorbar()
+pyl.colorbar(cmap=mpl.cm.cool)
 pyl.xlabel('Predicted labels')
 pyl.ylabel('True labels')
 pyl.show()
