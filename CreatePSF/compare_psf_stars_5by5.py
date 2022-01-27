@@ -43,7 +43,7 @@ import glob
 
 from keras.utils import np_utils
 
-file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03068/HSC-R2/corr'
+file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 
 zscale = ZScaleInterval()
@@ -151,6 +151,7 @@ for i in range(len(goodpsf_x)):
 fig.show()
 
 
+# go pull this directly from new cutout file
 xs_best = np.array(xs_best)
 ys_best = np.array(ys_best)
 
@@ -181,20 +182,3 @@ pyl.imshow(normer2(otherPSF.lookupTable))
 title = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
 pyl.title(title)
 pyl.show()
-# LAST THING IS TO ACUTLLY SHOW ZSCALED PSFS, this is great
-
-
-# loop through and display
-    #cutout_goodpsf = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
-
-'''
-print(header)
-otherPSF = psf.modelPSF(restore=comparePSF)
-(o1, o2) = zscale.get_limits(otherPSF.lookupTable)
-normer2 = interval.ManualInterval(o1,o2)
-pyl.imshow(normer2(otherPSF.lookupTable))
-title = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
-pyl.title(title)
-
-pyl.show()
-'''
