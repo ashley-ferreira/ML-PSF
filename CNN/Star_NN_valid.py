@@ -283,6 +283,7 @@ for c in confidence_queries:
         elif y_test[i] == 1 and preds_test[i][1] > c:
             good_class_80p += 1
         '''
+        '''
         if preds_test[i][0] > c:
             bad_stars_above_c +=1
             if y_test[i] == 0:
@@ -294,7 +295,21 @@ for c in confidence_queries:
             if y_test[i] == 1:
                 good_stars_correct +=1 
             elif y_test[i] == 0:
-                good_stars_incorrect +=1            
+                good_stars_incorrect +=1      
+        '''
+        if preds_test[i][1] > c:
+            good_stars_above_c +=1 
+            if y_test[i] == 1:
+                good_stars_correct +=1 
+            elif y_test[i] == 0:
+                good_stars_incorrect +=1
+        else:
+            bad_stars_above_c +=1
+            if y_test[i] == 0:
+                bad_stars_correct +=1
+            elif y_test[i] == 1:
+                bad_stars_incorrect +=1
+                   
 
     print('good', good_stars_correct, good_stars_incorrect, good_stars_above_c)
     print('bad', bad_stars_correct, bad_stars_incorrect, bad_stars_above_c)
@@ -309,7 +324,7 @@ pyl.title('Accuracy Curve')
 pyl.plot(confidence_queries, good_star_acc, label='good star classificantion')
 pyl.plot(confidence_queries, bad_star_acc, label='bad star clasification')
 pyl.legend()
-pyl.xlabel('Confidence')
+pyl.xlabel('Confidence cutoff for good star classification')
 pyl.ylabel('Accuracy')
 pyl.show()
 pyl.close()
