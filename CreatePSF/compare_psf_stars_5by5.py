@@ -103,23 +103,23 @@ best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by con
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('CNN selected top 25 stars', loc='left')
+plt.title('CNN selected top 25 stars', x=0, y=1)
 plotted_stars = 0
-for i in range(len(cutouts)): 
+for i in range(len(cutouts)): # CURRUPTED FILE?
     good_probability = output[i][1]#int(indx)]
-    if cn_prob[i] in best_prob: 
-        plotted_stars += 1
-        if plotted_stars > 25:
-            
-            xs_best.append(xs[i])
-            ys_best.append(ys[i])
-            cn_prob.append(good_probability)
-            num_good_stars += 1
-            (c1, c2) = zscale.get_limits(cutouts[i])
-            normer3 = interval.ManualInterval(c1,c2)
-            axs[i].imshow(normer3(cutouts[i]))
-            axs[i].set_xticks([])
-            axs[i].set_yticks([])
+    #if cn_prob[i] in best_prob: 
+    plotted_stars += 1
+    if plotted_stars > 25:
+        
+        xs_best.append(xs[i])
+        ys_best.append(ys[i])
+        cn_prob.append(good_probability)
+        num_good_stars += 1
+        (c1, c2) = zscale.get_limits(cutouts[i])
+        normer3 = interval.ManualInterval(c1,c2)
+        axs[i].imshow(normer3(cutouts[i]))
+        axs[i].set_xticks([])
+        axs[i].set_yticks([])
 
 plt.show()
 # dont show axis labels
