@@ -66,9 +66,10 @@ print(header)
 
 # run star chooser
 
-outFile = file_dir+'/'+inputFile.replace('.fits', '_cutouts_savedFits.pickle')
+outFile = file_dir+'/'+inputFile.replace('.fits', '_metadata_cutoutData.pickle')
 with open(outFile, 'rb') as han:
-    [stds, seconds, peaks, xs, ys, cutouts] = pickle.load(han)
+    #[stds, seconds, peaks, xs, ys, cutouts] = pickle.load(han)
+    [count, cutout, label, ys, xs, fwhm, inputFile] = pickle.load(han)
                                         
 # run though my network and get - this model was good results!
 model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27')
