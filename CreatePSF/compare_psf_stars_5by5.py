@@ -167,7 +167,7 @@ for i in range(len(goodpsf_x)):
     axs[i].set_xticks([])
     axs[i].set_yticks([])
 plt.subplots_adjust(wspace=0, hspace=0)
-plt.title('goodPSF selected top 25 stars', loc='left')
+#plt.title('goodPSF selected top 25 stars', loc='left')
 plt.show()
 
 
