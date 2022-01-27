@@ -47,6 +47,7 @@ file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2
 model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 
 zscale = ZScaleInterval()
+fixed_cutout_len = 111
 
 selected_file = sys.argv[1]
 #conf = sys.argv[2]
@@ -66,10 +67,10 @@ print(header)
 
 # run star chooser
 
-outFile = file_dir+'/'+inputFile.replace('.fits', '_metadata_cutoutData.pickle')
+outFile = file_dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_metadata_cutouts_savedFits.pickle')
 with open(outFile, 'rb') as han:
     #[stds, seconds, peaks, xs, ys, cutouts] = pickle.load(han)
-    [count, cutout, label, ys, xs, fwhm, inputFile] = pickle.load(han)
+    [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
                                         
 # run though my network and get - this model was good results!
 model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27')
