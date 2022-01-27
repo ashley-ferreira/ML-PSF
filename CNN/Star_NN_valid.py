@@ -251,15 +251,20 @@ misclass_80p = 0
 good_class_80p = 0
 
 # likely automatic way to do this but i didn't easily find
-#confidence_step = 0.01
-confidence_queries = np.arange(0.5, 1, 0.001)
+confidence_step = 0.0001
+confidence_queries = np.arange(0.5, 1, confidence_step) # worth it since it doesnt take too long
 good_star_acc = []
 bad_star_acc = []
+recall = []
+precision = []
+fp_rate = []
 
 for c in confidence_queries:
     good_stars_correct = 0
+    good_stars_incorrect = 0
     good_stars_above_c = 0
     bad_stars_correct = 0
+    bad_stars_incorrect = 0
     bad_stars_above_c = 0
 
     for i in range(len(preds_test)):
@@ -280,19 +285,56 @@ for c in confidence_queries:
             bad_stars_above_c +=1
             if y_test[i] == 0:
                 bad_stars_correct +=1
+            elif y_test[i] == 1:
+                bad_stars_incorrect +=1
         elif preds_test[i][1] > c:
             good_stars_above_c +=1
             if y_test[i] == 1:
-                good_stars_correct +=1            
+                good_stars_correct +=1 
+            elif y_test[i] == 0:
+                good_stars_incorrect +=1            
 
     good_star_acc.append(good_stars_correct/good_stars_above_c)
     bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
+    # double check recall and precision calculations, switch to fp..
+    recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) # false neg?
+    fp_rate.append(bad_stars_incorrect/(bad_stars_incorrect+bad_stars_correct))
+    precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
 
+pyl.title('Accuracy Curve')
 pyl.plot(confidence_queries, good_star_acc, label='good star classificantion')
 pyl.plot(confidence_queries, bad_star_acc, label='bad star clasification')
 pyl.legend()
 pyl.xlabel('Confidence')
 pyl.ylabel('Accuracy')
+pyl.show()
+pyl.close()
+pyl.clf()
+
+# add heat plot for confidence values
+# differnent orientation then in the video?
+xy = np.arange(0,1, confidence_step)
+perfect_ROC = np.concatenate(0,np.ones(1/confidence_step))
+
+pyl.title('ROC Curve')
+pyl.plot(xy, xy, '--', label='random chance refence line')
+pyl.plot(perfect_ROC, '--', label='perfect classifier')
+pyl.plot(fp_rate, recall, label='trained CNN')
+pyl.legend()
+pyl.xlabel('False Positive Rate')
+pyl.ylabel('True Positive Rate (Recall)')
+pyl.show()
+pyl.close()
+pyl.clf()
+
+perfect_PR = np.concatenate(np.ones(1/confidence_step), 0)
+
+pyl.title('PR Curve')
+pyl.plot(perfect_PR, '--', label='perfect classifier')
+pyl.plot(recall, precision, label='trained CNN')
+pyl.legend()
+pyl.xlabel('Recall')
+pyl.ylabel('Precision')
 pyl.show()
 pyl.close()
 pyl.clf()
