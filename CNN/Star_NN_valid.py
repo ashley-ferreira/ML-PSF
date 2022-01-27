@@ -194,13 +194,13 @@ y_test_binary = np.argmax(y_test_binary, axis = 1)
 preds_test_binary = np.argmax(preds_test, axis = 1)
 
 cm = confusion_matrix(y_test_binary, preds_test_binary)
-pyl.matshow(cm)
+pyl.matshow(cm, cmap=mpl.cm.cool)
 
 for (i, j), z in np.ndenumerate(cm):
     pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
 
 pyl.title('Confusion matrix')
-pyl.colorbar(cmap=mpl.cm.cool)
+pyl.colorbar(cmap=mpl.cm.cool) # not working
 pyl.xlabel('Predicted labels')
 pyl.ylabel('True labels')
 pyl.show()
@@ -316,7 +316,7 @@ pyl.clf()
 # add heat plot for confidence values
 # differnent orientation then in the video?
 xy = np.arange(0,1, confidence_step)
-perfect_ROC = np.concatenate(([0],np.ones(1/confidence_step)))
+perfect_ROC = np.concatenate(([0],np.ones(int(1/confidence_step)-1)))
 
 pyl.title('ROC Curve')
 pyl.plot(xy, xy, '--', label='random chance refence line')
@@ -329,7 +329,7 @@ pyl.show()
 pyl.close()
 pyl.clf()
 
-perfect_PR = np.concatenate((np.ones(1/confidence_step), [0]))
+perfect_PR = np.concatenate((np.ones(int(1/confidence_step)-1), [0]))
 
 pyl.title('PR Curve')
 pyl.plot(perfect_PR, '--', label='perfect classifier')
