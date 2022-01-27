@@ -253,7 +253,7 @@ misclass_80p = 0
 good_class_80p = 0
 
 # likely automatic way to do this but i didn't easily find
-confidence_step = 0.0001
+confidence_step = 0.0000001
 confidence_queries = np.arange(confidence_step, 1, confidence_step) # worth it since it doesnt take too long
 good_star_acc = []
 bad_star_acc = []
