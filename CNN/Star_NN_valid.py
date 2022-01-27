@@ -57,7 +57,7 @@ data_pull = 'saved'
 # load specific image (all CCDs) cutouts
 files_counted = 0
 try:
-    if data_pull = 'scratch':
+    if data_pull == 'scratch':
         for filename in os.listdir(file_dir+ '/NN_data_metadata_111'):
             if filename.endswith("metadata_cutoutData.pickle"):
                 #print(files_counted, size_of_data)
