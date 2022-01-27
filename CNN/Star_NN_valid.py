@@ -314,7 +314,7 @@ pyl.clf()
 # add heat plot for confidence values
 # differnent orientation then in the video?
 xy = np.arange(0,1, confidence_step)
-perfect_ROC = np.concatenate(0,np.ones(1/confidence_step))
+perfect_ROC = np.concatenate((0,np.ones(1/confidence_step)))
 
 pyl.title('ROC Curve')
 pyl.plot(xy, xy, '--', label='random chance refence line')
@@ -327,7 +327,7 @@ pyl.show()
 pyl.close()
 pyl.clf()
 
-perfect_PR = np.concatenate(np.ones(1/confidence_step), 0)
+perfect_PR = np.concatenate((np.ones(1/confidence_step), 0))
 
 pyl.title('PR Curve')
 pyl.plot(perfect_PR, '--', label='perfect classifier')

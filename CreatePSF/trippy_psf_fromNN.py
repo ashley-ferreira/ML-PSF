@@ -180,3 +180,5 @@ pyl.imshow(normer2(otherPSF.lookupTable))
 title = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
 pyl.title(title)
 pyl.show()
+
+# label each subplot and compare to plots of goodPSFs

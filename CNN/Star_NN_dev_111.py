@@ -99,6 +99,9 @@ from trippy.trippy_utils import expand2d, downSample2d
 
 #import seaborn as sns
 
+
+import matplotlib as mpl
+
 # GIT TEST
 
 balanced_data_method = str(sys.argv[1]) # even or weight
@@ -494,7 +497,7 @@ for (i, j), z in np.ndenumerate(cm):
     pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
 
 pyl.title('Confusion matrix')
-pyl.colorbar()
+pyl.colorbar(cmap=mpl.cm.cool)
 pyl.xlabel('Predicted labels')
 pyl.ylabel('True labels')
 pyl.show()
