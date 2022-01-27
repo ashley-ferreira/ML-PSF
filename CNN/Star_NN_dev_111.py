@@ -300,7 +300,7 @@ elif data_load == 'scratch':
     skf = StratifiedShuffleSplit(n_splits=1, test_size=valid_fraction)#, random_state=41)
     skf.split(cutouts, labels)
 
-    for used_index, withheld_index in skf.split(cutouts, labels):
+    for used_index, withheld_index in skf.split(cutouts, labels): # an issue with split here
         used_cutouts, withheld_cutouts = cutouts[used_index], cutouts[withheld_index]
         used_labels, withheld_labels = labels[used_index], labels[withheld_index]
         used_xs, withheld_xs = xs[used_index], xs[withheld_index]
@@ -314,13 +314,13 @@ elif data_load == 'scratch':
     with open(file_dir + '/WITHHELD_jan26_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
         pickle.dump([withheld_cutouts, withheld_labels, withheld_xs, withheld_ys, withheld_fwhms, withheld_files], han)
 
-    used_cutouts = np.asarray(used_cutouts).astype('float32')
+    #used_cutouts = np.asarray(used_cutouts).astype('float32')
     std = np.nanstd(used_cutouts)
     mean = np.nanmean(used_cutouts)
     used_cutouts -= mean
     used_cutouts /= std
     # And just to be sure you aren’t picking up any bad values, after regularization:
-    w_bad = np.where(np.isnan(cutouts))
+    w_bad = np.where(np.isnan(used_cutouts))
     used_cutouts[w_bad] = 0.0
 
     with open(file_dir + '/regularization_data.pickle', 'wb+') as han:
