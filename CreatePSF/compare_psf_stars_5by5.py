@@ -101,7 +101,7 @@ for i in range(len(cutouts)):
 
 best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by confidence
 print('lowest confidence in top 25', best_prob[24])
-fig, axs = plt.subplots(figsize=(5*5, 5*5))
+fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
 fig.title('CNN selected top 25 stars')
 plotted_stars = 0
@@ -145,7 +145,7 @@ for e in header: # not both eh?
 
 print(goodpsf_x, goodpsf_y)
 
-fig, axs = plt.subplots(figsize=(5*5, 5*5))
+fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
 fig.title('goodPSF selected top 25 stars')
 for i in range(len(goodpsf_x)):
