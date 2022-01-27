@@ -201,7 +201,7 @@ elif data_load == 'scratch':
                 imgFile = int(inputFile[6:12]) #'CORR-0' + str(k) + '-' + num_str + '.fits'
                 print(imgFile)
                 # TEMPORARY
-                if len(cutout) > 0 and not(imgFile in withheld_img):
+                if len(cutout) > 0:# and not(imgFile in withheld_img):
                     #l1 = len(cutout[0])
                     #l2 = len(cutout[:][0])
                     #print(l1,l2)
