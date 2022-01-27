@@ -155,7 +155,7 @@ print(goodpsf_x, goodpsf_y)
 
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('goodPSF selected top 25 stars', loc='left')
+#plt.title('goodPSF selected top 25 stars', loc='left')
 for i in range(len(goodpsf_x)):
     y_int = int(goodpsf_y[i])
     #print(y_int)
