@@ -119,10 +119,10 @@ for i in range(len(cutouts)):
             normer3 = interval.ManualInterval(c1,c2)
             axs[i].imshow(normer3(cutouts[i]))
 
-fig.show()
+plt.show()
 
 
-comparePSF = file_dir+'/psfStars/'+inputFile.replace('.fits','.goodPSF.fits')
+comparePSF = file_dir+'/psfStars/'+inputFile.replace('.fits','.metadata_goodPSF.fits')
 with fits.open(comparePSF) as han:
     goodpsf_img_data = han[1].data
     header = han[0].header
@@ -158,7 +158,7 @@ for i in range(len(goodpsf_x)):
     normer4 = interval.ManualInterval(c1,c2)
     axs[i].imshow(normer4(cutout_goodpsf))
 
-fig.show()
+plt.show()
 
 
 # go pull this directly from new cutout file
