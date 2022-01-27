@@ -163,6 +163,8 @@ for i in range(len(goodpsf_x)):
     (c1, c2) = zscale.get_limits(cutout_goodpsf)
     normer4 = interval.ManualInterval(c1,c2)
     axs[i].imshow(normer4(cutout_goodpsf))
+    axs[i].set_xticks([])
+    axs[i].set_yticks([])
 
 plt.show()
 
