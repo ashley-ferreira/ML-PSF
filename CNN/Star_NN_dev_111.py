@@ -308,7 +308,6 @@ elif data_load == 'scratch':
         used_files, withheld_files = files[used_index], files[withheld_index]
         used_fwhms, withheld_fwhms = fwhms[used_index], fwhms[withheld_index]
 
-    print(type(used_cutouts), type(withheld_cutouts)) # not a float?
     with open(file_dir + '/USED_jan26_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
         pickle.dump([used_cutouts, used_labels, used_xs, used_ys, used_fwhms, used_files], han)
 

@@ -166,7 +166,7 @@ test_good_p = []
 for p in preds_test:
     test_good_p.append(p[1])
 
-
+# how did it show both here?
 bins = np.linspace(0, 1, 100)
 pyl.hist(test_good_p, label = 'test set confidence', bins=bins, alpha=0.5, density=True) # add transparency 
 pyl.xlabel('Good Star Confidence')
@@ -251,7 +251,8 @@ misclass_80p = 0
 good_class_80p = 0
 
 # likely automatic way to do this but i didn't easily find
-confidence_queries = range(0.5, 1, 0.01)
+#confidence_step = 0.01
+confidence_queries = np.arrange(0.5, 1, 0.01)
 good_star_acc = []
 bad_star_acc = []
 
