@@ -49,83 +49,91 @@ bad_inputFile_lst = []
 np.random.seed(432)
 max_size = 111 
 
+data_pull = 'saved'
+
 # earlier, we set to train on selection from (219590,219620)
 # here we validate on 219580 (and can also look at up to 88)
 
 # load specific image (all CCDs) cutouts
 files_counted = 0
 try:
-    for filename in os.listdir(file_dir+ '/NN_data_metadata_111'):
-        if filename.endswith("metadata_cutoutData.pickle"):
-            #print(files_counted, size_of_data)
-            if files_counted >= size_of_data:
-                break
-            print(files_counted, size_of_data)
-            #print('file being processed: ', filename)
+    if data_pull = 'scratch':
+        for filename in os.listdir(file_dir+ '/NN_data_metadata_111'):
+            if filename.endswith("metadata_cutoutData.pickle"):
+                #print(files_counted, size_of_data)
+                if files_counted >= size_of_data:
+                    break
+                print(files_counted, size_of_data)
+                #print('file being processed: ', filename)
 
-            with open(file_dir + '/NN_data_metadata_111/' + filename, 'rb') as f:
-                [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
+                with open(file_dir + '/NN_data_metadata_111/' + filename, 'rb') as f:
+                    [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
 
-            imgFile = int(inputFile[6:12])
-            if len(cutout) > 0 and imgFile in withheld_img:
-                if cutout.shape == (111,111):
-                    if label == 1:
-                        good_x_lst.append(x)
-                        good_y_lst.append(y)
-                        good_fwhm_lst.append(fwhm)
-                        good_inputFile_lst.append(inputFile)
-                        good_cutouts.append(cutout)
-                        files_counted += 1
-                    elif label == 0:
-                        bad_x_lst.append(x)
-                        bad_y_lst.append(y)
-                        bad_fwhm_lst.append(fwhm)
-                        bad_inputFile_lst.append(inputFile)
-                        bad_cutouts.append(cutout)
-                        #files_counted += 1
+                imgFile = int(inputFile[6:12])
+                if len(cutout) > 0 and imgFile in withheld_img:
+                    if cutout.shape == (111,111):
+                        if label == 1:
+                            good_x_lst.append(x)
+                            good_y_lst.append(y)
+                            good_fwhm_lst.append(fwhm)
+                            good_inputFile_lst.append(inputFile)
+                            good_cutouts.append(cutout)
+                            files_counted += 1
+                        elif label == 0:
+                            bad_x_lst.append(x)
+                            bad_y_lst.append(y)
+                            bad_fwhm_lst.append(fwhm)
+                            bad_inputFile_lst.append(inputFile)
+                            bad_cutouts.append(cutout)
+                            #files_counted += 1
 
-    num_good_cutouts = len(good_cutouts)
-    good_x_arr = np.array(good_x_lst)
-    good_y_arr = np.array(good_y_lst)
-    good_fwhm_arr = np.array(good_fwhm_lst)
-    good_inputFile_arr = np.array(good_inputFile_lst)
-    bad_x_arr = np.array(bad_x_lst)
-    bad_y_arr = np.array(bad_y_lst)
-    bad_fwhm_arr = np.array(bad_fwhm_lst)
-    bad_inputFile_arr = np.array(bad_inputFile_lst)
+        num_good_cutouts = len(good_cutouts)
+        good_x_arr = np.array(good_x_lst)
+        good_y_arr = np.array(good_y_lst)
+        good_fwhm_arr = np.array(good_fwhm_lst)
+        good_inputFile_arr = np.array(good_inputFile_lst)
+        bad_x_arr = np.array(bad_x_lst)
+        bad_y_arr = np.array(bad_y_lst)
+        bad_fwhm_arr = np.array(bad_fwhm_lst)
+        bad_inputFile_arr = np.array(bad_inputFile_lst)
 
-    good_cutouts = np.array(good_cutouts)#, dtype=object)
-    print(good_cutouts.shape)
-    good_cutouts = np.expand_dims(good_cutouts, axis=3)
-    print(good_cutouts.shape)
+        good_cutouts = np.array(good_cutouts)#, dtype=object)
+        print(good_cutouts.shape)
+        good_cutouts = np.expand_dims(good_cutouts, axis=3)
+        print(good_cutouts.shape)
 
-    label_good = np.ones(num_good_cutouts)
+        label_good = np.ones(num_good_cutouts)
 
-    bad_cutouts = np.array(bad_cutouts, dtype=object) #new addition, unsure
+        bad_cutouts = np.array(bad_cutouts, dtype=object) #new addition, unsure
 
-    if True:
-        number_of_rows = bad_cutouts.shape[0]
-        random_indices = np.random.choice(number_of_rows, size=num_good_cutouts, replace=False)
-        random_bad_cutouts = bad_cutouts[random_indices, :]
-        bad_cutouts = np.expand_dims(random_bad_cutouts, axis=3)
-        
-        random_bad_x_arr = bad_x_arr[random_indices]
-        random_bad_y_arr = bad_y_arr[random_indices]
-        random_bad_fwhm_arr = bad_fwhm_arr[random_indices]
-        random_bad_inputFile_arr = bad_inputFile_arr[random_indices]
+        if True:
+            number_of_rows = bad_cutouts.shape[0]
+            random_indices = np.random.choice(number_of_rows, size=num_good_cutouts, replace=False)
+            random_bad_cutouts = bad_cutouts[random_indices, :]
+            bad_cutouts = np.expand_dims(random_bad_cutouts, axis=3)
+            
+            random_bad_x_arr = bad_x_arr[random_indices]
+            random_bad_y_arr = bad_y_arr[random_indices]
+            random_bad_fwhm_arr = bad_fwhm_arr[random_indices]
+            random_bad_inputFile_arr = bad_inputFile_arr[random_indices]
 
-        # add label 0
-        label_bad = np.zeros(num_good_cutouts)
+            # add label 0
+            label_bad = np.zeros(num_good_cutouts)
 
-    # combine arrays 
-    cutouts = np.concatenate((good_cutouts, bad_cutouts))
-    fwhms = np.concatenate((good_fwhm_arr, random_bad_fwhm_arr))
-    files = np.concatenate((good_inputFile_arr, random_bad_fwhm_arr))
-    xs = np.concatenate((good_x_arr, random_bad_x_arr))
-    ys = np.concatenate((good_y_arr, random_bad_y_arr))
+        # combine arrays 
+        cutouts = np.concatenate((good_cutouts, bad_cutouts))
+        fwhms = np.concatenate((good_fwhm_arr, random_bad_fwhm_arr))
+        files = np.concatenate((good_inputFile_arr, random_bad_fwhm_arr))
+        xs = np.concatenate((good_x_arr, random_bad_x_arr))
+        ys = np.concatenate((good_y_arr, random_bad_y_arr))
 
-    # make label array for all
-    labels = np.concatenate((label_good, label_bad))
+        # make label array for all
+        labels = np.concatenate((label_good, label_bad))
+
+    else: 
+        with open(file_dir + '/WITHHELD_jan26_' + str(max_size) + '_metadata_defaultLen.pickle', 'rb') as f:
+            [cutouts, labels, xs, ys, fwhms, files] = pickle.load(f)
+
 
 except Exception as e: 
     print('FAILURE')
@@ -134,10 +142,11 @@ except Exception as e:
 with open(model_dir + '/regularization_data.pickle', 'rb') as han:
     [std, mean] = pickle.load(han)
 
+cutouts = np.asarray(cutouts).astype('float32')
 cutouts -= mean
 cutouts /= std
-#w_bad = np.where(np.isnan(cutouts))
-#cutouts[w_bad] = 0.0
+w_bad = np.where(np.isnan(cutouts))
+cutouts[w_bad] = 0.0
 
 # load model
                                         
@@ -195,6 +204,7 @@ pyl.ylabel('True labels')
 pyl.show()
 pyl.clf()
 
+# CONCISE THESE FOR LOOPS
 fwhms_test_misclass = []
 for i in range(len(preds_test)):
     #print(y_test[i])
@@ -234,24 +244,54 @@ pyl.show()
 pyl.close()
 pyl.clf()
 
+
+# use predict with threshold confidence changed 
+
 misclass_80p = 0
 good_class_80p = 0
-for i in range(len(preds_test)):
-    # need top 25 confidence
-    if y_test[i] == 0 and preds_test[i][1] > 0.99:
-        (c1, c2) = zscale.get_limits(X_test[i])
-        normer5 = interval.ManualInterval(c1,c2)
-        pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
-        pyl.imshow(normer5(X_test[i]))
-        pyl.show()
-        pyl.close()
-        
-        misclass_80p += 1
-    elif y_test[i] == 1 and preds_test[i][1] > 0.99:
-        good_class_80p += 1
 
-print('number of misclassed good stars above 95 percent confidence:', misclass_80p)
-print('number of correctly classified good stars above 95 percent confidence', good_class_80p)
-print('out of total test set size (50/50 split):', len(preds_test))
+# likely automatic way to do this but i didn't easily find
+confidence_queries = range(0.5, 1, 0.01)
+good_star_acc = []
+bad_star_acc = []
+
+for c in confidence_queries:
+    good_stars_correct = 0
+    good_stars_above_c = 0
+    bad_stars_correct = 0
+    bad_stars_above_c = 0
+
+    for i in range(len(preds_test)):
+        # need top 25 confidence
+        '''
+        if y_test[i] == 0 and preds_test[i][1] > c:
+            #(c1, c2) = zscale.get_limits(X_test[i])
+            #normer5 = interval.ManualInterval(c1,c2)
+            #pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
+            #pyl.imshow(normer5(X_test[i]))
+            #pyl.show()
+            #pyl.close()
+            misclass_80p += 1
+        elif y_test[i] == 1 and preds_test[i][1] > c:
+            good_class_80p += 1
+        '''
+        if preds_test[i][0] > c:
+            bad_stars_above_c +=1
+            if y_test[i] == 0:
+                bad_stars_correct +=1
+        elif preds_test[i][1] > c:
+            good_stars_above_c +=1
+            if y_test[i] == 1:
+                good_stars_correct +=1            
+
+    good_star_acc.append(good_stars_correct/good_stars_above_c)
+    bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
+
+pyl.plot(confidence_queries, good_star_acc)
+pyl.plot(confidence_queries, bad_star_acc)
+
+#print('number of misclassed good stars above 95 percent confidence:', misclass_80p)
+#print('number of correctly classified good stars above 95 percent confidence', good_class_80p)
+#print('out of total test set size (50/50 split):', len(preds_test))
 
 # compare psfs, plots 9?
