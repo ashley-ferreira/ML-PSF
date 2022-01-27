@@ -290,6 +290,9 @@ for c in confidence_queries:
 
 pyl.plot(confidence_queries, good_star_acc)
 pyl.plot(confidence_queries, bad_star_acc)
+pyl.show()
+pyl.close()
+pyl.clf()
 
 #print('number of misclassed good stars above 95 percent confidence:', misclass_80p)
 #print('number of correctly classified good stars above 95 percent confidence', good_class_80p)
