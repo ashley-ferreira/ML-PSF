@@ -301,8 +301,8 @@ for c in confidence_queries:
     good_star_acc.append(good_stars_correct/good_stars_above_c)
     bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
     # double check recall and precision calculations, switch to fp..
-    recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) # false neg?
-    fp_rate.append(bad_stars_incorrect/(bad_stars_incorrect+bad_stars_correct))
+    recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) 
+    fp_rate.append(bad_stars_incorrect/(bad_stars_incorrect+bad_stars_correct)) # too big
     precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
 
 pyl.title('Accuracy Curve')
@@ -318,12 +318,13 @@ pyl.clf()
 # add heat plot for confidence values
 # differnent orientation then in the video?
 xy = np.arange(0,1, confidence_step)
-perfect_ROC = np.concatenate(([0],np.ones(int(1/confidence_step)-1)))
+#perfect_ROC = np.concatenate(([0],np.ones(int(1/confidence_step)-1)))
+perfect_ROC = np.concatenate(([0],np.ones(len(confidence_queries)-1)))
 
 pyl.title('ROC Curve')
 pyl.plot(xy, xy, '--', label='random chance refence line')
-pyl.plot(perfect_ROC, '--', label='perfect classifier')
-pyl.plot(fp_rate, recall, label='trained CNN')
+pyl.plot(rp_rate, perfect_ROC, '--', label='perfect classifier')
+pyl.plot(fp_rate, recall, label='trained CNN') # fp too big
 pyl.legend()
 pyl.xlabel('False Positive Rate')
 pyl.ylabel('True Positive Rate (Recall)')
@@ -331,11 +332,11 @@ pyl.show()
 pyl.close()
 pyl.clf()
 
-perfect_PR = np.concatenate((np.ones(int(1/confidence_step)-1), [0]))
+perfect_PR = np.concatenate((np.ones(len(confidence_queries)-1), [0]))
 
 pyl.title('PR Curve')
-pyl.plot(perfect_PR, '--', label='perfect classifier')
-pyl.plot(recall, precision, label='trained CNN')
+pyl.plot(recall, perfect_PR, '--', label='perfect classifier')
+pyl.plot(recall, precision, label='trained CNN') # then recall too big
 pyl.legend()
 pyl.xlabel('Recall')
 pyl.ylabel('Precision')
