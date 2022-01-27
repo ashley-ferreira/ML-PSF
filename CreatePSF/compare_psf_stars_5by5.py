@@ -75,6 +75,7 @@ with open(outFile, 'rb') as han:
     [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
 
 print(cutouts.shape)
+pyl.imshow(cutouts[0])
                                         
 # run though my network and get - this model was good results!
 model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27')
@@ -101,7 +102,7 @@ for i in range(len(cutouts)):
     cn_prob.append(good_probability)
     num_good_stars += 1
 
-print(cutouts)
+
 best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by confidence
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
