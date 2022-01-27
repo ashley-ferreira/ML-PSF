@@ -168,16 +168,16 @@ for p in preds_test:
 
 # how did it show both here?
 bins = np.linspace(0, 1, 100)
-pyl.hist(test_good_p, label = 'test set confidence', bins=bins, alpha=0.5, density=True) # add transparency 
+pyl.hist(test_good_p, label = 'validation set confidence', bins=bins, alpha=0.5, density=True) # add transparency 
 pyl.xlabel('Good Star Confidence')
-pyl.ylabel('Count (normalized for each dataset)')
+pyl.ylabel('Count')
 pyl.legend(loc='best')
 pyl.show()
 pyl.close()
 pyl.clf()
 
 results = cn_model.evaluate(X_test, y_test_binary, batch_size=batch_size)
-print("test loss, test acc:", results)
+print("validation loss, validation acc:", results)
 
 zscale = ZScaleInterval()
 
@@ -235,8 +235,8 @@ for i in range(len(preds_test)):
         pyl.close()
         '''
      
-pyl.hist(fwhms, label = 'FWHM of full test set', bins='auto', alpha=0.5) 
-pyl.hist(fwhms_test_misclass, label = 'FWHM of misclassed test set', bins='auto', alpha=0.5) 
+pyl.hist(fwhms, label = 'FWHM of full validation set', bins='auto', alpha=0.5) 
+pyl.hist(fwhms_test_misclass, label = 'FWHM of misclassed (0.5 conf) validation set', bins='auto', alpha=0.5) 
 pyl.xlabel('FWHM')
 pyl.ylabel('Count')
 pyl.legend(loc='best')
@@ -252,7 +252,7 @@ good_class_80p = 0
 
 # likely automatic way to do this but i didn't easily find
 #confidence_step = 0.01
-confidence_queries = np.arrange(0.5, 1, 0.01)
+confidence_queries = np.arange(0.5, 1, 0.01)
 good_star_acc = []
 bad_star_acc = []
 
