@@ -73,6 +73,8 @@ outFile = file_dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_meta
 with open(outFile, 'rb') as han:
     #[stds, seconds, peaks, xs, ys, cutouts] = pickle.load(han)
     [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
+
+print(cutouts.shape)
                                         
 # run though my network and get - this model was good results!
 model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27')
@@ -99,13 +101,14 @@ for i in range(len(cutouts)):
     cn_prob.append(good_probability)
     num_good_stars += 1
 
+print(cutouts)
 best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by confidence
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('CNN selected top 25 stars', x=0, y=1)
+plt.title('CNN selected top 25 stars', x=0, y=1) #hasnt changed location?
 plotted_stars = 0
-for i in range(len(cutouts)): # CURRUPTED FILE?
+for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
     if plotted_stars > 25:
         good_probability = output[i][1]#int(indx)]
         #if cn_prob[i] in best_prob: 
