@@ -97,8 +97,6 @@ for i in range(len(cutouts)):
     cn_prob.append(good_probability)
     num_good_stars += 1
 
-print(cn_prob.shape)
-
 best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by confidence
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = pyl.figure(figsize=(5*5, 5*5))
