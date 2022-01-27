@@ -43,7 +43,7 @@ import glob
 
 from keras.utils import np_utils
 
-file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
+file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03068/HSC-R2/corr'
 model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 
 zscale = ZScaleInterval()
@@ -92,7 +92,7 @@ num_good_stars = 0
 best_prob = sorted(cn_prob, reverse=True)[:25]
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = pyl.figure(figsize=(5*5, 5*5))
-
+axs = axs.ravel()
 fig.title('CNN selected top 25 stars')
 plotted_stars = 0
 for i in range(len(cutouts)): 
@@ -107,9 +107,9 @@ for i in range(len(cutouts)):
             num_good_stars += 1
             (c1, c2) = zscale.get_limits(cutouts[i])
             normer3 = interval.ManualInterval(c1,c2)
-            pyl.imshow(normer3(cutouts[i]))
-            pyl.show()
-            pyl.close()
+            axs[i].imshow(normer3(cutouts[i]))
+
+fig.show()
 
 
 comparePSF = file_dir+'/psfStars/'+inputFile.replace('.fits','.goodPSF.fits')
@@ -134,36 +134,22 @@ for e in header: # not both eh?
     count += 1
 
 print(goodpsf_x, goodpsf_y)
+
+fig, axs = pyl.figure(figsize=(5*5, 5*5))
+axs = axs.ravel()
+fig.title('goodPSF selected top 25 stars')
 for i in range(len(goodpsf_x)):
-    print('TOP 25 STAR')
     y_int = int(goodpsf_y[i])
     #print(y_int)
     x_int = int(goodpsf_x[i])
     #$print(x_int)
     cutout_goodpsf = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
-    #print(cutout_goodpsf) #this is empty
-    #print(img_data)
-    
-
     (c1, c2) = zscale.get_limits(cutout_goodpsf)
     normer4 = interval.ManualInterval(c1,c2)
-    pyl.title('top 25 star')
-    pyl.imshow(normer4(cutout_goodpsf))
-    pyl.show()
-    pyl.close()
+    axs[i].imshow(normer4(cutout_goodpsf))
 
-    '''
-    reg = cutout_goodpsf - mean
-    reg = reg / std
-    w_bad = np.where(np.isnan(reg))
-    reg[w_bad] = 0.0
-    (c1, c2) = zscale.get_limits(reg)
-    normer5 = interval.ManualInterval(c1,c2)
-    pyl.title('regularized + zscale')
-    pyl.imshow(normer5(reg))
-    pyl.show()
-    pyl.close() 
-    '''
+fig.show()
+
 
 xs_best = np.array(xs_best)
 ys_best = np.array(ys_best)
