@@ -103,7 +103,7 @@ best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by con
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('CNN selected top 25 stars')
+plt.title('CNN selected top 25 stars', loc='best')
 plotted_stars = 0
 for i in range(len(cutouts)): 
     good_probability = output[i][1]#int(indx)]
@@ -118,8 +118,14 @@ for i in range(len(cutouts)):
             (c1, c2) = zscale.get_limits(cutouts[i])
             normer3 = interval.ManualInterval(c1,c2)
             axs[i].imshow(normer3(cutouts[i]))
+            axs[i].set_xticks([])
+            axs[i].set_yticks([])
 
 plt.show()
+# dont show axis labels
+# do show images? issue with non good psf ones
+# title on top
+# lowest confidence in
 
 
 comparePSF = file_dir+'/psfStars/'+inputFile.replace('.fits','.metadata_goodPSF.fits')
@@ -147,7 +153,7 @@ print(goodpsf_x, goodpsf_y)
 
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('goodPSF selected top 25 stars')
+plt.title('goodPSF selected top 25 stars', loc='best')
 for i in range(len(goodpsf_x)):
     y_int = int(goodpsf_y[i])
     #print(y_int)
