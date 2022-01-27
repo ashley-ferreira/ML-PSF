@@ -106,11 +106,10 @@ axs = axs.ravel()
 plt.title('CNN selected top 25 stars', x=0, y=1)
 plotted_stars = 0
 for i in range(len(cutouts)): # CURRUPTED FILE?
-    good_probability = output[i][1]#int(indx)]
-    #if cn_prob[i] in best_prob: 
-    plotted_stars += 1
     if plotted_stars > 25:
-        
+        good_probability = output[i][1]#int(indx)]
+        #if cn_prob[i] in best_prob: 
+        plotted_stars += 1        
         xs_best.append(xs[i])
         ys_best.append(ys[i])
         cn_prob.append(good_probability)
