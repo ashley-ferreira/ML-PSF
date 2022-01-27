@@ -129,7 +129,7 @@ bad_x_lst = []
 bad_y_lst = []
 bad_inputFile_lst = []
 
-withheld_img = [219580, 219582, 219584, 219586, 219588]
+#withheld_img = [219580, 219582, 219584, 219586, 219588]
 
 zscale = ZScaleInterval()
 
@@ -155,7 +155,7 @@ def padding(array, xx, yy):
 file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 
 if data_load == 'presaved':
-    with open(file_dir + '/jan19_40k_111_metadata_defaultLen.pickle', 'rb') as han:
+    with open(file_dir + '/TRAIN_jan26_111_metadata_defaultLen.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) # need count too?
 
     cutouts = np.asarray(cutouts).astype('float32')
@@ -296,17 +296,32 @@ elif data_load == 'scratch':
     print(str(files_counted) + ' processed so far')
     print(str(len(cutouts)) + ' files used')
 
-    with open(file_dir + '/jan19_40k_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
-        pickle.dump([cutouts, labels, xs, ys, fwhms, files], han)
+    valid_fraction = 0.1
+    skf = StratifiedShuffleSplit(n_splits=1, test_size=valid_fraction)#, random_state=41)
+    skf.split(cutouts, labels)
 
-    cutouts = np.asarray(cutouts).astype('float32')
-    std = np.nanstd(cutouts)
-    mean = np.nanmean(cutouts)
-    cutouts -= mean
-    cutouts /= std
+    for used_index, withheld_index in skf.split(cutouts, labels):
+        used_cutouts, withheld_cutouts = cutouts[used_index], cutouts[withheld_index]
+        used_labels, withheld_labels = labels[used_index], labels[withheld_index]
+        used_xs, withheld_xs = xs[used_index], xs[withheld_index]
+        used_ys, withheld_ys = ys[used_index], ys[withheld_index]
+        used_files, withheld_files = files[used_index], files[withheld_index]
+        used_fwhms, withheld_fwhms = fwhms[used_index], fwhms[withheld_index]
+
+    with open(file_dir + '/USED_jan26_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
+        pickle.dump([used_cutouts, used_labels, used_xs, used_ys, used_fwhms, used_files], han)
+
+    with open(file_dir + '/WITHHELD_jan26_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
+        pickle.dump([withheld_cutouts, withheld_labels, withheld_xs, withheld_ys, withheld_fwhms, withheld_files], han)
+
+    used_cutouts = np.asarray(used_cutouts).astype('float32')
+    std = np.nanstd(used_cutouts)
+    mean = np.nanmean(used_cutouts)
+    used_cutouts -= mean
+    used_cutouts /= std
     # And just to be sure you aren’t picking up any bad values, after regularization:
     w_bad = np.where(np.isnan(cutouts))
-    cutouts[w_bad] = 0.0
+    used_cutouts[w_bad] = 0.0
 
     with open(file_dir + '/regularization_data.pickle', 'wb+') as han:
         pickle.dump([std, mean], han)
@@ -317,15 +332,15 @@ else:
 ### now divide the cutouts array into training and testing datasets.
 skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)#, random_state=41)
 print(skf)
-skf.split(cutouts, labels)
+skf.split(used_cutouts, labels)
 
-print(cutouts.shape) # why does it need both?
-for train_index, test_index in skf.split(cutouts, labels):
-    X_train, X_test = cutouts[train_index], cutouts[test_index]
-    y_train, y_test = labels[train_index], labels[test_index]
-    xs_train, xs_test = xs[train_index], xs[test_index]
-    files_train, files_test = files[train_index], files[test_index]
-    fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
+#print(cutouts.shape) # why does it need both?
+for train_index, test_index in skf.split(used_cutouts, used_labels):
+    X_train, X_test = used_cutouts[train_index], used_cutouts[test_index]
+    y_train, y_test = used_labels[train_index], used_labels[test_index]
+    xs_train, xs_test = used_xs[train_index], used_xs[test_index]
+    files_train, files_test = used_files[train_index], used_files[test_index]
+    fwhms_train, fwhms_test = used_fwhms[train_index], used_fwhms[test_index]
 
 ### define the CNN
 # below is a network I used for KBO classification from image data.

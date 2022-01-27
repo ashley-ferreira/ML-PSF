@@ -25,6 +25,11 @@ from sklearn.utils.multiclass import unique_labels
 
 from astropy.visualization import interval, ZScaleInterval
 
+
+
+
+# PULL IN REGULARIZATION DATA
+
 def get_user_input():
     val = input("Change default values (Y/N): ")
 balanced_data_method = str(sys.argv[1]) # even or weight
