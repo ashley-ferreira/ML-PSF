@@ -290,12 +290,14 @@ for c in confidence_queries:
             elif y_test[i] == 1:
                 bad_stars_incorrect +=1
         elif preds_test[i][1] > c:
-            good_stars_above_c +=1
+            good_stars_above_c +=1 # wrong way? out of all preds?
             if y_test[i] == 1:
                 good_stars_correct +=1 
             elif y_test[i] == 0:
                 good_stars_incorrect +=1            
 
+    print('good', good_stars_correct, good_stars_incorrect, good_stars_above_c)
+    print('bad', bad_stars_correct, bad_stars_incorrect, bad_stars_above_c)
     good_star_acc.append(good_stars_correct/good_stars_above_c)
     bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
     # double check recall and precision calculations, switch to fp..
