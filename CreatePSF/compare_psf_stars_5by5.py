@@ -90,6 +90,13 @@ cutouts[w_bad] = 0.0
 
 output = model.predict(cutouts)
 num_good_stars = 0 
+indx = 1
+
+for i in range(len(cutouts)):
+    good_probability = output[i][int(indx)]
+    cn_prob.append(good_probability)
+    num_good_stars += 1
+
 cn_prob = output[:][1]
 print(cn_prob.shape)
 
