@@ -311,10 +311,10 @@ elif data_load == 'scratch':
         used_files, withheld_files = files[used_index], files[withheld_index]
         used_fwhms, withheld_fwhms = fwhms[used_index], fwhms[withheld_index]
 
-    with open(file_dir + '/USED_jan26_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
+    with open(file_dir + '/USED_jan27_50k_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
         pickle.dump([used_cutouts, used_labels, used_xs, used_ys, used_fwhms, used_files], han)
 
-    with open(file_dir + '/WITHHELD_jan26_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
+    with open(file_dir + '/WITHHELD_jan27_50k_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
         pickle.dump([withheld_cutouts, withheld_labels, withheld_xs, withheld_ys, withheld_fwhms, withheld_files], han)
 
     used_cutouts = np.asarray(used_cutouts).astype('float32')
@@ -421,7 +421,7 @@ elif balanced_data_method == 'weight':
 end = time.time()
 print('Process completed in', round(end-start, 2), ' seconds')
 # save details of model and regulatization data in here too
-cn_model.save(file_dir + '/Saved_Model/model_jan27') # + str(end))
+cn_model.save(file_dir + '/Saved_Model/model_jan27_50k') # + str(end))
 
 
 """
