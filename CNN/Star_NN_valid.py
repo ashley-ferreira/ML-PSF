@@ -324,7 +324,7 @@ pyl.title('Accuracy Curve')
 pyl.plot(confidence_queries, good_star_acc, label='good star classificantion')
 pyl.plot(confidence_queries, bad_star_acc, label='bad star clasification')
 pyl.legend()
-pyl.xlabel('Confidence cutoff for good star classification')
+pyl.xlabel('Confidence cutoff for good star classification') # should fix other plot
 pyl.ylabel('Accuracy')
 pyl.show()
 pyl.close()
