@@ -158,7 +158,7 @@ def padding(array, xx, yy):
 file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 
 if data_load == 'presaved':
-    with open(file_dir + '/TRAIN_jan26_111_metadata_defaultLen.pickle', 'rb') as han:
+    with open(file_dir + '/USED_jan27_50k_111_metadata_defaultLen.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) # need count too?
 
     cutouts = np.asarray(cutouts).astype('float32')
