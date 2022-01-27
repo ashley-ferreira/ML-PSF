@@ -103,7 +103,7 @@ best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by con
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
-fig.title('CNN selected top 25 stars')
+plt.title('CNN selected top 25 stars')
 plotted_stars = 0
 for i in range(len(cutouts)): 
     good_probability = output[i][1]#int(indx)]
@@ -147,7 +147,7 @@ print(goodpsf_x, goodpsf_y)
 
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
-fig.title('goodPSF selected top 25 stars')
+plt.title('goodPSF selected top 25 stars')
 for i in range(len(goodpsf_x)):
     y_int = int(goodpsf_y[i])
     #print(y_int)
