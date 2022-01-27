@@ -323,7 +323,7 @@ perfect_ROC = np.concatenate(([0],np.ones(len(confidence_queries)-1)))
 
 pyl.title('ROC Curve')
 pyl.plot(xy, xy, '--', label='random chance refence line')
-pyl.plot(rp_rate, perfect_ROC, '--', label='perfect classifier')
+pyl.plot(fp_rate, perfect_ROC, '--', label='perfect classifier')
 pyl.plot(fp_rate, recall, label='trained CNN') # fp too big
 pyl.legend()
 pyl.xlabel('False Positive Rate')
