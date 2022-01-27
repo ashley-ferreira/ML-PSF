@@ -43,6 +43,8 @@ import glob
 
 from keras.utils import np_utils
 
+import matplotlib.pyplot as plt
+
 file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 
@@ -99,7 +101,7 @@ for i in range(len(cutouts)):
 
 best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by confidence
 print('lowest confidence in top 25', best_prob[24])
-fig, axs = pyl.figure(figsize=(5*5, 5*5))
+fig, axs = plt.subplots(figsize=(5*5, 5*5))
 axs = axs.ravel()
 fig.title('CNN selected top 25 stars')
 plotted_stars = 0
@@ -143,7 +145,7 @@ for e in header: # not both eh?
 
 print(goodpsf_x, goodpsf_y)
 
-fig, axs = pyl.figure(figsize=(5*5, 5*5))
+fig, axs = plt.subplots(figsize=(5*5, 5*5))
 axs = axs.ravel()
 fig.title('goodPSF selected top 25 stars')
 for i in range(len(goodpsf_x)):
