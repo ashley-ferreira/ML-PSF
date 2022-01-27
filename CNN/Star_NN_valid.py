@@ -319,12 +319,12 @@ pyl.clf()
 # differnent orientation then in the video?
 xy = np.arange(0,1, confidence_step)
 #perfect_ROC = np.concatenate(([0],np.ones(int(1/confidence_step)-1)))
-perfect_ROC = np.ones(len(fp_rate))
+perfect_ROC = np.ones(len(xy))
 perfect_ROC[0] = 0
 
 pyl.title('ROC Curve')
 pyl.plot(xy, xy, '--', label='random chance refence line')
-pyl.plot(fp_rate, perfect_ROC, '--', label='perfect classifier')
+pyl.plot(xy, perfect_ROC, '--', label='perfect classifier')
 pyl.plot(fp_rate, recall, label='trained CNN') # fp too big
 pyl.legend()
 pyl.xlabel('False Positive Rate')
@@ -334,11 +334,11 @@ pyl.close()
 pyl.clf()
 
 #perfect_PR = np.concatenate((np.ones(len(confidence_queries)-1), [0]))
-perfect_PR = np.ones(len(fp_rate))
-perfect_PR[len(perfect_PR)-1] = 0
+perfect_PR = np.ones(len(xy))
+perfect_PR[len(xy)-1] = 0
 
 pyl.title('PR Curve')
-pyl.plot(recall, perfect_PR, '--', label='perfect classifier')
+pyl.plot(xy, perfect_PR, '--', label='perfect classifier')
 pyl.plot(recall, precision, label='trained CNN') # then recall too big
 pyl.legend()
 pyl.xlabel('Recall')
