@@ -308,14 +308,14 @@ elif data_load == 'scratch':
         used_files, withheld_files = files[used_index], files[withheld_index]
         used_fwhms, withheld_fwhms = fwhms[used_index], fwhms[withheld_index]
 
-    print(len(used_cutouts), len(withheld_cutouts))
+    print(type(used_cutouts), type(withheld_cutouts)) # not a float?
     with open(file_dir + '/USED_jan26_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
         pickle.dump([used_cutouts, used_labels, used_xs, used_ys, used_fwhms, used_files], han)
 
     with open(file_dir + '/WITHHELD_jan26_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
         pickle.dump([withheld_cutouts, withheld_labels, withheld_xs, withheld_ys, withheld_fwhms, withheld_files], han)
 
-    #used_cutouts = np.asarray(used_cutouts).astype('float32')
+    used_cutouts = np.asarray(used_cutouts).astype('float32')
     std = np.nanstd(used_cutouts)
     mean = np.nanmean(used_cutouts)
     used_cutouts -= mean
