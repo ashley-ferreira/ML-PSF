@@ -308,6 +308,7 @@ elif data_load == 'scratch':
         used_files, withheld_files = files[used_index], files[withheld_index]
         used_fwhms, withheld_fwhms = fwhms[used_index], fwhms[withheld_index]
 
+    print(len(used_cutouts), len(withheld_cutouts))
     with open(file_dir + '/USED_jan26_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
         pickle.dump([used_cutouts, used_labels, used_xs, used_ys, used_fwhms, used_files], han)
 
@@ -320,7 +321,7 @@ elif data_load == 'scratch':
     used_cutouts -= mean
     used_cutouts /= std
     # And just to be sure you aren’t picking up any bad values, after regularization:
-    w_bad = np.where(np.isnan(used_cutouts))
+    w_bad = np.where(np.isnan(used_cutouts)) # how is this  a float?
     used_cutouts[w_bad] = 0.0
 
     with open(file_dir + '/regularization_data.pickle', 'wb+') as han:
