@@ -152,7 +152,7 @@ cutouts[w_bad] = 0.0
 
 # load model
                                         
-cn_model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27_50k')#1642735464.135405')
+cn_model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27_25k_250epochs')#1642735464.135405')
 
 
 # show stats analsys
