@@ -125,7 +125,7 @@ for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
             axs[plotted_stars].set_yticks([])
             axs[plotted_stars].text(0.1, -1, good_probability)#,-0.1,-0.1)
             plotted_stars += 1 
-plt.subplots_adjust(wspace=0, hspace=0)
+plt.subplots_adjust(wspace=0.5, hspace=0.5)
 plt.show()
 # dont show axis labels
 # do show images? issue with non good psf ones
