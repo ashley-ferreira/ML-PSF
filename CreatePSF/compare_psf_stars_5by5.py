@@ -99,21 +99,20 @@ indx = 1
 for i in range(len(cutouts)):
     good_probability = output[i][int(indx)]
     cn_prob.append(good_probability)
-    num_good_stars += 1
+    num_good_stars += 1 #NOT RIGHT
 
 
 best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by confidence
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('CNN selected top 25 stars', x=0, y=1) #hasnt changed location?
-plotted_stars = 0
+plt.title('CNN selected top 25 stars', x=-10, y=100) #hasnt changed location?
+plotted_stars = 1
 for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
     #pyl.imshow(cutouts[i])
     if plotted_stars < 25:
         good_probability = output[i][1]#int(indx)]
         #if cn_prob[i] in best_prob: 
-        num_good_stars += 1
         if good_probability in best_prob:
             plotted_stars += 1        
             xs_best.append(xs[i])
