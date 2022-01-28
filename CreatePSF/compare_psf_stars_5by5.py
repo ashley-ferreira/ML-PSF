@@ -111,7 +111,7 @@ best_prob = sorted(cn_prob, reverse=True)[:25]
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) 
+#plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) 
 plotted_stars = 0
 for i in range(len(cutouts)): 
     if plotted_stars < 25:
@@ -132,7 +132,7 @@ for i in range(len(cutouts)):
             axs[plotted_stars].set_xticks([])
             axs[plotted_stars].set_yticks([])
             axs[plotted_stars].text(0.1, -1, 'conf:' + str(good_probability))#,-0.1,-0.1)
-            axs[plotted_stars].text(3, -1, 'SNR proxy:' + str(SNR))
+            axs[plotted_stars].text(0.1, -5, 'SNR proxy:' + str(SNR))
 
             plotted_stars += 1 
 plt.subplots_adjust(wspace=0.4, hspace=0.4)
