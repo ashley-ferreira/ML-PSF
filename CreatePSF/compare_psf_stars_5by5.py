@@ -132,27 +132,32 @@ plt.show()
 # lowest confidence in
 xs_threshold = []
 ys_threshold = []
-top15_prob = sorted(cn_prob, reverse=True)[:15]
-fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
-axs = axs.ravel()
-plt.title('NN selected top ~10 stars above threshold:' + inputFile, x=-1.5, y=5) #hasnt changed location?
-plotted_stars = 0
-for i in range(len(cutouts)): # should fill in more?
-    if plotted_stars < 15:
-        good_probability = output[i][1]
-        if good_probability in top15_prob:       
-            xs_threshold.append(xs[i])
-            ys_threshold.append(ys[i])
-            cn_prob.append(good_probability)
-            
-            (c1, c2) = zscale.get_limits(cutouts[i])
-            normer3 = interval.ManualInterval(c1,c2)
-            axs[plotted_stars].imshow(normer3(cutouts[i]))
-            axs[plotted_stars].set_xticks([])
-            axs[plotted_stars].set_yticks([])
-            plotted_stars += 1 
-plt.subplots_adjust(wspace=0, hspace=0)
-plt.show()
+top15_prob = sorted(cn_prob, reverse=True)[15] # find lowerst part and all above that make it
+print(top15_prob)
+if top15_prob < 0.9:
+    print('Neural Network not confident enough')
+    sys.exit()
+else:
+    fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
+    axs = axs.ravel()
+    plt.title('NN selected top ~10 stars above threshold:' + inputFile, x=-1.5, y=5) #hasnt changed location?
+    plotted_stars = 0
+    for i in range(len(cutouts)): # should fill in more?
+        if plotted_stars < 15:
+            good_probability = output[i][1]
+            if good_probability > top15_prob:       
+                xs_threshold.append(xs[i])
+                ys_threshold.append(ys[i])
+                cn_prob.append(good_probability)
+                
+                (c1, c2) = zscale.get_limits(cutouts[i])
+                normer3 = interval.ManualInterval(c1,c2)
+                axs[plotted_stars].imshow(normer3(cutouts[i]))
+                axs[plotted_stars].set_xticks([])
+                axs[plotted_stars].set_yticks([])
+                plotted_stars += 1 
+    plt.subplots_adjust(wspace=0, hspace=0)
+    plt.show()
 
 
 comparePSF = file_dir+'/psfStars/'+inputFile.replace('.fits','.metadata_goodPSF.fits')
