@@ -155,7 +155,7 @@ for e in header: # not both eh?
 
 print(goodpsf_x, goodpsf_y)
 
-fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
+fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
 axs = axs.ravel()
 plt.title('goodPSF selected top 25 stars:' + inputFile, x=-1.5, y=5)
 cutoutWidth = 50
