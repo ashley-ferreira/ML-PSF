@@ -132,7 +132,7 @@ plt.show()
 # lowest confidence in
 xs_threshold = []
 ys_threshold = []
-top15_prob = sorted(cn_prob, reverse=True)[15] # find lowerst part and all above that make it
+top15_prob = best_prob[10] # find lowerst part and all above that make it
 print(top15_prob)
 if top15_prob < 0.9:
     print('Neural Network not confident enough')
@@ -142,10 +142,11 @@ else:
     axs = axs.ravel()
     plt.title('NN selected top ~10 stars above threshold:' + inputFile, x=-1.5, y=5) #hasnt changed location?
     plotted_stars = 0
-    for i in range(len(cutouts)): # should fill in more?
+    for i in range(len(cutouts)): # only 8?
         if plotted_stars < 15:
             good_probability = output[i][1]
-            if good_probability > top15_prob:       
+            if good_probability > top15_prob:
+                print(good_probability, plotted_stars)       
                 xs_threshold.append(xs[i])
                 ys_threshold.append(ys[i])
                 cn_prob.append(good_probability)
