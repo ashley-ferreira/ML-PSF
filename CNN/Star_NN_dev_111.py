@@ -335,7 +335,7 @@ else:
 ### now divide the cutouts array into training and testing datasets.
 skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)#, random_state=41)
 print(skf)
-skf.split(used_cutouts, labels)
+skf.split(used_cutouts, used_labels)
 
 #print(cutouts.shape) # why does it need both?
 for train_index, test_index in skf.split(used_cutouts, used_labels):
