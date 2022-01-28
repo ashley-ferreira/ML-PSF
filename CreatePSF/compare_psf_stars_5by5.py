@@ -117,13 +117,13 @@ for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
             xs_best.append(xs[i])
             ys_best.append(ys[i])
             cn_prob.append(good_probability)
-            
+            print(good_probability)
             (c1, c2) = zscale.get_limits(cutouts[i])
             normer3 = interval.ManualInterval(c1,c2)
             axs[plotted_stars].imshow(normer3(cutouts[i]))
             axs[plotted_stars].set_xticks([])
             axs[plotted_stars].set_yticks([])
-            axs[plotted_stars].text(good_probability,0.1,0.1)
+            axs[plotted_stars].text(round(good_probability,5),-0.1,-0.1)
             plotted_stars += 1 
 plt.subplots_adjust(wspace=0, hspace=0)
 plt.show()
