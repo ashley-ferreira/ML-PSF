@@ -127,7 +127,7 @@ else:
             if SNR_proxy > 10:       
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
-                cn_prob.append(good_probability)
+                #cn_prob.append(good_probability)
                 print(good_probability)
                 (c1, c2) = zscale.get_limits(cutouts[i])
                 normer3 = interval.ManualInterval(c1,c2)
