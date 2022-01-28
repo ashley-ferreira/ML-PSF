@@ -110,20 +110,20 @@ plt.title('CNN selected top 25 stars', x=-10, y=100) #hasnt changed location?
 plotted_stars = 0
 for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
     #pyl.imshow(cutouts[i])
-    if plotted_stars < 24:
+    if plotted_stars < 25:
         good_probability = output[i][1]#int(indx)]
         #if cn_prob[i] in best_prob: 
-        if good_probability in best_prob:
-            plotted_stars += 1        
+        if good_probability in best_prob:       
             xs_best.append(xs[i])
             ys_best.append(ys[i])
             cn_prob.append(good_probability)
             
             (c1, c2) = zscale.get_limits(cutouts[i])
             normer3 = interval.ManualInterval(c1,c2)
-            axs[i].imshow(normer3(cutouts[i]))
-            axs[i].set_xticks([])
-            axs[i].set_yticks([])
+            axs[plotted_stars].imshow(normer3(cutouts[i]))
+            axs[plotted_stars].set_xticks([])
+            axs[plotted_stars].set_yticks([])
+            plotted_stars += 1 
 
 plt.show()
 # dont show axis labels
