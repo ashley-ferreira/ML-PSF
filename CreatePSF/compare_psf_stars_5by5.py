@@ -193,28 +193,29 @@ starChooser=psfStarChooser.starChooser(img_data,
                                             printStarInfo = True,
                                             repFact = 5, ftol=1.49012e-08)
 
-goodPSF = psf.modelPSF(np.arange(61),np.arange(61), alpha=goodMeds[2],beta=goodMeds[3],repFact=10)
-goodPSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
+NN_PSF = psf.modelPSF(np.arange(61),np.arange(61), alpha=goodMeds[2],beta=goodMeds[3],repFact=10)
+NN_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
 
 
 
 
-# X-axis tick label
-plt.xticks(color='w')
-# Y-axis tick label
-plt.yticks(color='w')
+
 
 # make fig with both of these
 figure, axes = plt.subplots(nrows=1, ncols=2)
 
-(z1, z2) = zscale.get_limits(goodPSF.lookupTable)
+(z1, z2) = zscale.get_limits(NN_PSF.lookupTable)
 normer = interval.ManualInterval(z1,z2)
-axes[0].imshow(normer(goodPSF.lookupTable))
-title0 = 'ZScaled ' + inputFile.replace('.fits','.NN_PSF.fits')
+axes[0].imshow(normer(NN_PSF.lookupTable))
+title0 = 'ZScaled ' + inputFile.replace('.fits','.NN_PSF.fits') #right titles?
 axes[0].set_title(title0,fontsize=7)
 axs[0].set_xticks([])
 axs[0].set_yticks([])
+# X-axis tick label
+plt.xticks(color='w')
+# Y-axis tick label
+plt.yticks(color='w')
 
 otherPSF = psf.modelPSF(restore=comparePSF)
 (o1, o2) = zscale.get_limits(otherPSF.lookupTable)
@@ -224,5 +225,9 @@ title1 = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
 axes[1].set_title(title1,fontsize=7)
 axs[1].set_xticks([])
 axs[1].set_yticks([])
+# X-axis tick label
+plt.xticks(color='w')
+# Y-axis tick label
+plt.yticks(color='w')
 
 plt.show()
