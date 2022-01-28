@@ -94,7 +94,7 @@ cutouts[w_bad] = 0.0
 
 output = model.predict(cutouts)
 num_good_stars = 0 
-indx = 0
+indx = 1
 
 for i in range(len(cutouts)):
     good_probability = output[i][int(indx)]
@@ -132,7 +132,7 @@ plt.show()
 # lowest confidence in
 xs_threshold = []
 ys_threshold = []
-top10_prob = sorted(cn_prob, reverse=True)[:10]
+top15_prob = sorted(cn_prob, reverse=True)[:15]
 fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
 axs = axs.ravel()
 plt.title('NN selected top ~10 stars above threshold:' + inputFile, x=-1.5, y=5) #hasnt changed location?
@@ -140,7 +140,7 @@ plotted_stars = 0
 for i in range(len(cutouts)): # should fill in more?
     if plotted_stars < 15:
         good_probability = output[i][1]
-        if good_probability in top10_prob:       
+        if good_probability in top15_prob:       
             xs_threshold.append(xs[i])
             ys_threshold.append(ys[i])
             cn_prob.append(good_probability)
