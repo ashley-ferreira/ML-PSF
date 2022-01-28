@@ -141,39 +141,6 @@ else:
 
     plt.subplots_adjust(wspace=0., hspace=0.3)
     plt.show()
-# dont show axis labels
-# do show images? issue with non good psf ones
-# title on top
-# lowest confidence in
-xs_threshold = []
-ys_threshold = []
-top15_prob = best_prob[10] # find lowerst part and all above that make it
-print(top15_prob)
-if top15_prob < 0.95:
-    print('Neural Network not confident enough')
-    sys.exit()
-else:
-    fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
-    axs = axs.ravel()
-    plt.title('NN selected top ~10 stars above threshold:' + inputFile, x=-1.5, y=5) #hasnt changed location?
-    plotted_stars = 0
-    for i in range(len(cutouts)): # only 8?
-        if plotted_stars < 15:
-            good_probability = output[i][1]
-            if good_probability > top15_prob:
-                print(good_probability, plotted_stars)       
-                xs_threshold.append(xs[i])
-                ys_threshold.append(ys[i])
-                cn_prob.append(good_probability)
-                
-                (c1, c2) = zscale.get_limits(cutouts[i])
-                normer3 = interval.ManualInterval(c1,c2)
-                axs[plotted_stars].imshow(normer3(cutouts[i]))
-                axs[plotted_stars].set_xticks([])
-                axs[plotted_stars].set_yticks([])
-                plotted_stars += 1 
-    plt.subplots_adjust(wspace=0, hspace=0)
-    plt.show()
 
 
 comparePSF = file_dir+'/psfStars/'+inputFile.replace('.fits','.metadata_goodPSF.fits')
@@ -241,25 +208,6 @@ NN_top25_PSF = psf.modelPSF(np.arange(61),np.arange(61), alpha=goodMeds[2],beta=
 NN_top25_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
 
-xs_threshold = np.array(xs_threshold)
-ys_threshold = np.array(ys_threshold)
-
-starChooser=psfStarChooser.starChooser(img_data,
-                                            xs_threshold, ys_threshold,
-                                            xs_threshold*500,xs_threshold*1.0)
-
-(goodFits, goodMeds, goodSTDs) = starChooser(30,200,noVisualSelection=True,autoTrim=False,
-                                            bgRadius=15, quickFit = False,
-                                            printStarInfo = True,
-                                            repFact = 5, ftol=1.49012e-08)
-
-NN_threshold_PSF = psf.modelPSF(np.arange(61),np.arange(61), alpha=goodMeds[2],beta=goodMeds[3],repFact=10)
-NN_threshold_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
-
-
-
-
-# make fig with both of these
 figure, axes = plt.subplots(nrows=1, ncols=2, figsize = (10,8))
 #plt.tick_params(axis='both', which='both', right=False, left=False, top=False, bottom=False)
 #(z1, z2) = zscale.get_limits(NN_threshold_PSF.lookupTable)
