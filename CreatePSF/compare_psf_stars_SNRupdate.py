@@ -124,7 +124,7 @@ else:
             #print(center.shape)
             sum_c = center.sum()
             SNR_proxy = math.sqrt(sum_c)
-            if SNR_proxy > 10 and good_probability > 0.90:       
+            if SNR_proxy > 10 and good_probability > 0.85:       
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
                 #cn_prob.append(good_probability)
