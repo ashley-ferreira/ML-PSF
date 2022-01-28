@@ -106,7 +106,7 @@ best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by con
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('NN selected top 25 stars:' + inputFile, x=-1.5, y=5) #hasnt changed location?
+plt.title('NN selected top 25 stars:' + inputFile, x=-2, y=7) #hasnt changed location?
 plotted_stars = 0
 for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
     #pyl.imshow(cutouts[i])
@@ -125,7 +125,7 @@ for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
             axs[plotted_stars].set_yticks([])
             axs[plotted_stars].text(0.1, -1, good_probability)#,-0.1,-0.1)
             plotted_stars += 1 
-plt.subplots_adjust(wspace=0.5, hspace=0.5)
+plt.subplots_adjust(wspace=0.2, hspace=0.2)
 plt.show()
 # dont show axis labels
 # do show images? issue with non good psf ones
