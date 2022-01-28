@@ -217,6 +217,18 @@ plt.xticks(color='w')
 # Y-axis tick label
 plt.yticks(color='w')
 
+frame1 = plt.gca()
+for xlabel_i in frame1.axes.get_xticklabels():
+    xlabel_i.set_visible(False)
+    xlabel_i.set_fontsize(0.0)
+for xlabel_i in frame1.axes.get_yticklabels():
+    xlabel_i.set_fontsize(0.0)
+    xlabel_i.set_visible(False)
+for tick in frame1.axes.get_xticklines():
+    tick.set_visible(False)
+for tick in frame1.axes.get_yticklines():
+    tick.set_visible(False)
+
 otherPSF = psf.modelPSF(restore=comparePSF)
 (o1, o2) = zscale.get_limits(otherPSF.lookupTable)
 normer2 = interval.ManualInterval(o1,o2)
@@ -230,16 +242,16 @@ plt.xticks(color='w')
 # Y-axis tick label
 plt.yticks(color='w')
 
-frame1 = plt.gca()
-for xlabel_i in frame1.axes.get_xticklabels():
+frame2 = plt.gca()
+for xlabel_i in frame2.axes.get_xticklabels():
     xlabel_i.set_visible(False)
     xlabel_i.set_fontsize(0.0)
-for xlabel_i in frame1.axes.get_yticklabels():
+for xlabel_i in frame2.axes.get_yticklabels():
     xlabel_i.set_fontsize(0.0)
     xlabel_i.set_visible(False)
-for tick in frame1.axes.get_xticklines():
+for tick in frame2.axes.get_xticklines():
     tick.set_visible(False)
-for tick in frame1.axes.get_yticklines():
+for tick in frame2.axes.get_yticklines():
     tick.set_visible(False)
 
 plt.show()
