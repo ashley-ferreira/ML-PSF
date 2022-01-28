@@ -133,7 +133,7 @@ try:
         labels = np.concatenate((label_good, label_bad))
 
     else: 
-        with open(file_dir + '/WITHHELD_jan26_' + str(max_size) + '_metadata_defaultLen.pickle', 'rb') as f:
+        with open(file_dir + '/WITHHELD_jan27_50k_' + str(max_size) + '_metadata_defaultLen.pickle', 'rb') as f:
             [cutouts, labels, xs, ys, fwhms, files] = pickle.load(f)
 
 
@@ -152,7 +152,7 @@ cutouts[w_bad] = 0.0
 
 # load model
                                         
-cn_model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27')#1642735464.135405')
+cn_model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27_50k')#1642735464.135405')
 
 
 # show stats analsys
