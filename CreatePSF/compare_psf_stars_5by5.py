@@ -203,7 +203,7 @@ NN_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
 
 # make fig with both of these
-figure, axes = plt.subplots(nrows=1, ncols=2, figsize = (5,10))
+figure, axes = plt.subplots(nrows=1, ncols=2, figsize = (10,5))
 #plt.tick_params(axis='both', which='both', right=False, left=False, top=False, bottom=False)
 (z1, z2) = zscale.get_limits(NN_PSF.lookupTable)
 normer = interval.ManualInterval(z1,z2)
