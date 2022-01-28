@@ -94,7 +94,7 @@ cutouts[w_bad] = 0.0
 
 output = model.predict(cutouts)
 num_good_stars = 0 
-indx = 1
+indx = 0
 
 for i in range(len(cutouts)):
     good_probability = output[i][int(indx)]
@@ -137,8 +137,7 @@ fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
 axs = axs.ravel()
 plt.title('NN selected top ~10 stars above threshold:' + inputFile, x=-1.5, y=5) #hasnt changed location?
 plotted_stars = 0
-for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
-    #pyl.imshow(cutouts[i])
+for i in range(len(cutouts)): # should fill in more?
     if plotted_stars < 15:
         good_probability = output[i][1]
         if good_probability in top10_prob:       
@@ -221,7 +220,20 @@ NN_top25_PSF = psf.modelPSF(np.arange(61),np.arange(61), alpha=goodMeds[2],beta=
 NN_top25_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
 
+xs_threshold = np.array(xs_threshold)
+ys_threshold = np.array(ys_threshold)
 
+starChooser=psfStarChooser.starChooser(img_data,
+                                            xs_threshold, ys_threshold,
+                                            xs_threshold*500,xs_threshold*1.0)
+
+(goodFits, goodMeds, goodSTDs) = starChooser(30,200,noVisualSelection=True,autoTrim=False,
+                                            bgRadius=15, quickFit = False,
+                                            printStarInfo = True,
+                                            repFact = 5, ftol=1.49012e-08)
+
+NN_threshold_PSF = psf.modelPSF(np.arange(61),np.arange(61), alpha=goodMeds[2],beta=goodMeds[3],repFact=10)
+NN_threshold_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
 
 
@@ -229,20 +241,20 @@ NN_top25_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=Fals
 # make fig with both of these
 figure, axes = plt.subplots(nrows=1, ncols=3, figsize = (10,8))
 #plt.tick_params(axis='both', which='both', right=False, left=False, top=False, bottom=False)
-(z1, z2) = zscale.get_limits(NN_PSF.lookupTable)
+(z1, z2) = zscale.get_limits(NN_threshold_PSF.lookupTable)
 normer = interval.ManualInterval(z1,z2)
-axes[0].imshow(normer(NN_PSF.lookupTable))
-title0 = 'ZScaled ' + inputFile.replace('.fits','.NN_top25_PSF.fits') #right titles?
-axes[0].set_title(title0,fontsize=12)
+axes[1].imshow(normer(NN_threshold_PSF.lookupTable))
+title0 = 'ZScaled ' + inputFile.replace('.fits','.NN_threshold_PSF.fits') #right titles?
+axes[1].set_title(title0,fontsize=12)
 #plt.gca().axes.get_xaxis().set_visible(False)
 #plt.gca().axes.get_yaxis().set_visible(False)
 
 
 (z1, z2) = zscale.get_limits(NN_top25_PSF.lookupTable)
 normer = interval.ManualInterval(z1,z2)
-axes[1].imshow(normer(NN_top25_PSF.lookupTable))
-title1 = 'ZScaled ' + inputFile.replace('.fits','.NN_threshold_PSF.fits') #right titles?
-axes[1].set_title(title0,fontsize=12)
+axes[0].imshow(normer(NN_top25_PSF.lookupTable))
+title1 = 'ZScaled ' + inputFile.replace('.fits','.NN_top25_PSF.fits') #right titles?
+axes[0].set_title(title0,fontsize=12)
 
 
 otherPSF = psf.modelPSF(restore=comparePSF)
