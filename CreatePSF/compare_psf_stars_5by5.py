@@ -123,7 +123,7 @@ for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
             axs[plotted_stars].imshow(normer3(cutouts[i]))
             axs[plotted_stars].set_xticks([])
             axs[plotted_stars].set_yticks([])
-            axs[plotted_stars].text(round(good_probability,5),-0.1,-0.1)
+            axs[plotted_stars].text(round(good_probability,5))#,-0.1,-0.1)
             plotted_stars += 1 
 plt.subplots_adjust(wspace=0, hspace=0)
 plt.show()
