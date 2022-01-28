@@ -204,7 +204,7 @@ NN_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
 # make fig with both of these
 figure, axes = plt.subplots(nrows=1, ncols=2)
-
+plt.tick_params(axis='both', which='both', right=False, left=False, top=False, bottom=False)
 (z1, z2) = zscale.get_limits(NN_PSF.lookupTable)
 normer = interval.ManualInterval(z1,z2)
 axes[0].imshow(normer(NN_PSF.lookupTable))
@@ -239,5 +239,5 @@ for tick in frame2.axes.get_xticklines():
     tick.set_visible(False)
 for tick in frame2.axes.get_yticklines():
     tick.set_visible(False)
-
+plt.tick_params(axis='both', which='both', right=False, left=False, top=False, bottom=False)
 plt.show()
