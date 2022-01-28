@@ -132,9 +132,9 @@ plt.show()
 # lowest confidence in
 xs_threshold = []
 ys_threshold = []
-top15_prob = best_prob[10] # find lowerst part and all above that make it
+top15_prob = best_prob[5] # find lowerst part and all above that make it
 print(top15_prob)
-if top15_prob < 0.9:
+if top15_prob < 0.99:
     print('Neural Network not confident enough')
     sys.exit()
 else:
