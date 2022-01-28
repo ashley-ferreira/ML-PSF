@@ -113,12 +113,13 @@ for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
     if plotted_stars < 25:
         good_probability = output[i][1]#int(indx)]
         #if cn_prob[i] in best_prob: 
+        num_good_stars += 1
         if good_probability in best_prob:
             plotted_stars += 1        
             xs_best.append(xs[i])
             ys_best.append(ys[i])
             cn_prob.append(good_probability)
-            num_good_stars += 1
+            
             (c1, c2) = zscale.get_limits(cutouts[i])
             normer3 = interval.ManualInterval(c1,c2)
             axs[i].imshow(normer3(cutouts[i]))
