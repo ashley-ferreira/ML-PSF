@@ -159,16 +159,16 @@ file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2
 
 if data_load == 'presaved':
     with open(file_dir + '/USED_jan27_50k_111_metadata_defaultLen.pickle', 'rb') as han:
-        [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) # need count too?
+        [used_cutouts, used_labels, used_xs, used_ys, used_fwhms, used_files] = pickle.load(han) # need count too?
 
-    cutouts = np.asarray(cutouts).astype('float32')
-    std = np.nanstd(cutouts)
-    mean = np.nanmean(cutouts)
-    cutouts -= mean
-    cutouts /= std
+    used_cutouts = np.asarray(used_cutouts).astype('float32')
+    std = np.nanstd(used_cutouts)
+    mean = np.nanmean(used_cutouts)
+    used_cutouts -= mean
+    used_cutouts /= std
     # And just to be sure you aren’t picking up any bad values, after regularization:
-    w_bad = np.where(np.isnan(cutouts))
-    cutouts[w_bad] = 0.0
+    w_bad = np.where(np.isnan(used_cutouts))
+    used_cutouts[w_bad] = 0.0
 
     with open(file_dir + '/regularization_data.pickle', 'wb+') as han:
         pickle.dump([std, mean], han)
