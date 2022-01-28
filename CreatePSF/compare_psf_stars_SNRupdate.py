@@ -119,7 +119,7 @@ else:
     plotted_stars = 0
     for i in range(len(cutouts)): 
         if plotted_stars < 25:
-            good_probability = cn_prob[i][1]
+            good_probability = cn_prob[i]
             center = crop_center(cutouts[i],5,5)
             #print(center.shape)
             sum_c = center.sum()
