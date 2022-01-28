@@ -131,7 +131,8 @@ for i in range(len(cutouts)):
             axs[plotted_stars].imshow(normer3(cutouts[i]))
             axs[plotted_stars].set_xticks([])
             axs[plotted_stars].set_yticks([])
-            axs[plotted_stars].text(0.1, -1, str(good_probability) + str(SNR))#,-0.1,-0.1)
+            axs[plotted_stars].text(0.1, -1, 'conf:' + str(good_probability))#,-0.1,-0.1)
+            axs[plotted_stars].text(0.5, -1, 'SNR proxy:' + str(SNR))
 
             plotted_stars += 1 
 plt.subplots_adjust(wspace=0.2, hspace=0.2)
