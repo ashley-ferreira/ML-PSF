@@ -108,35 +108,41 @@ def crop_center(img, cropx, cropy):
     return img[int(starty):int(starty+cropy), int(startx):int(startx+cropx)] 
 
 best_prob = sorted(cn_prob, reverse=True)[:25] 
+prob_25 = best_prob[24]
 print('lowest confidence in top 25', best_prob[24])
-fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
-axs = axs.ravel()
-#plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) 
-plotted_stars = 0
-for i in range(len(cutouts)): 
-    if plotted_stars < 25:
-        good_probability = output[i][1]#int(indx)]
-        #if cn_prob[i] in best_prob: 
-        if good_probability in best_prob: 
-            center = crop_center(cutouts[i],5,5)
-            print(center.shape)
-            sum_c = center.sum()
-            SNR = math.sqrt(sum_c)      
-            xs_best.append(xs[i])
-            ys_best.append(ys[i])
-            cn_prob.append(good_probability)
-            print(good_probability)
-            (c1, c2) = zscale.get_limits(cutouts[i])
-            normer3 = interval.ManualInterval(c1,c2)
-            axs[plotted_stars].imshow(normer3(cutouts[i]))
-            axs[plotted_stars].set_xticks([])
-            axs[plotted_stars].set_yticks([])
-            axs[plotted_stars].text(0.1, -1, 'conf:' + str(good_probability))#,-0.1,-0.1)
-            axs[plotted_stars].text(0.1, -15, 'SNR :' + str(SNR)[:7])
+if prob_25 < 0.95:
+    print('Neural Network not confident enough')
+    sys.exit()
+else:
+    fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
+    axs = axs.ravel()
+    #plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) 
+    plotted_stars = 0
+    for i in range(len(cutouts)): 
+        if plotted_stars < 25:
+            good_probability = output[i][1]#int(indx)]
+            #if cn_prob[i] in best_prob: 
+            if good_probability in best_prob:
+                center = crop_center(cutouts[i],5,5)
+                print(center.shape)
+                sum_c = center.sum()
+                SNR_proxy = math.sqrt(sum_c)
+                if SNR_proxy > 10:       
+                    xs_best.append(xs[i])
+                    ys_best.append(ys[i])
+                    cn_prob.append(good_probability)
+                    print(good_probability)
+                    (c1, c2) = zscale.get_limits(cutouts[i])
+                    normer3 = interval.ManualInterval(c1,c2)
+                    axs[plotted_stars].imshow(normer3(cutouts[i]))
+                    axs[plotted_stars].set_xticks([])
+                    axs[plotted_stars].set_yticks([])
+                    axs[plotted_stars].text(0.1, -1, 'conf:' + str(good_probability))#,-0.1,-0.1)
+                    axs[plotted_stars].text(0.1, -15, 'SNR :' + str(SNR)[:7])
 
-            plotted_stars += 1 
-plt.subplots_adjust(wspace=0.3, hspace=0.3)
-plt.show()
+                plotted_stars += 1 
+    plt.subplots_adjust(wspace=0., hspace=0.3)
+    plt.show()
 # dont show axis labels
 # do show images? issue with non good psf ones
 # title on top
@@ -256,13 +262,13 @@ NN_threshold_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=
 
 
 # make fig with both of these
-figure, axes = plt.subplots(nrows=1, ncols=3, figsize = (10,8))
+figure, axes = plt.subplots(nrows=1, ncols=2, figsize = (10,8))
 #plt.tick_params(axis='both', which='both', right=False, left=False, top=False, bottom=False)
-(z1, z2) = zscale.get_limits(NN_threshold_PSF.lookupTable)
-normer = interval.ManualInterval(z1,z2)
-axes[1].imshow(normer(NN_threshold_PSF.lookupTable))
-title0 = 'ZScaled ' + inputFile.replace('.fits','.NN_threshold_PSF.fits') #right titles?
-axes[1].set_title(title0,fontsize=12)
+#(z1, z2) = zscale.get_limits(NN_threshold_PSF.lookupTable)
+#normer = interval.ManualInterval(z1,z2)
+#axes[1].imshow(normer(NN_threshold_PSF.lookupTable))
+#title0 = 'ZScaled ' + inputFile.replace('.fits','.NN_threshold_PSF.fits') #right titles?
+#axes[1].set_title(title0,fontsize=12)
 #plt.gca().axes.get_xaxis().set_visible(False)
 #plt.gca().axes.get_yaxis().set_visible(False)
 
@@ -270,16 +276,16 @@ axes[1].set_title(title0,fontsize=12)
 (z1, z2) = zscale.get_limits(NN_top25_PSF.lookupTable)
 normer = interval.ManualInterval(z1,z2)
 axes[0].imshow(normer(NN_top25_PSF.lookupTable))
-title1 = 'ZScaled ' + inputFile.replace('.fits','.NN_top25_PSF.fits') #right titles?
-axes[0].set_title(title0,fontsize=12)
+title1 = 'ZScaled ' + inputFile.replace('.fits','.NN_PSF.fits') #right titles?
+axes[0].set_title(title1,fontsize=12)
 
 
 otherPSF = psf.modelPSF(restore=comparePSF)
 (o1, o2) = zscale.get_limits(otherPSF.lookupTable)
 normer2 = interval.ManualInterval(o1,o2)
-axes[2].imshow(normer2(otherPSF.lookupTable))
-title1 = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
-axes[2].set_title(title1,fontsize=12)
+axes[1].imshow(normer2(otherPSF.lookupTable))
+title2 = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
+axes[1].set_title(title2,fontsize=12)
 
 
 '''
