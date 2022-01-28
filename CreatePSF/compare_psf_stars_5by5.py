@@ -132,10 +132,10 @@ for i in range(len(cutouts)):
             axs[plotted_stars].set_xticks([])
             axs[plotted_stars].set_yticks([])
             axs[plotted_stars].text(0.1, -1, 'conf:' + str(good_probability))#,-0.1,-0.1)
-            axs[plotted_stars].text(0.1, -15, 'SNR proxy:' + str(SNR))
+            axs[plotted_stars].text(0.1, -15, 'SNR :' + str(SNR)[:7])
 
             plotted_stars += 1 
-plt.subplots_adjust(wspace=0.4, hspace=0.4)
+plt.subplots_adjust(wspace=0.3, hspace=0.3)
 plt.show()
 # dont show axis labels
 # do show images? issue with non good psf ones
