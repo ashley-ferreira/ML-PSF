@@ -165,7 +165,11 @@ for i in range(len(goodpsf_x)):
     x_int = int(goodpsf_x[i])
     #$print(x_int)
     cutout_goodpsf = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
-    print(cutout_goodpsf.shape)
+    print(cutout_goodpsf.shape) # check
+    cutout_goodpsf -= mean
+    cutout_goodpsf /= std
+    w_bad = np.where(np.isnan(cutout_goodpsf))
+    cutout_goodpsf[w_bad] = 0.0
     (c1, c2) = zscale.get_limits(cutout_goodpsf)
     normer4 = interval.ManualInterval(c1,c2)
     axs[i].imshow(normer4(cutout_goodpsf))
@@ -205,7 +209,7 @@ figure, axes = plt.subplots(nrows=1, ncols=2)
 normer = interval.ManualInterval(z1,z2)
 axes[0].imshow(normer(goodPSF.lookupTable))
 title0 = 'ZScaled ' + inputFile.replace('.fits','.NN_PSF.fits')
-axes[0].title.set_text(title0,fontsize=10)
+axes[0].title.set_text(title0,fontsize=1)
 axs[0].set_xticks([])
 axs[0].set_yticks([])
 
@@ -214,7 +218,7 @@ otherPSF = psf.modelPSF(restore=comparePSF)
 normer2 = interval.ManualInterval(o1,o2)
 axes[1].imshow(normer2(otherPSF.lookupTable))
 title1 = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
-axes[1].title.set_text(title1,fontsize=10)
+axes[1].title.set_text(title1,fontsize=5)
 axs[1].set_xticks([])
 axs[1].set_yticks([])
 
