@@ -208,6 +208,7 @@ axes[0, 0].title.set_text(title0)
 
 otherPSF = psf.modelPSF(restore=comparePSF)
 (o1, o2) = zscale.get_limits(otherPSF.lookupTable)
+normer2 = interval.ManualInterval(o1,o2)
 axes[0, 1].imshow(normer2(otherPSF.lookupTable))
 title1 = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
 axes[0, 1].title.set_text(title1)
