@@ -106,7 +106,7 @@ best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by con
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('CNN selected top 25 stars', x=-10, y=0) #hasnt changed location?
+plt.title('CNN selected top 25 stars', x=0, y=0) #hasnt changed location?
 plotted_stars = 0
 for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
     #pyl.imshow(cutouts[i])
@@ -124,7 +124,7 @@ for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
             axs[plotted_stars].set_xticks([])
             axs[plotted_stars].set_yticks([])
             plotted_stars += 1 
-
+plt.subplots_adjust(wspace=0, hspace=0)
 plt.show()
 # dont show axis labels
 # do show images? issue with non good psf ones
@@ -157,6 +157,8 @@ print(goodpsf_x, goodpsf_y)
 
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
+
+cutoutWidth = 50
 for i in range(len(goodpsf_x)):
     y_int = int(goodpsf_y[i])
     #print(y_int)
