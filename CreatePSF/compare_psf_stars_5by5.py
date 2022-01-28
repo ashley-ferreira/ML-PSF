@@ -118,7 +118,7 @@ for i in range(len(cutouts)):
         good_probability = output[i][1]#int(indx)]
         #if cn_prob[i] in best_prob: 
         if good_probability in best_prob: 
-            center = crop_center(cutouts[i],2,2)
+            center = crop_center(cutouts[i],5,5)
             print(center.shape)
             sum_c = center.sum()
             SNR = math.sqrt(sum_c)      
@@ -132,10 +132,10 @@ for i in range(len(cutouts)):
             axs[plotted_stars].set_xticks([])
             axs[plotted_stars].set_yticks([])
             axs[plotted_stars].text(0.1, -1, 'conf:' + str(good_probability))#,-0.1,-0.1)
-            axs[plotted_stars].text(0.5, -1, 'SNR proxy:' + str(SNR))
+            axs[plotted_stars].text(3, -1, 'SNR proxy:' + str(SNR))
 
             plotted_stars += 1 
-plt.subplots_adjust(wspace=0.2, hspace=0.2)
+plt.subplots_adjust(wspace=0.4, hspace=0.4)
 plt.show()
 # dont show axis labels
 # do show images? issue with non good psf ones
