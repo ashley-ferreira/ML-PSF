@@ -203,13 +203,13 @@ NN_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
 
 # make fig with both of these
-figure, axes = plt.subplots(nrows=1, ncols=2, figsize = (10,5))
+figure, axes = plt.subplots(nrows=1, ncols=2, figsize = (10,8))
 #plt.tick_params(axis='both', which='both', right=False, left=False, top=False, bottom=False)
 (z1, z2) = zscale.get_limits(NN_PSF.lookupTable)
 normer = interval.ManualInterval(z1,z2)
 axes[0].imshow(normer(NN_PSF.lookupTable))
 title0 = 'ZScaled ' + inputFile.replace('.fits','.NN_PSF.fits') #right titles?
-axes[0].set_title(title0,fontsize=7)
+axes[0].set_title(title0,fontsize=12)
 #plt.gca().axes.get_xaxis().set_visible(False)
 #plt.gca().axes.get_yaxis().set_visible(False)
 
@@ -219,7 +219,7 @@ otherPSF = psf.modelPSF(restore=comparePSF)
 normer2 = interval.ManualInterval(o1,o2)
 axes[1].imshow(normer2(otherPSF.lookupTable))
 title1 = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
-axes[1].set_title(title1,fontsize=7)
+axes[1].set_title(title1,fontsize=12)
 
 
 '''
