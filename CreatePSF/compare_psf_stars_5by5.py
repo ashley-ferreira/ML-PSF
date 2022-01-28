@@ -104,9 +104,9 @@ for i in range(len(cutouts)):
 
 best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by confidence
 print('lowest confidence in top 25', best_prob[24])
-fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
+fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('NN selected top 25 stars:' + inputFile, x=-4, y=5) #hasnt changed location?
+plt.title('NN selected top 25 stars:' + inputFile, x=-3, y=5) #hasnt changed location?
 plotted_stars = 0
 for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
     #pyl.imshow(cutouts[i])
@@ -192,17 +192,24 @@ goodPSF = psf.modelPSF(np.arange(61),np.arange(61), alpha=goodMeds[2],beta=goodM
 goodPSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
 
+
+
+
+
+
+# make fig with both of these
+figure, axes = plt.subplots(nrows=2, ncols=1)
+
 (z1, z2) = zscale.get_limits(goodPSF.lookupTable)
 normer = interval.ManualInterval(z1,z2)
-pyl.imshow(normer(goodPSF.lookupTable))
-title = 'ZScaled ' + inputFile.replace('.fits','.NN_PSF.fits')
-pyl.title(title)
-pyl.show()
+axes[0, 0].imshow(normer(goodPSF.lookupTable))
+title0 = 'ZScaled ' + inputFile.replace('.fits','.NN_PSF.fits')
+axes[0, 0].title.set_text(title0)
 
 otherPSF = psf.modelPSF(restore=comparePSF)
 (o1, o2) = zscale.get_limits(otherPSF.lookupTable)
-normer2 = interval.ManualInterval(o1,o2)
-pyl.imshow(normer2(otherPSF.lookupTable))
-title = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
-pyl.title(title)
-pyl.show()
+axes[0, 1].imshow(normer2(otherPSF.lookupTable))
+title1 = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
+axes[0, 1].title.set_text(title1)
+
+plt.show()
