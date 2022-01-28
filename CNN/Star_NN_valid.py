@@ -238,7 +238,7 @@ for i in range(len(preds_test)):
         '''
      
 pyl.hist(fwhms, label = 'FWHM of full validation set', bins='auto', alpha=0.5) 
-pyl.hist(fwhms_test_misclass, label = 'FWHM of misclassed (0.5 conf) validation set', bins='auto', alpha=0.5) 
+pyl.hist(fwhms_test_misclass, label = 'FWHM of misclassed (0.5 conf) validation set', bins='auto', alpha=0.5, color='pink') 
 pyl.xlabel('FWHM')
 pyl.ylabel('Count')
 pyl.legend(loc='best')
