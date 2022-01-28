@@ -6,7 +6,7 @@ from os import path
 import sys
 from astropy.visualization import interval, ZScaleInterval
 
-
+import math 
 import random
 """Import the basics: numpy, pandas, matplotlib, etc."""
 import numpy as np
@@ -101,6 +101,11 @@ for i in range(len(cutouts)):
     cn_prob.append(good_probability)
     num_good_stars += 1 #NOT RIGHT
 
+def crop_center(img, cropx, cropy):
+    x,y = img.shape 
+    startx = x//2 - (cropx//2)
+    starty = y//2 - (cropy//2)
+    return img[starty:starty+cropy, startx:startx+cropx] 
 
 best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by confidence
 print('lowest confidence in top 25', best_prob[24])
@@ -113,7 +118,8 @@ for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
     if plotted_stars < 25:
         good_probability = output[i][1]#int(indx)]
         #if cn_prob[i] in best_prob: 
-        if good_probability in best_prob:       
+        if good_probability in best_prob: 
+            SNR = math.sqrt(crop_center(cutouts[i],5,5))      
             xs_best.append(xs[i])
             ys_best.append(ys[i])
             cn_prob.append(good_probability)
@@ -123,7 +129,8 @@ for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
             axs[plotted_stars].imshow(normer3(cutouts[i]))
             axs[plotted_stars].set_xticks([])
             axs[plotted_stars].set_yticks([])
-            axs[plotted_stars].text(0.1, -1, good_probability)#,-0.1,-0.1)
+            axs[plotted_stars].text(0.1, -1, str(good_probability) + str(SNR))#,-0.1,-0.1)
+
             plotted_stars += 1 
 plt.subplots_adjust(wspace=0.2, hspace=0.2)
 plt.show()
