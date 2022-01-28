@@ -210,24 +210,9 @@ normer = interval.ManualInterval(z1,z2)
 axes[0].imshow(normer(NN_PSF.lookupTable))
 title0 = 'ZScaled ' + inputFile.replace('.fits','.NN_PSF.fits') #right titles?
 axes[0].set_title(title0,fontsize=7)
-axs[0].set_xticks([])
-axs[0].set_yticks([])
-# X-axis tick label
-plt.xticks(color='w')
-# Y-axis tick label
-plt.yticks(color='w')
+plt.gca().axes.get_xaxis().set_visible(False)
+plt.gca().axes.get_yaxis().set_visible(False)
 
-frame1 = plt.gca()
-for xlabel_i in frame1.axes.get_xticklabels():
-    xlabel_i.set_visible(False)
-    xlabel_i.set_fontsize(0.0)
-for xlabel_i in frame1.axes.get_yticklabels():
-    xlabel_i.set_fontsize(0.0)
-    xlabel_i.set_visible(False)
-for tick in frame1.axes.get_xticklines():
-    tick.set_visible(False)
-for tick in frame1.axes.get_yticklines():
-    tick.set_visible(False)
 
 otherPSF = psf.modelPSF(restore=comparePSF)
 (o1, o2) = zscale.get_limits(otherPSF.lookupTable)
@@ -237,6 +222,7 @@ title1 = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
 axes[1].set_title(title1,fontsize=7)
 axs[1].set_xticks([])
 axs[1].set_yticks([])
+
 # X-axis tick label
 plt.xticks(color='w')
 # Y-axis tick label
