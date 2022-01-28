@@ -77,7 +77,7 @@ with open(outFile, 'rb') as han:
 print(cutouts.shape)
                                         
 # run though my network and get - this model was good results!
-model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27_50k')
+model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27_25k_250epochs')
 
 xs_best = []
 ys_best = []
