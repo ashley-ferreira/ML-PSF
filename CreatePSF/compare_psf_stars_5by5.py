@@ -198,7 +198,7 @@ goodPSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
 
 # make fig with both of these
-figure, axes = plt.subplots(nrows=2, ncols=1)
+figure, axes = plt.subplots(nrows=1, ncols=2)
 
 (z1, z2) = zscale.get_limits(goodPSF.lookupTable)
 normer = interval.ManualInterval(z1,z2)
