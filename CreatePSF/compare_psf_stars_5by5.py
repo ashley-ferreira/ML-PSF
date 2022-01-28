@@ -119,7 +119,7 @@ for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
         good_probability = output[i][1]#int(indx)]
         #if cn_prob[i] in best_prob: 
         if good_probability in best_prob: 
-            SNR = math.sqrt(crop_center(cutouts[i],5,5))      
+            SNR = math.sqrt(sum(crop_center(cutouts[i],5,5)))      
             xs_best.append(xs[i])
             ys_best.append(ys[i])
             cn_prob.append(good_probability)
