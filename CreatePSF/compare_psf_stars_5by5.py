@@ -107,10 +107,10 @@ print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5)#figsize=(5*5, 5*5))
 axs = axs.ravel()
 plt.title('CNN selected top 25 stars', x=-10, y=100) #hasnt changed location?
-plotted_stars = 1
+plotted_stars = 0
 for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
     #pyl.imshow(cutouts[i])
-    if plotted_stars < 25:
+    if plotted_stars < 24:
         good_probability = output[i][1]#int(indx)]
         #if cn_prob[i] in best_prob: 
         if good_probability in best_prob:
