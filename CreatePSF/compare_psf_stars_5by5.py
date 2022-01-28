@@ -105,21 +105,20 @@ def crop_center(img, cropx, cropy):
     x,y = img.shape 
     startx = x//2 - (cropx//2)
     starty = y//2 - (cropy//2)
-    return img[starty:starty+cropy, startx:startx+cropx] 
+    return img[int(starty):int(starty+cropy), int(startx):int(startx+cropx)] 
 
-best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by confidence
+best_prob = sorted(cn_prob, reverse=True)[:25] 
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) #hasnt changed location?
+plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) 
 plotted_stars = 0
-for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
-    #pyl.imshow(cutouts[i])
+for i in range(len(cutouts)): 
     if plotted_stars < 25:
         good_probability = output[i][1]#int(indx)]
         #if cn_prob[i] in best_prob: 
         if good_probability in best_prob: 
-            center = crop_center(cutouts[i],2.5,2.5)
+            center = crop_center(cutouts[i],2,2)
             print(center.shape)
             sum_c = center.sum()
             SNR = math.sqrt(sum_c)      
