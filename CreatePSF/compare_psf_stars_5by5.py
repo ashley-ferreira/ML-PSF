@@ -200,7 +200,10 @@ goodPSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
 
 
-
+# X-axis tick label
+plt.xticks(color='w')
+# Y-axis tick label
+plt.yticks(color='w')
 
 # make fig with both of these
 figure, axes = plt.subplots(nrows=1, ncols=2)
@@ -209,7 +212,7 @@ figure, axes = plt.subplots(nrows=1, ncols=2)
 normer = interval.ManualInterval(z1,z2)
 axes[0].imshow(normer(goodPSF.lookupTable))
 title0 = 'ZScaled ' + inputFile.replace('.fits','.NN_PSF.fits')
-axes[0].set_title(title0,fontsize=1)
+axes[0].set_title(title0,fontsize=7)
 axs[0].set_xticks([])
 axs[0].set_yticks([])
 
@@ -218,7 +221,7 @@ otherPSF = psf.modelPSF(restore=comparePSF)
 normer2 = interval.ManualInterval(o1,o2)
 axes[1].imshow(normer2(otherPSF.lookupTable))
 title1 = 'ZScaled ' + inputFile.replace('.fits','.goodPSF.fits')
-axes[1].set_title(title1,fontsize=5)
+axes[1].set_title(title1,fontsize=7)
 axs[1].set_xticks([])
 axs[1].set_yticks([])
 
