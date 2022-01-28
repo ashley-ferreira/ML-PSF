@@ -43,7 +43,7 @@ def main():
         rewrite_cutouts = False 
         night_dir = '03074'
         start_indx = 215730
-        end_indx = 215734
+        end_indx = 215732
 
 
     for k in range(start_indx, end_indx, 2):
@@ -59,6 +59,7 @@ def main():
                 print('chip 32 half broken, not including')
                 continue 
 
+            # try here
             num_str = int_to_str(i)
 
             file_in = 'CORR-0' + str(k) + '-' + num_str + '.fits'
