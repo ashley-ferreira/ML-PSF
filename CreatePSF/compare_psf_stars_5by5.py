@@ -106,7 +106,7 @@ best_prob = sorted(cn_prob, reverse=True)[:25] # consider sorting cutouts by con
 print('lowest confidence in top 25', best_prob[24])
 fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
 axs = axs.ravel()
-plt.title('NN selected top 25 stars:' + inputFile, x=-2, y=7) #hasnt changed location?
+plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) #hasnt changed location?
 plotted_stars = 0
 for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
     #pyl.imshow(cutouts[i])
