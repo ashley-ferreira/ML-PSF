@@ -41,9 +41,9 @@ def main():
     else:
         fixed_cutout_len = 111 
         rewrite_cutouts = False 
-        night_dir = '03074'
-        start_indx = 215730
-        end_indx = 215732
+        night_dir = '03068'
+        start_indx = 216730
+        end_indx = 216732
 
 
     for k in range(start_indx, end_indx, 2):
