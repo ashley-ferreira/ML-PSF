@@ -230,4 +230,16 @@ plt.xticks(color='w')
 # Y-axis tick label
 plt.yticks(color='w')
 
+frame1 = plt.gca()
+for xlabel_i in frame1.axes.get_xticklabels():
+    xlabel_i.set_visible(False)
+    xlabel_i.set_fontsize(0.0)
+for xlabel_i in frame1.axes.get_yticklabels():
+    xlabel_i.set_fontsize(0.0)
+    xlabel_i.set_visible(False)
+for tick in frame1.axes.get_xticklines():
+    tick.set_visible(False)
+for tick in frame1.axes.get_yticklines():
+    tick.set_visible(False)
+
 plt.show()
