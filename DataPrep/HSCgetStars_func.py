@@ -156,19 +156,4 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
 
     print('cutouts shape: ', cutouts.shape)
 
-    #if len(sys.argv)>2:
-    #    exit()
-    '''
-    fig1 = pyl.figure(1)
-    pyl.scatter(stds, seconds)
-    pyl.xlabel('Stds')
-    pyl.ylabel('Second Peaks')
-
-    fig2 = pyl.figure(2)
-    pyl.scatter(stds/np.std(stds), seconds/np.std(seconds))
-    pyl.xlabel('Stds')
-    pyl.ylabel('Second Peaks')
-
-    pyl.show()
-    '''
     return 1

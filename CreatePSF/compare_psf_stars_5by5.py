@@ -45,7 +45,7 @@ from keras.utils import np_utils
 
 import matplotlib.pyplot as plt
 
-file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
+file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03068/HSC-R2/corr'
 model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 
 zscale = ZScaleInterval()
@@ -75,10 +75,9 @@ with open(outFile, 'rb') as han:
     [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
 
 print(cutouts.shape)
-pyl.imshow(cutouts[0])
                                         
 # run though my network and get - this model was good results!
-model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27')
+model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27_50k')
 
 xs_best = []
 ys_best = []
@@ -110,6 +109,7 @@ axs = axs.ravel()
 plt.title('CNN selected top 25 stars', x=0, y=1) #hasnt changed location?
 plotted_stars = 0
 for i in range(len(cutouts)): # CURRUPTED FILE? yeah normal ones arent working?
+    pyl.imshow(cutouts[i])
     if plotted_stars > 25:
         good_probability = output[i][1]#int(indx)]
         #if cn_prob[i] in best_prob: 
