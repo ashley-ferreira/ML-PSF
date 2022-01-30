@@ -109,7 +109,7 @@ def crop_center(img, cropx, cropy):
 
 cn_prob, xs, ys, cutouts = zip(*sorted(zip(cn_prob, xs, ys, cutouts), reverse = True))
 print('lowest confidence in top 25', cn_prob[24]) # need to sort
-if cn_prob[24] < 0.95:
+if cn_prob[24] < 0.95: # why is this not prompted
     print('Neural Network not confident enough')
     sys.exit()
 else:
