@@ -421,7 +421,7 @@ elif balanced_data_method == 'weight':
 end = time.time()
 print('Process completed in', round(end-start, 2), ' seconds')
 # save details of model and regulatization data in here too
-cn_model.save(file_dir + '/Saved_Model/model_jan27_25k_250epochs') # + str(end))
+cn_model.save(file_dir + '/NN_PSF_Saved_Models/model_jan27_25k_250epochs') # + str(end))
 
 
 """

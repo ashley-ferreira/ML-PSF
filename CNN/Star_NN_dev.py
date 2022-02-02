@@ -245,7 +245,7 @@ def train_CNN():
     #cn_model = convnet_model(X_train.shape[1:], y_train)
     cn_model.summary()
 
-    opt = Adam(learning_rate=0.001)
+    opt = Adam(learning_rate=0.001) # add lr to top param
     cn_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=["accuracy"])#, learning_rate=0.1)
 
     start = time.time()
