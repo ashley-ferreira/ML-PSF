@@ -130,12 +130,13 @@ def compare_NN_goodPSF(input_file, file_dir, model_dir, NN_cutoff_vals):
     SNR_proxy_cutoff = NN_cutoff_vals[1]
     min_num_stars = NN_cutoff_vals[2]
         
-
+    # read in cutout data for input_file
     outFile = file_dir+'/'+input_file.replace('.fits', str(fixed_cutout_len) + \
          '_metadata_cutouts_savedFits.pickle')
     with open(outFile, 'rb') as han:
         [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
 
+    # load previously trained Neural Network 
     model = keras.models.load_model(model_dir)
 
     # load training set std and mean
@@ -149,10 +150,7 @@ def compare_NN_goodPSF(input_file, file_dir, model_dir, NN_cutoff_vals):
     ys_best = []
     cn_prob = []
 
-
-
     output = model.predict(cutouts)
-    num_good_stars = 0 
 
     for i in range(len(cutouts)):
         good_probability = output[i][1]
