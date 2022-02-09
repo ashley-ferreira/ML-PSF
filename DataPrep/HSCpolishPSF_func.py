@@ -5,47 +5,39 @@ from trippy import psf, psfStarChooser
 from astropy.io import fits
 import sys
 
-## not used for now, but kept for possible use later
-def getCluster(stds, seconds, eps=0.01, min_samples=5 ):
-    x = stds/np.std(stds)
-    y = seconds/np.std(seconds)
-    print(len(x))
+def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len=111):
+    '''
+    Given cutouts of all the sources in an image, this function selects the best
+    25 stars in an image from weighted STD and second highest pixel value. These 
+    cutouts are then resaved with those that fall within the top 25 labelled as 
+    such to be used in neural network training. From these 25 stars the fuunction 
+    also generates and saves new PSF called goodPSF.
+    
+    Adapted from:  https://github.com/fraserw
 
-    X = np.zeros((len(x), 2))
-    X[:, 0] = x
-    X[:, 1] = y
-    clust = cluster.DBSCAN(eps=eps, min_samples=min_samples).fit(X)
-    labels = clust.labels_
+    Parameters:    
 
-    u_labels = np.unique(labels)
-    print(labels)
-    print(u_labels)
-    clump_stds = []
-    for i, label in enumerate(u_labels[1:]):
-        w = np.where(labels == label)
-        clump_stds.append(np.mean(stds[w]))
-    print(clump_stds/np.std(stds))
-    return (clust, labels, clump_stds)
+        dir (str): directory where inputFile is saved
 
+        inputFile (str): file to 
 
-def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545.fits', cutout_file=''):
- 
-    #if len(sys.argv)>2:
-    #    dir = sys.argv[1]
-    #    inputFile = sys.argv[2]
+        cutout_file (str): 
 
+        fixed_cutout_len (int): force cutouts to have shape
+                                (fixed_cutout_len, fixed_cutout_len)
 
+    Returns:
+        
+        None
 
-    ## load the fits saves
-    #if fixed_cutout_len != 0:
+    '''
     #   outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_cutouts_savedFits.pickle')
-    #else:
     try:
-            
-        outFile = dir+'/'+inputFile.replace('.fits', '111_metadata_cutouts_savedFits.pickle')
+        # read in saved cutout file created from HSCgetStars_main    
         with open(outFile, 'rb') as han:
             [stds, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pick.load(han)
 
+        # create dictionairy to store metadata
         metadata_dict = {}
         metadata_dict['stds'] = stds 
         metadata_dict['seconds'] = seconds 
@@ -55,9 +47,8 @@ def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545
         metadata_dict['fwhm'] = fwhm 
         metadata_dict['inputFile'] = inputFile
         
-        len_c = len(cutouts)
-        print(cutouts.shape)
-        if cutouts.shape == (len_c, 111,111): # some non 111,111 let in from getstars
+        # make sure cutouts are all of correct shape
+        if cutouts.shape == (len(cutouts), fixed_cutout_len, fixed_cutout_len): 
 
             ## select only those stars with really low STD
             w = np.where(stds/np.std(stds)<0.001)
@@ -67,15 +58,15 @@ def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545
             xs = xs[w]
             ys = ys[w]
             cutouts = np.array(cutouts)[w]
-
             s = np.std(stds)
 
-            ##find the best 25 stars (the closest to the origin in weighted STD and second highest pixel value)
+            ## find the best 25 stars (the closest to the origin in 
+            ## weighted STD and second highest pixel value)
             dist = ((stds/s)**2 + (seconds/peaks)**2)**0.5
             args = np.argsort(dist)
             best = args[:25]
 
-            #### generate the new psf
+            ## generate the new psf called goodPSF
             with fits.open(dir+'/'+inputFile) as han:
                 img_data = han[1].data
                 header = han[0].header
@@ -84,48 +75,39 @@ def HSCpolishPSF_main(fixed_cutout_len = 0, dir='20191120', inputFile='rS1i04545
                                                 xs[best],ys[best],
                                                 xs[best]*500,xs[best]*1.0)
 
-            try:
-                (goodFits, goodMeds, goodSTDs) = starChooser(30,200,noVisualSelection=True,autoTrim=False,
-                                                            bgRadius=15, quickFit = False,
-                                                            printStarInfo = True,
-                                                            repFact = 5, ftol=1.49012e-08)
-            except:
-                print('error with starChooser, conitnuing to next cutout')
-                return 0
+            (goodFits, goodMeds, goodSTDs) = starChooser(30,200,noVisualSelection=True,autoTrim=False,
+                                                        bgRadius=15, quickFit = False,
+                                                        printStarInfo = True,
+                                                        repFact = 5, ftol=1.49012e-08)
 
             goodPSF = psf.modelPSF(np.arange(61),np.arange(61), alpha=goodMeds[2],beta=goodMeds[3],repFact=10)
             goodPSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
             fwhm = goodPSF.FWHM()
-            print(fwhm)
 
-            newPSFFile = dir+'/psfStars/'+inputFile.replace('.fits','.metadata_goodPSF.fits')
+            newPSFFile = dir+'/psfStars/'+inputFile.replace('.fits','._goodPSF.fits')
             print('Saving to', newPSFFile)
             goodPSF.psfStore(newPSFFile, psfV2=True)
 
-            cutoutWidth = fixed_cutout_len // 2 # or adapt to f*fwhm if zero
+            # loop through each source and create new cutout files that include
+            # that are labelled 1 if in top 25 determined by goodPSF or
+            # labelled 0 otherwise, this data is exactly what the CNN uses
             count = 0
-            for x,y in zip(xs,ys): 
-                y_int = int(y)
-                x_int = int(x)
-                cutout = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
-
-                print(cutout.shape)
-
-                label = 0
+            for x,y,cutout in zip(xs,ys,cutouts): 
                 count +=1 
-                if x in xs[best]: # just redo the cutout
-                    label = 1
 
-                final_file = dir+'/NN_data_metadata_' + str(fixed_cutout_len) + '/'+inputFile.replace('.fits', str(count) + '_metadata_cutoutData.pickle')
+                if x in xs[best]:
+                    label = 1
+                else: 
+                    label = 0
+
+                final_file = '~/PSF_star_selection/NN_data_' + str(fixed_cutout_len) \
+                             + '/' + inputFile.replace('.fits', '_cutout_' + str(count) \
+                             + '_cutoutData.pickle')
+
                 with open(final_file, 'wb+') as han:
                     pick.dump([count, cutout, label, y, x, fwhm, inputFile], han)
         else:
-            print('########## FLAGGED ##########')
-        return 1
-
+            print('Cutouts of wrong shape:', cutouts.shape)
 
     except Exception as e: 
-        print('FAILURE')
         print(e)
-
-        return 0

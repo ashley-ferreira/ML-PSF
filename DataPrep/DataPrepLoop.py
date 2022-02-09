@@ -71,7 +71,7 @@ def main():
                 # if PSF already exists, and just interested in top 25, is it more efficient just to grab from header?
                 if os.path.isfile(getStars_outFile):
                     print('HSCgetStars already successfully run, skipping to HSCpolishPSF')
-                else: 
+                else: # feed outfine in
                     HSCgetStars_main(fixed_cutout_len=fixed_cutout_len, dir = file_dir, inputFile = file_in, psfFile = file_psf)
 
                 HSCpolishPSF_main(fixed_cutout_len=fixed_cutout_len, dir=file_dir, inputFile=file_in, cutout_file=outFile)

@@ -144,16 +144,12 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
 
     ## save the fits data to file.
     # save original cutouts
-    outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_metadata_cutouts_savedFits.pickle')
+    outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
         pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile], han)
     # save cutouts with PSF removed
-    outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_metadata_rem_cutouts_savedFits.pickle')
+    outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_rem_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
         pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile], han)
-
-    print('cutouts shape: ', cutouts.shape)
-
-    return 1
