@@ -232,7 +232,7 @@ def load_presaved_data(cutout_size, model_dir_name):
     with open(model_dir_name + 'regularization_data.pickle', 'wb+') as han:
         pickle.dump([std, mean], han)
 
-    return cutouts, labels
+    return cutouts, labels, fwhm, files
 
 def convnet_model(input_shape, training_labels, unique_labs, dropout_rate):
     '''
@@ -280,24 +280,20 @@ def convnet_model(input_shape, training_labels, unique_labs, dropout_rate):
 
     return model
 
-def train_CNN():
+def train_CNN(cutouts, labels, fwhm, files):
     '''
     Sets up and trains Convolutional Neural Network (CNN).
     Plots accuracy and loss over each training epoch.
 
     Parameters:    
 
-        input_shape (arr): input shape for network
+        cutouts (arr): 3D array conisting of 2D image data for each cutout
 
-        training_labels (arr): training labels
+        labels (arr): 1D array containing 0 or 1 label for bad or good star respectively
 
-        unique_labels (int): number unique labels (for good and bad stars = 2)
 
-        dropout_rate (float): dropout rate
 
-    Returns:
-        
-        model (keras model class): convolutional neural network to train
+
 
     '''
 
@@ -320,17 +316,17 @@ def train_CNN():
         files_train, files_test = files[train_index], files[test_index]
         fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
     
-    #unique_labs = len(np.unique(y_train))
-    #print(unique_labels)
-    y_train_binary = keras.utils.np_utils.to_categorical(y_train, 2) #unique_labels)
+    # unique_labs = len(np.unique(y_train))
+    unique_labels = 2
+    y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labels)
 
     ### train the model!
-    cn_model = convnet_model(X_train.shape[1:], training_labels=y_train, unique_labs=2)
+    cn_model = convnet_model(X_train.shape[1:], training_labels=y_train, unique_labs=unique_labels)
     #cn_model = convnet_model(X_train.shape[1:], y_train)
     cn_model.summary()
 
-    opt = Adam(learning_rate=learning_rate) # add lr to top param
-    cn_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=["accuracy"])#, learning_rate=0.1)
+    opt = Adam(learning_rate=learning_rate) 
+    cn_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=["accuracy"])
 
     start = time.time()
     X_train = np.asarray(X_train).astype('float32')
@@ -361,21 +357,28 @@ def train_CNN():
     ax2.set_ylabel('Loss')
     ax2.set_xlabel('Epoch')
 
-    fig.savefig(file_dir+'/NN_plots/'+'NN_scores_plot' + str(end) + '.png')
+    fig.savefig(model_dir_name +'/NN_plots/'+'NN_scores_plot' + str(end) + '.png')
 
     pyl.show()
     pyl.close()
     pyl.clf()
 
-    return end, 
-
-def test_CNN(X_train, X_test, y_test):
-    ### get the model output classifications for the train and test sets
     preds_train = cn_model.predict(X_train, verbose=1)
+
+    return preds_train, y_train, X_test, y_test
+
+def test_CNN(preds_train, y_train, X_test, y_test):
+    ''' 
+
+
+
+
+    '''
+
+    ### get the model output classifications for the test set
     X_test = np.asarray(X_test).astype('float32')
     preds_test = cn_model.predict(X_test, verbose=1)
 
-    # normalize too
     train_good_p = []
     test_good_p = []
     for p in preds_train:
@@ -383,10 +386,9 @@ def test_CNN(X_train, X_test, y_test):
     for p in preds_test:
         test_good_p.append(p[1])
 
-
     bins = np.linspace(0, 1, 100)
-    pyl.hist(train_good_p, label = 'training set confidence', bins=bins, alpha=0.5, density=True) # normalize
-    pyl.hist(test_good_p, label = 'test set confidence', bins=bins, alpha=0.5, density=True) # add transparency 
+    pyl.hist(train_good_p, label = 'training set confidence', bins=bins, alpha=0.5, density=True) 
+    pyl.hist(test_good_p, label = 'test set confidence', bins=bins, alpha=0.5, density=True)
     pyl.xlabel('Good Star Confidence')
     pyl.ylabel('Count (normalized for each dataset)')
     pyl.legend(loc='best')
@@ -394,7 +396,7 @@ def test_CNN(X_train, X_test, y_test):
     pyl.close()
     pyl.clf()
 
-    y_test_binary = keras.utils.np_utils.to_categorical(y_test, 2) # two diff y test binary
+    y_test_binary = keras.utils.np_utils.to_categorical(y_test, 2) 
     results = cn_model.evaluate(X_test, y_test_binary, batch_size=batch_size)
     print("test loss, test acc:", results)
 
@@ -404,10 +406,8 @@ def test_CNN(X_train, X_test, y_test):
 
     # plot confusion matrix
     fig2 = pyl.figure()
-
     y_test_binary = np.argmax(y_test_binary, axis = 1)
     preds_test_binary = np.argmax(preds_test, axis = 1)
-
     cm = confusion_matrix(y_test_binary, preds_test_binary)
     pyl.matshow(cm)
 
@@ -430,11 +430,9 @@ def main():
     if data_load == 'scratch':
         save_scratch_data(size_of_data, cutout_size, model_dir_name)
 
-    cutouts, labels = load_data(cutout_size, model_dir_name) # assign fwhm and all too
+    preds_train, y_train, X_test, y_test = train_CNN(load_data(cutout_size, model_dir_name))
 
-    train_CNN(cutouts, labels)
-
-    test_CNN()
+    test_CNN(preds_train, y_train, X_test, y_test)
     
 if __name__ == '__main__':
     main()
