@@ -2,6 +2,7 @@ import os
 from os import path
 import time
 from datetime import date 
+from datetime import datetime
 import sys
 import numpy as np
 import matplotlib.pyplot as pyl
@@ -31,7 +32,7 @@ zscale = ZScaleInterval()
 # keras.utils.set_random_seed(1234)
 np.random.seed(432)
 
-file_dir = '~/PSF_star_selection'
+pwd = '~/PSF_star_selection/'
 
 def get_user_input():
     '''
@@ -51,6 +52,8 @@ def get_user_input():
         
         num_epochs (int): number of epochs to train neural network for
 
+        model_dir_name (str): directory to store all outputs
+
     '''
     val = input("Change default values (Y/N): ")
     if val == 'Y':
@@ -64,16 +67,20 @@ def get_user_input():
 
         cutout_size = int(input("Size of cutouts (default 111):"))
         num_epochs = int(input("How many epochs to train for:"))
+        model_dir_name = intput("Name for model directory")
     else: 
         balanced_data_method = 'even' 
         data_load = 'scratch'
         num_epochs = 500
         cutout_size = 111
+        model_dir_name = pwd + 'Saved_Model/' + 
+                            datetime.today().strftime('%Y-%m-%d-%H:%M:%S') + '/'
     
-    return balanced_data_method, data_load, size_of_data, num_epochs, cutout_size
+    return balanced_data_method, data_load, size_of_data, 
+                 num_epochs, cutout_size, model_dir_name
 
 
-def save_scratch_data(size_of_data, cutout_size):
+def save_scratch_data(size_of_data, cutout_size, model_dir_name):
     '''
     Create presaved data file to use for neural network training
 
@@ -82,6 +89,8 @@ def save_scratch_data(size_of_data, cutout_size):
         size_of_data (int): number of files to acc
 
         cutout_size (int): defines shape of cutouts (cutout_size, cutout_size)
+
+        model_dir_name (str): directory to save loaded data
 
     Returns:
         
@@ -101,7 +110,7 @@ def save_scratch_data(size_of_data, cutout_size):
     bad_y_lst = []
     bad_inputFile_lst = []
 
-    data_dir + '/NN_data_' + str(cutout_size) + '/'
+    data_dir = pwd + 'NN_data_' + str(cutout_size) + '/'
 
     files_counted = 0
     try:
@@ -187,12 +196,29 @@ def save_scratch_data(size_of_data, cutout_size):
                 
     print(str(len(cutouts)) + ' files used')
 
-    with open(data_dir + str(size_of_data) + '_numcutouts_presaved_data.pickle', 'wb+') as han:
+    with open(model_dir_name + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
         pickle.dump([cutouts, labels, xs, ys, fwhm, files], han)
 
 
-def load_presaved_data(data_file):
-    with open(file_dir + '/NN_data_' + str(max_size) + '/jan18_111_metadata_defaultLen.pickle', 'rb') as han:
+def load_presaved_data(cutout_size, model_dir_name):
+    '''
+    Create presaved data file to use for neural network training
+
+    Parameters:    
+
+        cutout_size (int): defines shape of cutouts (cutout_size, cutout_size)
+
+        model_dir_name (str): directory to load data and save regularization params
+
+    Returns:
+        
+        cutouts (arr): 3D array conisting of 2D image data for each cutout
+
+        labels (arr): 1D array containing 0 or 1 label for bad or good star respectively
+
+    '''
+    
+    with open(model_dir_name +  str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhm, files] = pickle.load(han) 
 
     cutouts = np.asarray(cutouts).astype('float32')
@@ -203,12 +229,30 @@ def load_presaved_data(data_file):
     w_bad = np.where(np.isnan(cutouts))
     cutouts[w_bad] = 0.0
 
-    #with open(file_dir + '/regularization_data.pickle', 'wb+') as han:
-    #    pickle.dump([std, mean], han) # WSAVE W MODEL
+    with open(model_dir_name + 'regularization_data.pickle', 'wb+') as han:
+        pickle.dump([std, mean], han)
 
+    return cutouts, labels
 
-### define the CNN
-def convnet_model(input_shape, training_labels, unique_labs, dropout_rate=dropout_rate):
+def convnet_model(input_shape, training_labels, unique_labs, dropout_rate):
+    '''
+    Defines the 2D Convolutional Neural Network (CNN)
+
+    Parameters:    
+
+        input_shape (arr): input shape for network
+
+        training_labels (arr): training labels
+
+        unique_labels (int): number unique labels (for good and bad stars = 2)
+
+        dropout_rate (float): dropout rate
+
+    Returns:
+        
+        model (keras model class): convolutional neural network to train
+
+    '''
 
     model = Sequential()
 
@@ -237,19 +281,38 @@ def convnet_model(input_shape, training_labels, unique_labs, dropout_rate=dropou
     return model
 
 def train_CNN():
+    '''
+    Sets up and trains Convolutional Neural Network (CNN).
+    Plots accuracy and loss over each training epoch.
+
+    Parameters:    
+
+        input_shape (arr): input shape for network
+
+        training_labels (arr): training labels
+
+        unique_labels (int): number unique labels (for good and bad stars = 2)
+
+        dropout_rate (float): dropout rate
+
+    Returns:
+        
+        model (keras model class): convolutional neural network to train
+
+    '''
 
     # section for setting up some flags and hyperparameters
     batch_size = 16 
     dropout_rate = 0.2
     test_fraction = 0.05 
+    learning_rate = 0.001
     max_size = 111 
 
     ### now divide the cutouts array into training and testing datasets.
-    skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)#, random_state=41)
+    skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)
     print(skf)
     skf.split(cutouts, labels)
 
-    print(cutouts.shape) # why does it need both?
     for train_index, test_index in skf.split(cutouts, labels):
         X_train, X_test = cutouts[train_index], cutouts[test_index]
         y_train, y_test = labels[train_index], labels[test_index]
@@ -266,7 +329,7 @@ def train_CNN():
     #cn_model = convnet_model(X_train.shape[1:], y_train)
     cn_model.summary()
 
-    opt = Adam(learning_rate=0.001) # add lr to top param
+    opt = Adam(learning_rate=learning_rate) # add lr to top param
     cn_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=["accuracy"])#, learning_rate=0.1)
 
     start = time.time()
@@ -277,13 +340,9 @@ def train_CNN():
 
     end = time.time()
     print('Process completed in', round(end-start, 2), ' seconds')
-    # save details of model and regulatization data in here too
-    today = date.today()
-    date_trained = today.strftime("%b-%d-%Y")
-    cn_model.save(file_dir + '/Saved_Model_/model_' + str(end))
-    with open(file_dir + '/Saved_Model/jan19_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
-            pickle.dump([cutouts, labels, xs, ys, fwhm, files], han)
 
+    # save trained model 
+    cn_model.save(model_dir_name + 'model_' + str(end))
 
     # plot accuracy/loss versus epoch
     fig = pyl.figure(figsize=(10,3))
@@ -364,13 +423,17 @@ def test_CNN(X_train, X_test, y_test):
     pyl.clf()
        
 def main():
-    balanced_data_method, data_load, size_of_data, num_epochs, cutout_size = get_user_input()
+
+    balanced_data_method, data_load, size_of_data, \
+    num_epochs, cutout_size, model_dir_name = get_user_input()
 
     if data_load == 'scratch':
-        save_scratch_data(size_of_data, cutout_size)
+        save_scratch_data(size_of_data, cutout_size, model_dir_name)
 
-    load_data()
-    train_CNN()
+    cutouts, labels = load_data(cutout_size, model_dir_name) # assign fwhm and all too
+
+    train_CNN(cutouts, labels)
+
     test_CNN()
     
 if __name__ == '__main__':
