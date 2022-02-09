@@ -17,11 +17,12 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len=111):
 
     Parameters:    
 
-        dir (str): directory where inputFile is saved
+        file_dir (str): directory where inputFile is saved
 
-        inputFile (str): file to 
+        input_file (str): original image file
 
-        cutout_file (str): 
+        cutout_file (str): cutouts of all sources in image created from 
+                           HSC_getStars_main function
 
         fixed_cutout_len (int): force cutouts to have shape
                                 (fixed_cutout_len, fixed_cutout_len)
@@ -34,7 +35,7 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len=111):
     #   outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_cutouts_savedFits.pickle')
     try:
         # read in saved cutout file created from HSCgetStars_main    
-        with open(outFile, 'rb') as han:
+        with open(cutout_file, 'rb') as han:
             [stds, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pick.load(han)
 
         # create dictionairy to store metadata
@@ -67,7 +68,7 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len=111):
             best = args[:25]
 
             ## generate the new psf called goodPSF
-            with fits.open(dir+'/'+inputFile) as han:
+            with fits.open(file_dir+'/'+input_file) as han:
                 img_data = han[1].data
                 header = han[0].header
 
@@ -84,7 +85,7 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len=111):
             goodPSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
             fwhm = goodPSF.FWHM()
 
-            newPSFFile = dir+'/psfStars/'+inputFile.replace('.fits','._goodPSF.fits')
+            newPSFFile = file_dir+'/psfStars/'+input_file.replace('.fits','._goodPSF.fits')
             print('Saving to', newPSFFile)
             goodPSF.psfStore(newPSFFile, psfV2=True)
 
@@ -101,7 +102,7 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len=111):
                     label = 0
 
                 final_file = '~/PSF_star_selection/NN_data_' + str(fixed_cutout_len) \
-                             + '/' + inputFile.replace('.fits', '_cutout_' + str(count) \
+                             + '/' + input_file.replace('.fits', '_cutout_' + str(count) \
                              + '_cutoutData.pickle')
 
                 with open(final_file, 'wb+') as han:

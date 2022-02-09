@@ -6,16 +6,34 @@ import pickle as pick
 import sys, os
 
 
-def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04545.fits', psfFile = 'rS1i04545.psf.fits'):
+def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
+    '''
+    This function uses Source-Extractor to create cutouts from all the sources 
+    in an image.
+    
+    Adapted from:  https://github.com/fraserw
 
-    #print(len(sys.argv))
-    if len(sys.argv)>3:
-        dir = sys.argv[1]
-        inputFile = sys.argv[2]
-        psfFile = sys.argv[3]
+    Parameters:    
+
+        file_dir (str): directory where inputFile is saved
+
+        input_file (str): original image file
+
+        cutout_file (str): filename to save cutouts of all sources in image 
+
+        fixed_cutout_len (int): force cutouts to have shape
+                                (fixed_cutout_len, fixed_cutout_len)
+
+                        --> set to zero for cutoutWidth = max(30, int(5*fwhm))
+
+    Returns:
+        
+        None
+
+    '''
 
     ### open the fits image
-    with fits.open(dir+'/'+inputFile) as han:
+    with fits.open(dir+'/'+input_file) as han:
         img_data = han[1].data.astype('float64')
         header = han[0].header
     (A,B)  = img_data.shape
@@ -31,7 +49,8 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
                         catalogType='FITS_LDAC',
                         saturate=64000)
     scamp.makeParFiles.writeConv()
-    scamp.makeParFiles.writeParam(numAps=1) #numAps is thenumber of apertures that you want to use. Here we use 1
+    # numAps is thenumber of apertures that you want to use. Here we use 1
+    scamp.makeParFiles.writeParam(numAps=1) 
 
     fits.writeto('junk.fits', img_data, header=header, overwrite=True)
     scamp.runSex('HSC.sex', 'junk.fits' ,options={'CATALOG_NAME':f'{dir}/{inputFile}.cat'},verbose=False)
@@ -46,7 +65,8 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
 
 
     ## load the PSF that Wes generated at an earlier point. This is not a great PSF!
-    goodPSF = psf.modelPSF(restore=dir+'/'+psfFile)
+    file_psf = input_file.replace('.fits','.psf_cleaned.fits')
+    goodPSF = psf.modelPSF(restore=file_dir+'/'+file_psf)
     fwhm = goodPSF.FWHM()
     print('########################## FWHM ######################')
     print(fwhm)
@@ -56,26 +76,21 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
     else:
         cutoutWidth = fixed_cutout_len//2
 
-    zscale = ZScaleInterval()
-
 
     ## fit each star with the PSF to get its brightness and position.
     stds, seconds, peaks, xs, ys = [], [], [], [], []
     cutouts = []
     rem_cutouts = []
     for i in range(len(X_ALL)):
-        #if len(xs)>25: break
-
-
         x, y = X_ALL[i], Y_ALL[i]
-        #print(f'Fitting good source {x}, {y}')
-
+        
         x_int, y_int = int(x), int(y)
-        if not (x_int>cutoutWidth+2 and y_int>cutoutWidth+2 and x_int<(B-cutoutWidth-2) and y_int<(A-cutoutWidth-2)):
+        if not (x_int>cutoutWidth+2 and y_int>cutoutWidth+2 and \
+                x_int<(B-cutoutWidth-2) and y_int<(A-cutoutWidth-2)):
             continue
 
-        cutout = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
-        print(cutout.shape)
+        cutout = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, \ 
+                            x_int-cutoutWidth:x_int+cutoutWidth+1]
         
         peak = np.max(cutout[cutoutWidth-1:cutoutWidth+2, cutoutWidth-1:cutoutWidth+2])
         peaks.append(peak)
@@ -96,22 +111,22 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
 
         if fitPars  is not None:
 
-            #print(fitPars)
             (aa,bb) = cutout.shape
-            print(aa, bb)
-            if int(aa) == 111 and int(bb) == 111:
+            if int(aa) == 1+(cutoutWidth*2) and int(bb) == 1+(cutoutWidth*2):
 
-                model_cutout = goodPSF.plant(fitPars[0], fitPars[1], fitPars[2], cutout*0.0,returnModel=True,addNoise=False)
+                model_cutout = goodPSF.plant(fitPars[0], fitPars[1], fitPars[2], \
+                                        cutout*0.0,returnModel=True,addNoise=False)
                 pixel_weights = 1.0/(np.abs(model_cutout)+1.0)
                 pixel_weights /= np.sum(pixel_weights)
 
-                rem_cutout = goodPSF.remove(fitPars[0], fitPars[1], fitPars[2], cutout,useLinePSF=False)
+                rem_cutout = goodPSF.remove(fitPars[0], fitPars[1], fitPars[2], 
+                                                        cutout,useLinePSF=False)
 
-                weighted_std = np.sum(pixel_weights*(rem_cutout - np.mean(rem_cutout))**2)/np.sum(model_cutout)*(aa*bb)
+                weighted_std = np.sum(pixel_weights*(rem_cutout - \
+                             np.mean(rem_cutout))**2)/np.sum(model_cutout)*(aa*bb)
 
                 sorted = np.sort(rem_cutout.reshape(aa*bb))
                 second_highest = sorted[-2]
-
 
                 stds.append(weighted_std)
                 seconds.append(second_highest)
@@ -119,37 +134,28 @@ def HSCgetStars_main(fixed_cutout_len = 0, dir = '20191120', inputFile = 'rS1i04
                 ys.append(y)
                 cutouts.append(cutout[:])
                 rem_cutouts.append(rem_cutout[:])
-
-                #if x in goodFits[:, 4]:
-                #    w = np.where(goodFits[:,4]==x)
-                #    print(w)
-                #    Fits.append([goodFits[:, 2][w], goodFits[:, 3][w]])
-                #else:
-                #    Fits.append([-1, -1])
-
-                #print('Second Highest', second_highest, stds[-1])
-                #print()
             
             else:
-                print('EXCLUDED')
+                print('Cutout of wrong shape:', cutout.shape)
 
+    # store everything in numpy array format
     std = np.array(stds)
     seconds = np.array(seconds)
     xs = np.array(xs)
     ys = np.array(ys)
     peaks = np.array(peaks)
     cutouts = np.array(cutouts)
-    #Fits = np.array(Fits)
-
 
     ## save the fits data to file.
     # save original cutouts
-    outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_cutouts_savedFits.pickle')
+    outFile = dir+'/'+inputFile.replace('.fits', '_' + str(fixed_cutout_len) + \
+                                                    '_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
         pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile], han)
     # save cutouts with PSF removed
-    outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_rem_cutouts_savedFits.pickle')
+    outFile = dir+'/'+inputFile.replace('.fits', '_' + str(fixed_cutout_len) + \ 
+                                                '_rem_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
         pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile], han)

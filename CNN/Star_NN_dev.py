@@ -24,54 +24,70 @@ from sklearn.utils import class_weight
 from sklearn.utils.multiclass import unique_labels
 
 from astropy.visualization import interval, ZScaleInterval
-
-
-
-
-# PULL IN REGULARIZATION DATA
-
-def get_user_input():
-    val = input("Change default values (Y/N): ")
-balanced_data_method = str(sys.argv[1]) # even or weight
-data_load = str(sys.argv[2]) # can ask for specific presaved filename later
-num_epochs = int(sys.argv[3])
-
-####section for setting up some flags and hyperparameters
-batch_size = 16 # try diff batch size?
-dropout_rate = 0.2
-test_fraction = 0.05 # from 0.05
-#num_epochs = 10
-max_size = 111 # odd good
-
-size_of_data = int(sys.argv[4])//2
-#cutout_len = int(sys.argv[5])
+zscale = ZScaleInterval()
 
 ## initializing random seeds for reproducability
 # tf.random.set_seed(1234)
 # keras.utils.set_random_seed(1234)
 np.random.seed(432)
 
-zscale = ZScaleInterval()
+file_dir = '~/PSF_star_selection'
+
+def get_user_input():
+    '''
+    Prompts user for neural network training parameters/options
+
+    Parameters:    
+
+        None
+
+    Returns:
+        
+        balanced_data_method (str): even or weighted classes
+        
+        data_load (str): using presaved data set or preparing from scratch
+
+        size_of_data (int): size of data to load from scratch, 0 if using presaved
+        
+        num_epochs (int): number of epochs to train neural network for
+
+    '''
+    val = input("Change default values (Y/N): ")
+    if val == 'Y':
+        balanced_data_method = input("Method to balanced classes (even or weighted):")
+        data_load = input("How to load data (presaved or scratch):")
+
+        if data_load == 'scratch':
+            size_of_data = int(input("Number of cutouts to use:"))
+        else: 
+            size_of_data = 0
+
+        cutout_size = int(input("Size of cutouts (default 111):"))
+        num_epochs = int(input("How many epochs to train for:"))
+    else: 
+        balanced_data_method = 'even' 
+        data_load = 'scratch'
+        num_epochs = 500
+        cutout_size = 111
+    
+    return balanced_data_method, data_load, size_of_data, num_epochs, cutout_size
 
 
-file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
+def save_scratch_data(size_of_data, cutout_size):
+    '''
+    Create presaved data file to use for neural network training
 
-def load_presaved_data(data_file):
-    with open(file_dir + '/jan18_111_metadata_defaultLen.pickle', 'rb') as han:
-        [cutouts, labels, xs, ys, fwhm, files] = pickle.load(han) 
+    Parameters:    
 
-    cutouts = np.asarray(cutouts).astype('float32')
-    std = np.nanstd(cutouts)
-    mean = np.nanmean(cutouts)
-    cutouts -= mean
-    cutouts /= std
-    w_bad = np.where(np.isnan(cutouts))
-    cutouts[w_bad] = 0.0
+        size_of_data (int): number of files to acc
 
-    #with open(file_dir + '/regularization_data.pickle', 'wb+') as han:
-    #    pickle.dump([std, mean], han)
+        cutout_size (int): defines shape of cutouts (cutout_size, cutout_size)
 
-def save_scratch_data(size_of_data, data_file):
+    Returns:
+        
+        None
+
+    '''
 
     good_cutouts = [] # label 1
     bad_cutouts = [] # label 0
@@ -85,20 +101,21 @@ def save_scratch_data(size_of_data, data_file):
     bad_y_lst = []
     bad_inputFile_lst = []
 
+    data_dir + '/NN_data_' + str(cutout_size) + '/'
+
     files_counted = 0
     try:
-        for filename in os.listdir(file_dir+ '/NN_data_metadata_111'):
-            if filename.endswith("metadata_cutoutData.pickle"):
-                #print(files_counted, size_of_data)
+        for filename in os.listdir(data_dir):
+            if filename.endswith('_cutoutData.pickle'):
                 if files_counted >= size_of_data:
                     break
                 print(files_counted, size_of_data)
-                #print('file being processed: ', filename)
+                print('file being processed: ', filename)
 
-                with open(file_dir + '/NN_data_metadata_111/' + filename, 'rb') as f:
+                with open(data_dir + filename, 'rb') as f:
                     [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
 
-                    if cutout.shape == (111,111):
+                    if cutout.shape == (cutout_size, cutout_size):
                         if label == 1:
                             good_x_lst.append(x)
                             good_y_lst.append(y)
@@ -117,14 +134,11 @@ def save_scratch_data(size_of_data, data_file):
                     else:
                         continue
     except Exception as e: 
-        print('FAILURE')
-        print(e) 
-        pass   
+        print(e)  
 
-    # make sure there are more good stars then bad ones?
+    # make sure there are more good stars then bad ones
     if len(good_cutouts)>len(bad_cutouts):
-        print('ERROR: MORE BAD STARS THAN GOOD STARS')
-        return 0
+        print('ERROR: MORE GOOD STARS THAN BAD STARS')
 
     # keep all good cutouts
     num_good_cutouts = len(good_cutouts)
@@ -173,37 +187,25 @@ def save_scratch_data(size_of_data, data_file):
                 
     print(str(len(cutouts)) + ' files used')
 
-    with open(file_dir + '/jan19_' + str(max_size) + '_metadata_defaultLen.pickle', 'wb+') as han:
+    with open(data_dir + str(size_of_data) + '_numcutouts_presaved_data.pickle', 'wb+') as han:
         pickle.dump([cutouts, labels, xs, ys, fwhm, files], han)
 
-    return 1
 
-def load_data(load_method, datset_size, data_file, test_fraction): # use global variables?
-    if load_method == 'scratch':
-        save_scratch_data(dataset_size, data_file)
-    load_presaved_data()
-    #elif load_method == 'presaved':
-    #    load_presaved_data()
-    #else: 
-    #    print('invalid data load method, must be "scratch" or "presaved"')
-    #    return 0
+def load_presaved_data(data_file):
+    with open(file_dir + '/NN_data_' + str(max_size) + '/jan18_111_metadata_defaultLen.pickle', 'rb') as han:
+        [cutouts, labels, xs, ys, fwhm, files] = pickle.load(han) 
 
-    return cutouts, labels, xs, ys, # load from file?
+    cutouts = np.asarray(cutouts).astype('float32')
+    std = np.nanstd(cutouts)
+    mean = np.nanmean(cutouts)
+    cutouts -= mean
+    cutouts /= std
+    w_bad = np.where(np.isnan(cutouts))
+    cutouts[w_bad] = 0.0
 
-    ### now divide the cutouts array into training and testing datasets.
-    skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)#, random_state=41)
-    print(skf)
-    skf.split(cutouts, labels)
+    #with open(file_dir + '/regularization_data.pickle', 'wb+') as han:
+    #    pickle.dump([std, mean], han) # WSAVE W MODEL
 
-    print(cutouts.shape) # why does it need both?
-    for train_index, test_index in skf.split(cutouts, labels):
-        X_train, X_test = cutouts[train_index], cutouts[test_index]
-        y_train, y_test = labels[train_index], labels[test_index]
-        xs_train, xs_test = xs[train_index], xs[test_index]
-        files_train, files_test = files[train_index], files[test_index]
-        fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
-
-    return  X_train, X_test, y_train, y_test, files_train, files_test, files_train, files_test, fwhms_train, fwhms_test
 
 ### define the CNN
 def convnet_model(input_shape, training_labels, unique_labs, dropout_rate=dropout_rate):
@@ -235,6 +237,25 @@ def convnet_model(input_shape, training_labels, unique_labs, dropout_rate=dropou
     return model
 
 def train_CNN():
+
+    # section for setting up some flags and hyperparameters
+    batch_size = 16 
+    dropout_rate = 0.2
+    test_fraction = 0.05 
+    max_size = 111 
+
+    ### now divide the cutouts array into training and testing datasets.
+    skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)#, random_state=41)
+    print(skf)
+    skf.split(cutouts, labels)
+
+    print(cutouts.shape) # why does it need both?
+    for train_index, test_index in skf.split(cutouts, labels):
+        X_train, X_test = cutouts[train_index], cutouts[test_index]
+        y_train, y_test = labels[train_index], labels[test_index]
+        xs_train, xs_test = xs[train_index], xs[test_index]
+        files_train, files_test = files[train_index], files[test_index]
+        fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
     
     #unique_labs = len(np.unique(y_train))
     #print(unique_labels)
@@ -341,39 +362,13 @@ def test_CNN(X_train, X_test, y_test):
     pyl.show()
     fig2.savefig(file_dir+'/NN_plots/'+'NN_confusionMatrix' + str(end) + '.png')
     pyl.clf()
-
-    #print('Top 25 (or tied within) predicted good stars that are labelled wrong:') # diff images so hard, seperate this
-    #z = heapq.nlargest(25, preds_test[i][1])
-    #print(z)
-    #misclass_25 = 0
-    #for i in range(len(preds_test)):
-    #    # need top 25 confidence
-    #    if y_test[i] == 0 and preds_test[i][1] in z:
-    #        (c1, c2) = zscale.get_limits(X_test[i])
-    #        normer5 = interval.ManualInterval(c1,c2)
-    #        pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
-    #        pyl.imshow(normer5(X_test[i]))
-    #        pyl.show()
-    #        pyl.close()
-    #        misclass_25 += 1
-
-    #print('Misclassed stars in top 25', misclass_25)
-    misclass_80p = 0
-    for i in range(len(preds_test)):
-        # need top 25 confidence
-        if y_test[i] == 0 and preds_test[i][1] > 0.8:
-            (c1, c2) = zscale.get_limits(X_test[i])
-            normer5 = interval.ManualInterval(c1,c2)
-            pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
-            pyl.imshow(normer5(X_test[i]))
-            pyl.show()
-            pyl.close()
-            misclass_80p += 1
-
-    print('Misclassed good stars above 80 percent confidence', misclass_80p)
        
 def main():
-    get_user_input()
+    balanced_data_method, data_load, size_of_data, num_epochs, cutout_size = get_user_input()
+
+    if data_load == 'scratch':
+        save_scratch_data(size_of_data, cutout_size)
+
     load_data()
     train_CNN()
     test_CNN()

@@ -93,7 +93,7 @@ def get_user_input():
 
     model_dir = input("Neural Network model directory: ") # UNPACK regularization and cutout len data
     model_name = input("Neural Network model name: ")
-    model_dir = pwd + '/NN_PSF_Saved_Models/' + model_name) # have NN save here too
+    model_dir = pwd + '/NN_PSF_Saved_Models/' + model_name) 
 
     conf_cutoff = float(input("Confidence cutoff (default 0.95): "))   
     SNR_proxy_cutoff = float(input("SNR proxy cutoff (default 10.0): ")) 
