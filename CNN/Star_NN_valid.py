@@ -1,43 +1,24 @@
 import os
 from os import path
-import time
-from datetime import date 
-import sys
 import numpy as np
 import matplotlib.pyplot as pyl
 import pickle
-import heapq
-
 import tensorflow as tf
-from tensorflow.keras.optimizers import Adam
-
 import keras
-from keras.models import Sequential
-from keras.layers import Dense, BatchNormalization, Flatten, Conv2D, MaxPool2D
-from keras.layers.core import Dropout
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-
 from sklearn.metrics import confusion_matrix
 from sklearn.utils.multiclass import unique_labels
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils import class_weight
 from sklearn.utils.multiclass import unique_labels
-
 from astropy.visualization import interval, ZScaleInterval
-
 import matplotlib as mpl
+zscale = ZScaleInterval()
 
-# look in model for trained on and withheld imgs total 219580-219620
-withheld_img = range(219580,) # RANDOM SELECT
-#withheld_img = [219580, 219582, 219584, 219586, 219588] 
-validation_size = 500 
-size_of_data = validation_size//2
 file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 # need more specific model dir
 model_dir_name = ''
 
-zscale = ZScaleInterval()
 batch_size = 16
 good_cutouts = [] # label 1
 bad_cutouts = [] # label 0
