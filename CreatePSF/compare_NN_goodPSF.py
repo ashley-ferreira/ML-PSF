@@ -254,7 +254,6 @@ def compare_NN_goodPSF(input_file, file_dir, model_dir, NN_cutoff_vals):
     plt.show()
 
 
-    # go pull this directly from new cutout file?
     xs_best = np.array(xs_best)
     ys_best = np.array(ys_best)
 

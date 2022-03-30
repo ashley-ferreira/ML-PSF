@@ -135,9 +135,8 @@ try:
         labels = np.concatenate((label_good, label_bad))
 
     else: 
-        with open(file_dir + '/WITHHELD_jan27_50k_' + str(max_size) + '_metadata_defaultLen.pickle', 'rb') as f:
+        with open(file_dir + '/WITHHELD_' + str(max_size) + '_presaved_data.pickle', 'rb') as f:
             [cutouts, labels, xs, ys, fwhms, files] = pickle.load(f)
-
 
 except Exception as Argument:
         # creating/opening a file
