@@ -35,7 +35,7 @@ size_of_data = validation_size//2
 file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 # need more specific model dir
-model_dir_name = 
+model_dir_name = ''
 
 zscale = ZScaleInterval()
 batch_size = 16
@@ -139,14 +139,14 @@ try:
             [cutouts, labels, xs, ys, fwhms, files] = pickle.load(f)
 
 except Exception as Argument:
-        # creating/opening a file
-        err_log = open(model_dir_name + 'error_log.txt', 'a')
+    # creating/opening a file
+    err_log = open(model_dir_name + 'error_log.txt', 'a')
 
-        # writing in the file
-        err_log.write('Star_NN_valid.py' + str(Argument))
-        
-        # closing the file
-        err_log.close()  
+    # writing in the file
+    err_log.write('Star_NN_valid.py' + str(Argument))
+    
+    # closing the file
+    err_log.close()  
 
 with open(model_dir + '/regularization_data.pickle', 'rb') as han:
     [std, mean] = pickle.load(han)
