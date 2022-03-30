@@ -28,9 +28,9 @@ from astropy.visualization import interval, ZScaleInterval
 import matplotlib as mpl
 
 # look in model for trained on and withheld imgs total 219580-219620
-withheld_img = range(219580,) # more than all you have? RANDOM SELECT
-#withheld_img = [219580, 219582, 219584, 219586, 219588] # add mpre img
-validation_size = 500 # make bigger to 10k (25*100*num images)
+withheld_img = range(219580,) # RANDOM SELECT
+#withheld_img = [219580, 219582, 219584, 219586, 219588] 
+validation_size = 500 
 size_of_data = validation_size//2
 file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
@@ -101,14 +101,14 @@ try:
         bad_fwhm_arr = np.array(bad_fwhm_lst)
         bad_inputFile_arr = np.array(bad_inputFile_lst)
 
-        good_cutouts = np.array(good_cutouts)#, dtype=object)
+        good_cutouts = np.array(good_cutouts)
         print(good_cutouts.shape)
         good_cutouts = np.expand_dims(good_cutouts, axis=3)
         print(good_cutouts.shape)
 
         label_good = np.ones(num_good_cutouts)
 
-        bad_cutouts = np.array(bad_cutouts, dtype=object) #new addition, unsure
+        bad_cutouts = np.array(bad_cutouts, dtype=object) 
 
         if True:
             number_of_rows = bad_cutouts.shape[0]
@@ -158,10 +158,16 @@ cutouts /= std
 w_bad = np.where(np.isnan(cutouts))
 cutouts[w_bad] = 0.0
 
+<<<<<<< HEAD
 # load model       
 cn_model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27_25k_250epochs')#1642735464.135405')
 
 # show stats analsys
+=======
+# load model                          
+cn_model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27_25k_250epochs')
+
+>>>>>>> 4cebad8c6ffdc741f969fcf24045c394e3cf99af
 X_test = cutouts
 y_test = labels
 y_test_binary = keras.utils.np_utils.to_categorical(y_test, 2) #unique_labels)
@@ -169,14 +175,12 @@ y_test_binary = keras.utils.np_utils.to_categorical(y_test, 2) #unique_labels)
 X_test = np.asarray(X_test).astype('float32')
 preds_test = cn_model.predict(X_test, verbose=1)
 
-# normalize too
 test_good_p = []
 for p in preds_test:
     test_good_p.append(p[1])
-
-# how did it show both here?
+    
 bins = np.linspace(0, 1, 100)
-pyl.hist(test_good_p, label = 'validation set confidence', bins=bins, alpha=0.5, density=True) # add transparency 
+pyl.hist(test_good_p, label = 'validation set confidence', bins=bins, alpha=0.5, density=True)
 pyl.xlabel('Good Star Confidence')
 pyl.ylabel('Count')
 pyl.legend(loc='best')
@@ -190,7 +194,7 @@ print("validation loss, validation acc:", results)
 zscale = ZScaleInterval()
 
 X_test = np.squeeze(X_test, axis=3)
-print(X_test.shape) # doesnt look squeezed?
+print(X_test.shape) 
 
 
 # plot confusion matrix
@@ -206,7 +210,7 @@ for (i, j), z in np.ndenumerate(cm):
     pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
 
 pyl.title('Confusion matrix')
-pyl.colorbar(cmap=mpl.cm.cool) # not working
+pyl.colorbar(cmap=mpl.cm.cool)
 pyl.xlabel('Predicted labels')
 pyl.ylabel('True labels')
 pyl.show()
@@ -215,11 +219,6 @@ pyl.clf()
 # CONCISE THESE FOR LOOPS
 fwhms_test_misclass = []
 for i in range(len(preds_test)):
-    #print(y_test[i])
-    #print(preds_test[i])
-    #pyl.imshow(X_test[i])
-    #pyl.show()
-    #pyl.close()
     
     if y_test[i] == 1 and preds_test[i][0] > 0.5:
         fwhms_test_misclass.append(fwhms[i])
@@ -237,7 +236,7 @@ for i in range(len(preds_test)):
         '''
         (c1, c2) = zscale.get_limits(X_test[i])
         normer5 = interval.ManualInterval(c1,c2)
-        pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
+        pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) 
         pyl.imshow(normer5(X_test[i]))
         pyl.show()
         pyl.close()
@@ -253,14 +252,12 @@ pyl.close()
 pyl.clf()
 
 
-# use predict with threshold confidence changed 
-
 misclass_80p = 0
 good_class_80p = 0
 
 # likely automatic way to do this but i didn't easily find
 confidence_step = 0.001
-confidence_queries = np.arange(confidence_step, 1, confidence_step) # worth it since it doesnt take too long
+confidence_queries = np.arange(confidence_step, 1, confidence_step) 
 good_star_acc = []
 bad_star_acc = []
 recall = []
@@ -276,7 +273,6 @@ for c in confidence_queries:
     bad_stars_above_c = 0
 
     for i in range(len(preds_test)):
-        # need top 25 confidence
         '''
         if y_test[i] == 0 and preds_test[i][1] > c:
             #(c1, c2) = zscale.get_limits(X_test[i])
@@ -323,21 +319,19 @@ for c in confidence_queries:
     bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
     # double check recall and precision calculations, switch to fp..
     recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) 
-    fp_rate.append(bad_stars_incorrect/(bad_stars_incorrect+bad_stars_correct)) # too big
+    fp_rate.append(bad_stars_incorrect/(bad_stars_incorrect+bad_stars_correct)) 
     precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
 
 pyl.title('Accuracy Curve')
 pyl.plot(confidence_queries, good_star_acc, label='good star classificantion')
 pyl.plot(confidence_queries, bad_star_acc, label='bad star clasification')
 pyl.legend()
-pyl.xlabel('Confidence cutoff for good star classification') # should fix other plot
+pyl.xlabel('Confidence cutoff for good star classification')
 pyl.ylabel('Accuracy')
 pyl.show()
 pyl.close()
 pyl.clf()
 
-# add heat plot for confidence values
-# differnent orientation then in the video?
 xy = np.arange(0,1, confidence_step)
 #perfect_ROC = np.concatenate(([0],np.ones(int(1/confidence_step)-1)))
 perfect_ROC = np.ones(len(xy))
@@ -360,16 +354,10 @@ perfect_PR[len(xy)-1] = 0
 
 pyl.title('PR Curve')
 pyl.plot(xy, perfect_PR, '--', label='perfect classifier')
-pyl.plot(recall, precision, label='trained CNN') # then recall too big
+pyl.plot(recall, precision, label='trained CNN')
 pyl.legend()
 pyl.xlabel('Recall')
 pyl.ylabel('Precision')
 pyl.show()
 pyl.close()
 pyl.clf()
-
-#print('number of misclassed good stars above 95 percent confidence:', misclass_80p)
-#print('number of correctly classified good stars above 95 percent confidence', good_class_80p)
-#print('out of total test set size (50/50 split):', len(preds_test))
-
-# compare psfs, plots 9?
