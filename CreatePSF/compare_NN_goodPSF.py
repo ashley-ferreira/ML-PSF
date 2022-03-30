@@ -10,10 +10,36 @@ import matplotlib.gridspec as gridspec
 import pickle
 import keras
 import matplotlib.pyplot as plt
+from optparse import OptionParser
+parser = OptionParser()
 
 zscale = ZScaleInterval()
-fixed_cutout_len = 111
-pwd = '/arc/home/ashley' # will change to /arc/projects/uvickbos/ML-PSF
+fixed_cutout_len = 111 # add option
+pwd = '/arc/home/ashley' # will change to /arc/projects/uvickbos/ML-PSF or option
+
+parser.add_option('-n', '--night_dir', dest='night_dir', \
+        default='03068', type='str', \
+        help='image file directory, default=%default.')
+
+parser.add_option('-i', '--img_file', dest='img_file', \
+        default='0216730-000', type='str', \
+        help='input file to use for comparison, default=%default.')
+
+parser.add_option('-m', '--model_dir', dest='model_dir', \
+        default='None', type='str', \
+        help='neural network model directory, default=%default.') # can add default
+
+parser.add_option('-c', '--conf_cutoff', dest='conf_cutoff', \
+        default='0.95', type='float', \
+        help='confidence cutoff, default=%default.')
+
+parser.add_option('-S', '--SNR_proxy_cutoff', dest='SNR_proxy_cutoff', \
+        default='10.0', type='float', \
+        help='SNR proxy cutoff, default=%default.')
+
+parser.add_option('-s', '--min_num_stars', dest='min_num_stars', \
+        default='10', type='int', \
+        help='minimum number of stars acceptable, default=%default.')
 
 def crop_center(img, cropx, cropy):
     '''
@@ -38,7 +64,7 @@ def crop_center(img, cropx, cropy):
     x,y = img.shape 
     startx = x//2 - (cropx//2)
     starty = y//2 - (cropy//2)
-    cropped_img = img[int(starty):int(starty+cropy), int(startx):int(startx+cropx)]
+    cropped_img = img[int(startx):int(startx+cropx), int(starty):int(starty+cropy)]
 
     return cropped_img
 
@@ -85,22 +111,16 @@ def get_user_input():
                               best stars, [conf_cutoff, SNR_proxy_cutoff, min_num_stars]
 
     '''
-    night_dir = input("Image file directory (eg. 03068):")
-    file_dir = pwd + '/HSC_May25-lsst/rerun/processCcdOutputs/' + night_dir + '/HSC-R2/corr'
+    (options, args) = parser.parse_args()
 
-    img_file = input("Input file (eg. 0216730-000): ")
-    input_file = 'CORR-' + str(img_file) + '.fits'
+    NN_cutoff_vals = [parser.conf_cutoff, parser.SNR_proxy_cutoff, parser.min_num_stars]
 
-    model_dir = input("Neural Network model directory: ") # UNPACK regularization and cutout len data
-    model_name = input("Neural Network model name: ")
-    model_dir = pwd + '/NN_PSF_Saved_Models/' + model_name) 
+    input_file = 'CORR-' + str(options.img_file) + '.fits'
 
-    conf_cutoff = float(input("Confidence cutoff (default 0.95): "))   
-    SNR_proxy_cutoff = float(input("SNR proxy cutoff (default 10.0): ")) 
-    min_num_stars = int(input("Minimum number of stars acceptable (default 10): "))
-    NN_cutoff_vals = [conf_cutoff, SNR_proxy_cutoff, min_num_stars]
+    # update below
+    file_dir = pwd + '/HSC_May25-lsst/rerun/processCcdOutputs/' + options.night_dir + '/HSC-R2/corr'
 
-    return input_file, file_dir, model_dir, NN_cutoff_vals
+    return input_file, file_dir, options.model_dir, NN_cutoff_vals
 
     
 def compare_NN_goodPSF(input_file, file_dir, model_dir, NN_cutoff_vals):

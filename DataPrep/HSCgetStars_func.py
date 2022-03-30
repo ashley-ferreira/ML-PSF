@@ -89,8 +89,7 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
                 x_int<(B-cutoutWidth-2) and y_int<(A-cutoutWidth-2)):
             continue
 
-        cutout = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, \ 
-                            x_int-cutoutWidth:x_int+cutoutWidth+1]
+        cutout = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1,x_int-cutoutWidth:x_int+cutoutWidth+1]
         
         peak = np.max(cutout[cutoutWidth-1:cutoutWidth+2, cutoutWidth-1:cutoutWidth+2])
         peaks.append(peak)
@@ -148,14 +147,14 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
 
     ## save the fits data to file.
     # save original cutouts
-    outFile = dir+'/'+inputFile.replace('.fits', '_' + str(fixed_cutout_len) + \
+    outFile = dir+'/'+input_file.replace('.fits', '_' + str(fixed_cutout_len) + \
                                                     '_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
-        pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile], han)
+        pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, input_file], han)
     # save cutouts with PSF removed
-    outFile = dir+'/'+inputFile.replace('.fits', '_' + str(fixed_cutout_len) + \ 
+    outFile = dir+'/'+input_file.replace('.fits', '_' + str(fixed_cutout_len) + \ 
                                                 '_rem_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
-        pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile], han)
+        pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, input_file], han)

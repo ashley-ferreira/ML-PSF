@@ -24,19 +24,68 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils import class_weight
 from sklearn.utils.multiclass import unique_labels
 
+from convnet_model import convnet_model
+
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
+
+from optparse import OptionParser
+parser = OptionParser()
 
 ## initializing random seeds for reproducability
 # tf.random.set_seed(1234)
 # keras.utils.set_random_seed(1234)
 np.random.seed(432)
 
-pwd = '~/PSF_star_selection/'
+
+parser.add_option('-p', '--pwd', dest='pwd', \
+        default='~/PSF_star_selection/', type='str', \
+        help=', default=%default.')
+
+# likely removing this option as it hasnt worked well and right now not an option for training
+parser.add_option('-b', '--balanced_data_method', dest='balanced_data_method', \
+        default='even', type='str', \ 
+        help='method to balanced classes (even or weighted), default=%default.')
+
+parser.add_option('-d', '--data_load', dest='data_load', \
+        default='scratch', type='str', \ 
+        help='how to load data (presaved or scratch), default=%default.')
+
+parser.add_option('-s', '--size_of_data', dest='size_of_data', \
+        default='0', type='int', \ 
+        help='number of cutouts to use, default=%default.')
+
+parser.add_option('-c', '--cutout_size', dest='cutout_size', \
+        default='111', type='int', \
+        help='c is size of cutout required, produces (c,c) shape, default=%default.')
+
+parser.add_option('-t', '--training_subdir', dest='training_subdir', \
+        default='NN_data_' + str(cutout_size) + '/', type='str', \
+        help='subdir in pwd for training data, default=%default.')
+
+parser.add_option('-n', '--num_epochs', dest='num_epochs', \
+        default='500', type='int', \
+        help='how many epochs to train for, default=%default.')
+
+model_dir_name_default = pwd + 'Saved_Model/' + \
+                datetime.today().strftime('%Y-%m-%d-%H:%M:%S') + '/'
+
+parser.add_option('-m', '--model_dir_name', dest='model_dir_name', \
+        default=model_dir_name_default, type='str', \
+        help='name for model directory, default=%default.')
+
+parser.add_option('-c', '--cutout_size', dest='cutout_size', \
+        default='111', type='int', \
+        help='c is size of cutout required, produces (c,c) shape, default=%default.')
+
+parser.add_option('-v', '--validation_fraction', dest='validation_fraction', \
+        default='0.1', type='float', \
+        help='fraction of images saved to only use in validation step, default=%default.')
+
 
 def get_user_input():
     '''
-    Prompts user for neural network training parameters/options
+    Gets user user preferences for neural network training parameters/options
 
     Parameters:    
 
@@ -54,33 +103,21 @@ def get_user_input():
 
         model_dir_name (str): directory to store all outputs
 
+        cutout_size (int): is size of cutout required, produces (cutout_size,cutout_size) shape
+
+        pwd (str): working directory, will load data from subdir and save model into subdir
+
+        training_sub_dir (str): subdir in pwd for training data
+
     '''
-    val = input("Change default values (Y/N): ")
-    if val == 'Y':
-        balanced_data_method = input("Method to balanced classes (even or weighted):")
-        data_load = input("How to load data (presaved or scratch):")
-
-        if data_load == 'scratch':
-            size_of_data = int(input("Number of cutouts to use:"))
-        else: 
-            size_of_data = 0
-
-        cutout_size = int(input("Size of cutouts (default 111):"))
-        num_epochs = int(input("How many epochs to train for:"))
-        model_dir_name = intput("Name for model directory")
-    else: 
-        balanced_data_method = 'even' 
-        data_load = 'scratch'
-        num_epochs = 500
-        cutout_size = 111
-        model_dir_name = pwd + 'Saved_Model/' + 
-                            datetime.today().strftime('%Y-%m-%d-%H:%M:%S') + '/'
+    (options, args) = parser.parse_args()
     
-    return balanced_data_method, data_load, size_of_data, 
-                 num_epochs, cutout_size, model_dir_name
+    return options.balanced_data_method, options.data_load, options.size_of_data, \
+            options.num_epochs, options.model_dir_name, options.cutout_size,  \
+            options.pwd, options.training_subdir
 
 
-def save_scratch_data(size_of_data, cutout_size, model_dir_name):
+def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method, validation_fraction):
     '''
     Create presaved data file to use for neural network training
 
@@ -91,6 +128,12 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name):
         cutout_size (int): defines shape of cutouts (cutout_size, cutout_size)
 
         model_dir_name (str): directory to save loaded data
+
+        data_dir (str): directory where training data is stored 
+        
+        balanced_data_method (str): method to balance class weigths 
+
+        validation_fraction (float): fraction of data to save for validation step only
 
     Returns:
         
@@ -110,12 +153,10 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name):
     bad_y_lst = []
     bad_inputFile_lst = []
 
-    data_dir = pwd + 'NN_data_' + str(cutout_size) + '/'
-
     files_counted = 0
     try:
         for filename in os.listdir(data_dir):
-            if filename.endswith('_cutoutData.pickle'):
+            if filename.endswith('_cutoutData.pickle') and os.path.getsize(filename) > 0:
                 if files_counted >= size_of_data:
                     break
                 print(files_counted, size_of_data)
@@ -140,10 +181,24 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name):
                             bad_cutouts.append(cutout)
                         else:
                             print('ERROR: label is not 1 or 0, excluding cutout')
+                            err_log = open(model_dir_name + 'error_log.txt', 'a')
+                            err_log.write('Star_NN_dev.py' + filename + 'ERROR: label is not 1 or 0, excluding cutout. label=' + str(label))
+                            err_log.close() 
                     else:
-                        continue
-    except Exception as e: 
-        print(e)  
+                        print('ERROR: wrong cutout shape, excluding cutout')
+                        err_log = open(model_dir_name + 'error_log.txt', 'a')
+                        err_log.write('Star_NN_dev.py' + filename + 'ERROR: wrong cutout shape. shape=' + str(cutout.shape))
+                        err_log.close() 
+
+    except Exception as Argument:
+        # creating/opening a file
+        err_log = open(model_dir_name + 'error_log.txt', 'a')
+
+        # writing in the file
+        err_log.write('Star_NN_dev.py' + str(Argument))
+        
+        # closing the file
+        err_log.close()    
 
     # make sure there are more good stars then bad ones
     if len(good_cutouts)>len(bad_cutouts):
@@ -183,6 +238,18 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name):
         # add label 0
         label_bad = np.zeros(num_good_cutouts)
 
+    elif balanced_data_method == 'weight':
+        #class_weights = class_weight.compute_class_weight('balanced', np.unique(y_train), y_train)
+        #class_weights = class_weight.compute_class_weight('balanced', np.unique(y_train_binary), y_train_binary)
+        #class_weights = {1: len(bad_cutouts)/len(good_cutouts), 0: 1.} 
+        neg = len(bad_cutouts)
+        pos = len(good_cutouts)
+        total = pos + neg
+        weight_for_0 = (1 / neg) * (total / 2.0)
+        weight_for_1 = (1 / pos) * (total / 2.0)
+        class_weight = {0: weight_for_0, 1: weight_for_1}
+        print('Weight for class 0: {:.2f}'.format(weight_for_0))
+        print('Weight for class 1: {:.2f}'.format(weight_for_1))
 
     # combine arrays 
     cutouts = np.concatenate((good_cutouts, bad_cutouts))
@@ -193,11 +260,24 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name):
 
     # make label array for all
     labels = np.concatenate((label_good, label_bad))
-                
     print(str(len(cutouts)) + ' files used')
 
-    with open(model_dir_name + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
-        pickle.dump([cutouts, labels, xs, ys, fwhm, files], han)
+    skf_v = StratifiedShuffleSplit(n_splits=1, test_size=validation_fraction)
+    skf_v.split(cutouts, labels)
+
+    for used_index, withheld_index in skf_v.split(cutouts, labels): 
+        used_cutouts, withheld_cutouts = cutouts[used_index], cutouts[withheld_index]
+        used_labels, withheld_labels = labels[used_index], labels[withheld_index]
+        used_xs, withheld_xs = xs[used_index], xs[withheld_index]
+        used_ys, withheld_ys = ys[used_index], ys[withheld_index]
+        used_files, withheld_files = files[used_index], files[withheld_index]
+        used_fwhms, withheld_fwhms = fwhms[used_index], fwhms[withheld_index]
+
+    with open(model_dir_name + '/USED_' + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
+        pickle.dump([used_cutouts, used_labels, used_xs, used_ys, used_fwhms, used_files], han)
+
+    with open(model_dir_name + '/WITHHELD_' + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
+        pickle.dump([withheld_cutouts, withheld_labels, withheld_xs, withheld_ys, withheld_fwhms, withheld_files], han)
 
 
 def load_presaved_data(cutout_size, model_dir_name):
@@ -218,7 +298,7 @@ def load_presaved_data(cutout_size, model_dir_name):
 
     '''
     
-    with open(model_dir_name +  str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
+    with open(model_dir_name + 'USED_' str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhm, files] = pickle.load(han) 
 
     cutouts = np.asarray(cutouts).astype('float32')
@@ -232,68 +312,41 @@ def load_presaved_data(cutout_size, model_dir_name):
     with open(model_dir_name + 'regularization_data.pickle', 'wb+') as han:
         pickle.dump([std, mean], han)
 
-    return cutouts, labels, fwhm, files
+    return cutouts, labels, xs, ys, fwhm, files
 
-def convnet_model(input_shape, training_labels, unique_labs, dropout_rate):
-    '''
-    Defines the 2D Convolutional Neural Network (CNN)
 
-    Parameters:    
-
-        input_shape (arr): input shape for network
-
-        training_labels (arr): training labels
-
-        unique_labels (int): number unique labels (for good and bad stars = 2)
-
-        dropout_rate (float): dropout rate
-
-    Returns:
-        
-        model (keras model class): convolutional neural network to train
-
-    '''
-
-    model = Sequential()
-
-    #hidden layer 1
-    model.add(Conv2D(filters=16, input_shape=input_shape, activation='relu', padding='same', kernel_size=(3,3)))
-    model.add(Dropout(dropout_rate))
-    model.add(MaxPool2D(pool_size=(2, 2), padding='valid'))
-
-    #hidden layer 2 with Pooling
-    model.add(Conv2D(filters=16, input_shape=input_shape, activation='relu', padding='same', kernel_size=(3,3)))
-    model.add(Dropout(dropout_rate))
-    model.add(MaxPool2D(pool_size=(2, 2), padding='valid'))
-
-    model.add(BatchNormalization())
-
-    #hidden layer 3 with Pooling
-    model.add(Conv2D(filters=8, input_shape=input_shape, activation='relu', padding='same', kernel_size=(3,3)))
-    model.add(Dropout(dropout_rate))
-    model.add(MaxPool2D(pool_size=(2, 2), padding='valid'))
-
-    model.add(Flatten())
-    model.add(Dense(32, activation='sigmoid'))
-    model.add(Dense(unique_labs, activation='softmax')) 
-    #model.add(Activation("softmax"))
-
-    return model
-
-def train_CNN(cutouts, labels, fwhm, files):
+def train_CNN(model_dir_name, num_epochs, cutouts, labels, xs, ys, fwhms, files):
     '''
     Sets up and trains Convolutional Neural Network (CNN).
     Plots accuracy and loss over each training epoch.
 
     Parameters:    
 
+        model_dir_name (str): directory to store model
+        
+        num_epochs (int): number of epochs to train for
+
         cutouts (arr): 3D array conisting of 2D image data for each cutout
 
         labels (arr): 1D array containing 0 or 1 label for bad or good star respectively
 
+        xs (arr): 1D array containing central x position of cutout 
 
+        ys (arr): 1D array containing central y position of cutout 
 
+        fwhms (arr): 1D array containing fwhm values for each cutout 
+        
+        files (arr): 1D array containing file names for each cutout
 
+    Return: 
+
+        X_train (arr): X values (images) for training
+        
+        y_train (arr): real y values (labels) for training
+        
+        X_test (arr): X values (images) for testing 
+        
+        y_test (arr): real y values (labels) for testing 
 
     '''
 
@@ -313,6 +366,7 @@ def train_CNN(cutouts, labels, fwhm, files):
         X_train, X_test = cutouts[train_index], cutouts[test_index]
         y_train, y_test = labels[train_index], labels[test_index]
         xs_train, xs_test = xs[train_index], xs[test_index]
+        ys_train, ys_test = xs[train_index], xs[test_index]
         files_train, files_test = files[train_index], files[test_index]
         fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
     
@@ -341,7 +395,7 @@ def train_CNN(cutouts, labels, fwhm, files):
     cn_model.save(model_dir_name + 'model_' + str(end))
 
     # plot accuracy/loss versus epoch
-    fig = pyl.figure(figsize=(10,3))
+    fig1 = pyl.figure(figsize=(10,3))
 
     ax1 = pyl.subplot(121)
     ax1.plot(classifier.history['accuracy'], color='darkslategray', linewidth=2)
@@ -357,82 +411,74 @@ def train_CNN(cutouts, labels, fwhm, files):
     ax2.set_ylabel('Loss')
     ax2.set_xlabel('Epoch')
 
-    fig.savefig(model_dir_name +'/NN_plots/'+'NN_scores_plot' + str(end) + '.png')
+    fig1.savefig(model_dir_name +'/plots/'+'NN_training_history' + str(end) + '.png')
 
     pyl.show()
     pyl.close()
     pyl.clf()
 
-    preds_train = cn_model.predict(X_train, verbose=1)
+    return X_train, y_train, X_test, y_test
 
-    return preds_train, y_train, X_test, y_test
-
-def test_CNN(preds_train, y_train, X_test, y_test):
+def test_CNN(model_dir_name, X_train, y_train, X_test, y_test):
     ''' 
+    Tests previously trained Convolutional Neural Network (CNN).
+    Plots confusion matrix for 50% confidence cutoff.
 
+    Parameters:    
 
+        X_train (arr): X values (images) for training
+        
+        y_train (arr): real y values (labels) for training
+        
+        X_test (arr): X values (images) for testing 
+        
+        y_test (arr): real y values (labels) for testing y
 
+    Return: 
+
+        None
 
     '''
-
-    ### get the model output classifications for the test set
+    # get the model output classifications for the train and test sets
     X_test = np.asarray(X_test).astype('float32')
+    y_test_binary = np.asarray(y_test_binary).astype('float32')
     preds_test = cn_model.predict(X_test, verbose=1)
+    preds_train = cn_model.predict(X_train, verbose=1)
 
-    train_good_p = []
-    test_good_p = []
-    for p in preds_train:
-        train_good_p.append(p[1])
-    for p in preds_test:
-        test_good_p.append(p[1])
-
-    bins = np.linspace(0, 1, 100)
-    pyl.hist(train_good_p, label = 'training set confidence', bins=bins, alpha=0.5, density=True) 
-    pyl.hist(test_good_p, label = 'test set confidence', bins=bins, alpha=0.5, density=True)
-    pyl.xlabel('Good Star Confidence')
-    pyl.ylabel('Count (normalized for each dataset)')
-    pyl.legend(loc='best')
-    pyl.show()
-    pyl.close()
-    pyl.clf()
-
-    y_test_binary = keras.utils.np_utils.to_categorical(y_test, 2) 
-    results = cn_model.evaluate(X_test, y_test_binary, batch_size=batch_size)
+    # evanluate test set (50% confidence threshold)
+    results = cn_model.evaluate(X_test, y_test_binary)
     print("test loss, test acc:", results)
 
-    zscale = ZScaleInterval()
-
-    X_test = np.squeeze(X_test, axis=3)
-
-    # plot confusion matrix
+    # plot confusion matrix (50% confidence threshold)
     fig2 = pyl.figure()
-    y_test_binary = np.argmax(y_test_binary, axis = 1)
+    y_test_binary = np.argmax(y_test_binary, axis = 1) 
     preds_test_binary = np.argmax(preds_test, axis = 1)
     cm = confusion_matrix(y_test_binary, preds_test_binary)
     pyl.matshow(cm)
 
     for (i, j), z in np.ndenumerate(cm):
         pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-
     pyl.title('Confusion matrix')
     pyl.colorbar()
     pyl.xlabel('Predicted labels')
     pyl.ylabel('True labels')
     pyl.show()
-    fig2.savefig(file_dir+'/NN_plots/'+'NN_confusionMatrix' + str(end) + '.png')
-    pyl.clf()
-       
+    fig2.savefig(model_dir_name +'/plots/'+'NN_confusion_matrix.png')
+    pyl.close()
+
 def main():
 
-    balanced_data_method, data_load, size_of_data, \
-    num_epochs, cutout_size, model_dir_name = get_user_input()
+    balanced_data_method, data_load, size_of_data, num_epochs, \
+    model_dir_name, cutout_size, pwd, training_subdir = get_user_input()
+
+    data_dir = pwd + training_subdir
 
     if data_load == 'scratch':
-        save_scratch_data(size_of_data, cutout_size, model_dir_name)
+        save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method)
 
-    preds_train, y_train, X_test, y_test = train_CNN(load_data(cutout_size, model_dir_name))
+    X_train, y_train, X_test, y_test = train_CNN(model_dir_name, num_epochs, load_presaved_data(cutout_size, model_dir_name))
 
-    test_CNN(preds_train, y_train, X_test, y_test)
+    test_CNN(model_dir_name, X_train, y_train, X_test, y_test)
     
 if __name__ == '__main__':
     main()

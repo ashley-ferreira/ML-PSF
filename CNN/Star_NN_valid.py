@@ -34,6 +34,8 @@ validation_size = 500 # make bigger to 10k (25*100*num images)
 size_of_data = validation_size//2
 file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
 model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
+# need more specific model dir
+model_dir_name = 
 
 zscale = ZScaleInterval()
 batch_size = 16
@@ -61,7 +63,7 @@ files_counted = 0
 try:
     if data_pull == 'scratch':
         for filename in os.listdir(file_dir+ '/NN_data_metadata_111'):
-            if filename.endswith("metadata_cutoutData.pickle"):
+            if filename.endswith("metadata_cutoutData.pickle") and os.path.getsize(filename) > 0:
                 #print(files_counted, size_of_data)
                 if files_counted >= size_of_data:
                     break
@@ -137,9 +139,15 @@ try:
             [cutouts, labels, xs, ys, fwhms, files] = pickle.load(f)
 
 
-except Exception as e: 
-    print('FAILURE')
-    print(e)
+except Exception as Argument:
+        # creating/opening a file
+        err_log = open(model_dir_name + 'error_log.txt', 'a')
+
+        # writing in the file
+        err_log.write('Star_NN_valid.py' + str(Argument))
+        
+        # closing the file
+        err_log.close()  
 
 with open(model_dir + '/regularization_data.pickle', 'rb') as han:
     [std, mean] = pickle.load(han)
@@ -150,10 +158,8 @@ cutouts /= std
 w_bad = np.where(np.isnan(cutouts))
 cutouts[w_bad] = 0.0
 
-# load model
-                                        
+# load model       
 cn_model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27_25k_250epochs')#1642735464.135405')
-
 
 # show stats analsys
 X_test = cutouts

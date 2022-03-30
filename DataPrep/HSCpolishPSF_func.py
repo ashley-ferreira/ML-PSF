@@ -5,12 +5,12 @@ from trippy import psf, psfStarChooser
 from astropy.io import fits
 import sys
 
-def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len=111):
+def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len, training_dir):
     '''
     Given cutouts of all the sources in an image, this function selects the best
     25 stars in an image from weighted STD and second highest pixel value. These 
     cutouts are then resaved with those that fall within the top 25 labelled as 
-    such to be used in neural network training. From these 25 stars the fuunction 
+    such to be used in neural network training. From these 25 stars the function 
     also generates and saves new PSF called goodPSF.
     
     Adapted from:  https://github.com/fraserw
@@ -101,7 +101,7 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len=111):
                 else: 
                     label = 0
 
-                final_file = '~/PSF_star_selection/NN_data_' + str(fixed_cutout_len) \
+                final_file = training_dir \
                              + '/' + input_file.replace('.fits', '_cutout_' + str(count) \
                              + '_cutoutData.pickle')
 
@@ -110,5 +110,12 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len=111):
         else:
             print('Cutouts of wrong shape:', cutouts.shape)
 
-    except Exception as e: 
-        print(e)
+    except Exception as Argument:
+        # creating/opening a file
+        err_log = open(file_dir + '/data_prep_error_log.txt', 'a')
+
+        # writing in the file
+        err_log.write('HSCpolishPSF.py' + input_file + str(Argument))
+        
+        # closing the file
+        err_log.close()  
