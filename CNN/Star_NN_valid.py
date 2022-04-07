@@ -138,16 +138,9 @@ cutouts /= std
 w_bad = np.where(np.isnan(cutouts))
 cutouts[w_bad] = 0.0
 
-<<<<<<< HEAD
-# load model       
-cn_model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27_25k_250epochs')#1642735464.135405')
-
-# show stats analsys
-=======
 # load model                          
 cn_model = keras.models.load_model(model_dir + '/Saved_Model/model_jan27_25k_250epochs')
 
->>>>>>> 4cebad8c6ffdc741f969fcf24045c394e3cf99af
 X_test = cutouts
 y_test = labels
 y_test_binary = keras.utils.np_utils.to_categorical(y_test, 2) #unique_labels)
