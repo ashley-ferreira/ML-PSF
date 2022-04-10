@@ -39,7 +39,7 @@ np.random.seed(432)
 
 
 parser.add_option('-p', '--pwd', dest='pwd', \
-        default='~/PSF_star_selection/', type='str', \
+        default='/arc/projects/uvickbos/ML-PSF/', type='str', \
         help=', default=%default.')
 
 # likely removing this option as it hasnt worked well and right now not an option for training
@@ -59,10 +59,6 @@ parser.add_option('-c', '--cutout_size', dest='cutout_size', \
         default='111', type='int', \
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
 
-parser.add_option('-t', '--training_subdir', dest='training_subdir', \
-        default='NN_data_' + str(cutout_size) + '/', type='str', \
-        help='subdir in pwd for training data, default=%default.')
-
 parser.add_option('-n', '--num_epochs', dest='num_epochs', \
         default='500', type='int', \
         help='how many epochs to train for, default=%default.')
@@ -77,6 +73,10 @@ parser.add_option('-m', '--model_dir_name', dest='model_dir_name', \
 parser.add_option('-c', '--cutout_size', dest='cutout_size', \
         default='111', type='int', \
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
+
+parser.add_option('-t', '--training_subdir', dest='training_subdir', \
+        default='NN_data_' + str(cutout_size) + '/', type='str', \
+        help='subdir in pwd for training data, default=%default.')
 
 parser.add_option('-v', '--validation_fraction', dest='validation_fraction', \
         default='0.1', type='float', \

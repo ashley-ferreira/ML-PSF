@@ -1,3 +1,7 @@
+from keras.models import Sequential
+from keras.layers import Dense, BatchNormalization, Flatten, Conv2D, MaxPool2D
+from keras.layers.core import Dropout
+
 def convnet_model(input_shape, training_labels, unique_labs, dropout_rate):
     '''
     Defines the 2D Convolutional Neural Network (CNN)
