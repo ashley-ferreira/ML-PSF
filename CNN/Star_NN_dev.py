@@ -55,10 +55,6 @@ parser.add_option('-s', '--size_of_data', dest='size_of_data',
         default='0', type='int', 
         help='number of cutouts to use, default=%default.')
 
-parser.add_option('-c', '--cutout_size', dest='cutout_size', 
-        default='111', type='int', 
-        help='c is size of cutout required, produces (c,c) shape, default=%default.')
-
 parser.add_option('-n', '--num_epochs', dest='num_epochs', 
         default='500', type='int', 
         help='how many epochs to train for, default=%default.')
