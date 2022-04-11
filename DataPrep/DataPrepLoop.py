@@ -20,7 +20,7 @@ parser.add_option('-n', '--night_dir', dest='night_dir',
     default=night_dir, type='str', help='directory for specific night to use, default=%default.')
 
 parser.add_option('-f', '--file_dir', dest='file_dir', 
-    default='/arc/projects/uvickbos/ML-PSF/home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/'+night_dir+'/HSC-R2/corr', 
+    default='/arc/projects/uvickbos/ML-PSF/home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/'+night_dir+'/HSC-R2/corr/', 
     type='str', help='directory which contains data, default=%default.')
     
 parser.add_option('-s', '--start_indx', dest='start_indx', 
