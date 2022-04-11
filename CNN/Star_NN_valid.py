@@ -332,7 +332,8 @@ def validate_CNN(model_dir_name, data):
         bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
         # double check recall and precision calculations, switch to fp..
         recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) 
-        fp_rate.append(bad_stars_incorrect/(bad_stars_incorrect+bad_stars_correct)) 
+        #fp_rate.append(bad_stars_incorrect/(bad_stars_incorrect+bad_stars_correct)) 
+        fp_rate.append(good_stars_incorrect/(good_stars_incorrect+bad_stars_correct)) 
         precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
 
     pyl.title('Accuracy Curve')
@@ -350,6 +351,7 @@ def validate_CNN(model_dir_name, data):
     perfect_ROC = np.ones(len(xy))
     perfect_ROC[0] = 0
 
+    # FIX THIS PLOT BUT THEN YOU ARE GOOD
     pyl.title('ROC Curve')
     pyl.plot(xy, xy, '--', label='random chance refence line')
     pyl.plot(xy, perfect_ROC, '--', label='perfect classifier')

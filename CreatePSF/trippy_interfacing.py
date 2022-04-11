@@ -85,7 +85,7 @@ def NN_PSF_star_chooser(cutouts, min_num_stars, SNR_proxy_cutoff, conf_cutoff):
     Parameters: provided by user   
 
         cutouts (arr): 3D array conisting of 2D image data for each cutout
-                        FOR THIS MODEL MUST BE (111,111) SIZE
+                        FOR THIS MODEL MUST BE (111,111) SIZE(can use crop? take in image or cutouts? img)
 
     Returns:
         
