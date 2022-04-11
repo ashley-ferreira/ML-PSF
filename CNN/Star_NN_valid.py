@@ -141,9 +141,8 @@ def validate_CNN(model_dir_name, data):
 
     X_valid = cutouts
     y_valid = labels
-    unique_labs = len(np.unique(y_valid))
-    y_valid_binary = keras.utils.np_utils.to_categorical(y_valid, unique_labels)
-
+    unique_labs = int(len(np.unique(y_valid)))
+    y_valid_binary = keras.utils.np_utils.to_categorical(y_valid, unique_labs)
     X_valid = np.asarray(X_valid).astype('float32')
     preds_valid = cn_model.predict(X_valid, verbose=1)
 
@@ -171,16 +170,12 @@ def validate_CNN(model_dir_name, data):
 
     # plot confusion matrix
     fig2 = pyl.figure()
-
     y_valid_binary = np.argmax(y_valid_binary, axis = 1)
     preds_valid_binary = np.argmax(preds_valid, axis = 1)
-
     cm = confusion_matrix(y_valid_binary, preds_valid_binary)
     pyl.matshow(cm, cmap=mpl.cm.cool)
-
     for (i, j), z in np.ndenumerate(cm):
         pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-
     pyl.title('Confusion matrix (validation data)')
     pyl.colorbar(cmap=mpl.cm.cool)
     pyl.xlabel('Predicted labels')
@@ -188,32 +183,29 @@ def validate_CNN(model_dir_name, data):
     pyl.show()
     pyl.clf()
 
-    # CONCISE THESE FOR LOOPS
+    # plot of FWHMs
     fwhms_test_misclass = []
     for i in range(len(preds_valid)):
-        
         if y_valid[i] == 1 and preds_valid[i][0] > 0.5:
             fwhms_test_misclass.append(fwhms[i])
             '''
-            (c1, c2) = zscale.get_limits(y_test[i])
+            (c1, c2) = zscale.get_limits(y_valid[i])
             normer3 = interval.ManualInterval(c1,c2)
-            pyl.title('labeled good star, predicted bad star at conf=' + str(preds_test[i][1]))
-            pyl.imshow(normer3(X_test[i]))
+            pyl.title('labeled good star, predicted bad star at conf=' + str(preds_valid[i][1]))
+            pyl.imshow(normer3(X_valid[i]))
             pyl.show()
             pyl.close()
             '''
-
         elif y_valid[i] == 0 and preds_valid[i][1] > 0.5:
             fwhms_test_misclass.append(fwhms[i])
             '''
-            (c1, c2) = zscale.get_limits(X_test[i])
+            (c1, c2) = zscale.get_limits(X_valid[i])
             normer5 = interval.ManualInterval(c1,c2)
-            pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) 
-            pyl.imshow(normer5(X_test[i]))
+            pyl.title('labeled bad star, predicted good star at conf=' + str(preds_valid[i][1])) 
+            pyl.imshow(normer5(X_valid[i]))
             pyl.show()
             pyl.close()
             '''
-        
     pyl.hist(fwhms, label = 'FWHM of full validation set', bins='auto', alpha=0.5) 
     pyl.hist(fwhms_test_misclass, label = 'FWHM of misclassed validation set', bins='auto', alpha=0.5, color='pink') 
     pyl.xlabel('FWHM')
@@ -223,12 +215,8 @@ def validate_CNN(model_dir_name, data):
     pyl.close()
     pyl.clf()
 
-
-    misclass_80p = 0
-    good_class_80p = 0
-
-    # likely automatic way to do this but i didn't easily find
-    confidence_step = 0.001
+    # accuracy vs confidence plot
+    confidence_step = 0.001 # likely automatic way to do this but i didn't easily find
     confidence_queries = np.arange(confidence_step, 1, confidence_step) 
     good_star_acc = []
     bad_star_acc = []
@@ -244,7 +232,7 @@ def validate_CNN(model_dir_name, data):
         bad_stars_incorrect = 0
         bad_stars_above_c = 0
 
-        for i in range(len(preds_test)):
+        for i in range(len(preds_valid)):
             '''
             if y_test[i] == 0 and preds_test[i][1] > c:
                 #(c1, c2) = zscale.get_limits(X_test[i])
