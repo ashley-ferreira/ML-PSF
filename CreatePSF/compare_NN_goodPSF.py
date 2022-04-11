@@ -25,7 +25,7 @@ parser.add_option('-m', '--model_dir_name', dest='model_name', \
         help='name for model directory, default=%default.')
 
 cutout_size = 111
-parser.add_option('-c', '--cutout_size', dest='cutout_size', \
+parser.add_option('-l', '--cutout_size', dest='cutout_size', \
         default=cutout_size, type='int', \
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
 
@@ -37,7 +37,7 @@ parser.add_option('-i', '--img_file', dest='img_file',
         default='0216730-000', type='str', \
         help='input file to use for comparison, default=%default.')
 
-parser.add_option('-c', '--conf_cutoff', dest='conf_cutoff', 
+parser.add_option('-cc', '--conf_cutoff', dest='conf_cutoff', 
         default='0.95', type='float', \
         help='confidence cutoff, default=%default.')
 
