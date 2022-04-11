@@ -138,7 +138,7 @@ def get_user_input():
     return input_file, file_dir, model_dir_name, NN_cutoff_vals, options.cutout_size
 
     
-def compare_NN_goodPSF(input_file, file_dir, model_dir_name, NN_cutoff_vals, cutout_size):
+def compare_NN_goodPSF(inputs):
     '''
     Compares top 25 stars chosen from goodPSF method to top stars chosen by 
     Neural network by plotting them next to one another. Creates and pltos two 
@@ -162,6 +162,9 @@ def compare_NN_goodPSF(input_file, file_dir, model_dir_name, NN_cutoff_vals, cut
         None 
 
     '''
+    # unpack inputs
+    input_file, file_dir, model_dir_name, NN_cutoff_vals, cutout_size = inputs
+
     # unpack cutoff values
     conf_cutoff = NN_cutoff_vals[0]
     SNR_proxy_cutoff = NN_cutoff_vals[1]
