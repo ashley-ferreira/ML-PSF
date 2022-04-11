@@ -52,7 +52,7 @@ parser.add_option('-d', '--data_load', dest='data_load',
         help='how to load data (presaved or scratch), default=%default.')
 
 parser.add_option('-s', '--size_of_data', dest='size_of_data', 
-        default='0', type='int', 
+        default='1000', type='int', 
         help='number of cutouts to use, default=%default.')
 
 parser.add_option('-n', '--num_epochs', dest='num_epochs', 
@@ -216,9 +216,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     bad_inputFile_arr = np.array(bad_inputFile_lst)
 
     good_cutouts = np.array(good_cutouts)
-    print(good_cutouts.shape)
     good_cutouts = np.expand_dims(good_cutouts, axis=3)
-    print(good_cutouts.shape)
 
     # add label 1
     label_good = np.ones(num_good_cutouts)
