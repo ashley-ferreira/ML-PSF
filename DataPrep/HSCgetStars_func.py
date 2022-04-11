@@ -152,7 +152,7 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len, traini
     with open(outFile, 'wb+') as han:
         pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, input_file], han)
     # save cutouts with PSF removed
-    outFile = training_dir+'/'+input_file.replace('.fits', '_' + str(fixed_cutout_len) +  
+    outFile = training_dir+input_file.replace('.fits', '_' + str(fixed_cutout_len) +  
                                                 '_rem_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
