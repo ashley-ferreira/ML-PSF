@@ -3,7 +3,7 @@ import sys
 import pickle
 from os import path
 
-#import tensorflow as tf
+import tensorflow as tf
 from keras import models, utils
 import matplotlib as mpl
 import matplotlib.pyplot as pyl
