@@ -309,10 +309,10 @@ def load_presaved_data(cutout_size, model_dir_name):
     with open(model_dir_name + 'regularization_data.pickle', 'wb+') as han:
         pickle.dump([std, mean], han)
 
-    return cutouts, labels, xs, ys, fwhm, files
+    return [cutouts, labels, xs, ys, fwhm, files]
 
 
-def train_CNN(model_dir_name, num_epochs, cutouts, labels, xs, ys, fwhms, files):
+def train_CNN(model_dir_name, num_epochs, data):
     '''
     Sets up and trains Convolutional Neural Network (CNN).
     Plots accuracy and loss over each training epoch.
@@ -346,6 +346,8 @@ def train_CNN(model_dir_name, num_epochs, cutouts, labels, xs, ys, fwhms, files)
         y_test (arr): real y values (labels) for testing 
 
     '''
+    # unpack presaved data
+    cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
     # section for setting up some flags and hyperparameters
     batch_size = 16 
@@ -471,8 +473,7 @@ def main():
     if data_load == 'scratch':
         save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method, validation_fraction)
 
-    cn_model, X_train, y_train, X_test, y_test = train_CNN(model_dir_name, num_epochs, 
-                                                    load_presaved_data(cutout_size, model_dir_name))
+    cn_model, X_train, y_train, X_test, y_test = train_CNN(model_dir_name, num_epochs, load_presaved_data(cutout_size, model_dir_name))
 
     test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test)
     
