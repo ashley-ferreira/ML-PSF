@@ -44,11 +44,13 @@ parser.add_option('-s', '--min_num_stars', dest='min_num_stars',
         help='minimum number of stars acceptable, default=%default.')
 
 
-def regularize(cutout, mean, std):
+def regularize(cutouts, mean, std):
     '''
     Regularizes either single cutout or array of cutouts
 
     Parameters:
+
+        cutouts (arr): cutouts to be regularized
 
         mean (float): mean used in training data regularization  
 
@@ -59,11 +61,12 @@ def regularize(cutout, mean, std):
         regularized_cutout (arr): regularized cutout
     
     '''
-    cutout -= mean
-    cutout /= std
-    w_bad = np.where(np.isnan(cutout))
-    cutout[w_bad] = 0.0
-    regularized_cutout = cutout
+    cutouts = np.asarray(cutouts).astype('float32')
+    cutouts -= mean
+    cutouts /= std
+    w_bad = np.where(np.isnan(cutouts))
+    cutouts[w_bad] = 0.0
+    regularized_cutout = cutouts
 
     return regularized_cutout
 
@@ -74,7 +77,7 @@ def NN_PSF_star_chooser(cutouts, min_num_stars, SNR_proxy_cutoff, conf_cutoff):
 
     Requirements: provided on backend from trippy
 
-        folder NN_PSF which contains:
+        folder NN_PSF which contains: FILES IN SAME directory?
             NN_PSF_model: 
             regularization_data:
 

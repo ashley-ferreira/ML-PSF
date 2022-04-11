@@ -120,11 +120,13 @@ def get_user_input():
             options.pwd, options.training_subdir, options.validation_fraction
 
 
-def regularize(cutout, mean, std):
+def regularize(cutouts, mean, std):
     '''
     Regularizes either single cutout or array of cutouts
 
     Parameters:
+
+        cutouts (arr): cutouts to be regularized
 
         mean (float): mean used in training data regularization  
 
@@ -135,11 +137,12 @@ def regularize(cutout, mean, std):
         regularized_cutout (arr): regularized cutout
     
     '''
-    cutout -= mean
-    cutout /= std
-    w_bad = np.where(np.isnan(cutout))
-    cutout[w_bad] = 0.0
-    regularized_cutout = cutout
+    cutouts = np.asarray(cutouts).astype('float32')
+    cutouts -= mean
+    cutouts /= std
+    w_bad = np.where(np.isnan(cutouts))
+    cutouts[w_bad] = 0.0
+    regularized_cutout = cutouts
 
     return regularized_cutout
 
