@@ -46,7 +46,7 @@ from sklearn.utils.multiclass import unique_labels
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils import class_weight
 from sklearn.utils.multiclass import unique_labels
-
+import matplotlib as mpl
 from convnet_model import convnet_model
 
 from astropy.visualization import interval, ZScaleInterval
@@ -64,7 +64,7 @@ parser.add_option('-p', '--pwd', dest='pwd',
 
 model_dir = pwd + 'Saved_Model/' 
 parser.add_option('-m', '--model_dir_name', dest='model_name', \
-        default='default_model', type='str', \
+        default='default_model/', type='str', \
         help='name for model directory, default=%default.')
 
 cutout_size = 111
@@ -142,7 +142,7 @@ def load_presaved_data(cutout_size, model_dir_name):
     w_bad = np.where(np.isnan(cutouts))
     cutouts[w_bad] = 0.0
 
-    with open(model_dir + 'regularization_data.pickle', 'rb') as han:
+    with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
     cutouts = np.asarray(cutouts).astype('float32')
