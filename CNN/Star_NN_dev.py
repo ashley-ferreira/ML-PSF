@@ -80,6 +80,7 @@ parser.add_option('-v', '--validation_fraction', dest='validation_fraction', \
         help='fraction of images saved to only use in validation step, default=%default.')
 
 
+
 def get_user_input():
     '''
     Gets user user preferences for neural network training parameters/options
@@ -111,7 +112,7 @@ def get_user_input():
     
     return options.balanced_data_method, options.data_load, options.size_of_data, \
             options.num_epochs, options.model_dir_name, options.cutout_size,  \
-            options.pwd, options.training_subdir
+            options.pwd, options.training_subdir, options.validation_fraction
 
 
 def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method, validation_fraction):
@@ -465,12 +466,12 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
 def main():
 
     balanced_data_method, data_load, size_of_data, num_epochs, \
-    model_dir_name, cutout_size, pwd, training_subdir = get_user_input()
+    model_dir_name, cutout_size, pwd, training_subdir, validation_fraction = get_user_input()
 
     data_dir = pwd + training_subdir
 
     if data_load == 'scratch':
-        save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method)
+        save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method, validation_fraction)
 
     cn_model, X_train, y_train, X_test, y_test = train_CNN(model_dir_name, num_epochs, 
                                                     load_presaved_data(cutout_size, model_dir_name))
