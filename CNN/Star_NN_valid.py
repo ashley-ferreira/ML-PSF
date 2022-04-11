@@ -1,10 +1,12 @@
+'''
 import os
 import sys
 import pickle
 from os import path
 
 import tensorflow as tf
-from keras import models, utils
+import keras
+#from keras import models, utils
 import matplotlib as mpl
 import matplotlib.pyplot as pyl
 import numpy as np
@@ -13,6 +15,40 @@ from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils import class_weight
 from sklearn.utils.multiclass import unique_labels
+from astropy.visualization import interval, ZScaleInterval
+zscale = ZScaleInterval()
+
+from optparse import OptionParser
+parser = OptionParser()
+'''
+import os
+from os import path
+import time
+from datetime import date 
+from datetime import datetime
+import sys
+import numpy as np
+import matplotlib.pyplot as pyl
+import pickle
+import heapq
+
+import tensorflow as tf
+from tensorflow.keras.optimizers import Adam
+
+import keras
+from keras.models import Sequential
+from keras.layers import Dense, BatchNormalization, Flatten, Conv2D, MaxPool2D
+from keras.layers.core import Dropout
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+
+from sklearn.metrics import confusion_matrix
+from sklearn.utils.multiclass import unique_labels
+from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.utils import class_weight
+from sklearn.utils.multiclass import unique_labels
+
+from convnet_model import convnet_model
+
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
 
@@ -152,7 +188,7 @@ def validate_CNN(model_dir_name, data):
     model_found = False 
     for file in os.listdir(model_dir_name):
         if file.startswith('model_'):
-            cn_model = models.load_model(model_dir_name + file)
+            cn_model = keras.models.load_model(model_dir_name + file)
             model_found = True
             break
     if model_found == False: 
@@ -162,7 +198,7 @@ def validate_CNN(model_dir_name, data):
     X_valid = cutouts
     y_valid = labels
     unique_labs = int(len(np.unique(y_valid)))
-    y_valid_binary = utils.np_utils.to_categorical(y_valid, unique_labs)
+    y_valid_binary = keras.utils.np_utils.to_categorical(y_valid, unique_labs)
     X_valid = np.asarray(X_valid).astype('float32')
     preds_valid = cn_model.predict(X_valid, verbose=1)
 
