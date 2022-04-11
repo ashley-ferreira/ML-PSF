@@ -1,44 +1,35 @@
-from HSCgetStars_func import HSCgetStars_main 
-
-import os
 import sys
 import numpy as np
-import matplotlib.pyplot as pyl
 import pickle
-
 import keras
-import matplotlib as mpl
 import math 
+import os
+cwd = str(os.getcwd())
 
-from trippy import psf, psfStarChooser
-
-from astropy.visualization import interval, ZScaleInterval
-from astropy.io import fits
-import matplotlib.pyplot as plt
-
-zscale = ZScaleInterval()
-
-# not actually sure about inputs?
-# not sure if this is actually useful?
-
-def NN_PSF_star_chooser(cutouts, xs, ys, model_dir_name, min_num_stars=10, max_stars=25, SNR_proxy_cutoff=10.0, conf_cutoff=0.95):
+def NN_PSF_star_chooser(cutouts, xs, ys, model_dir_name=cwd+'/default_model/', min_num_stars=10, 
+                                            max_stars=25, SNR_proxy_cutoff=10.0, conf_cutoff=0.95):
     '''
-    Final product of NN-PSF project
+    Final product of NN-PSF project.
 
-    Requirements: provided on backend from trippy
-
-        folder NN_PSF which contains: FILES IN SAME directory?
-            NN_PSF_model: 
-            regularization_data:
-
+    Given cutout of each source in an image along with their respective
+    x and y coordinates, it will return the optimal cutouts of stars to use 
+    for point spread function creation. It also returns the x and y coordinates
+    of these stars and these can be used to pass into the python module trippy
+    in order to create the desired point spread function.
 
     Parameters: provided by user   
 
         cutouts (arr): 3D array conisting of 2D image data for each cutout
+                        --> should be of shape (111, 111) to work with default model
 
         xs (arr): 1D array containing central x position of cutout 
 
         ys (arr): 1D array containing central y position of cutout 
+
+        model_dir_name (str): folder NN_PSF which contains: 
+                            - 'regularization_data.txt' file
+                            - trained model staring with 'model_*'
+            (this is provided on backend along with this function already)
 
         + optional other parameters for fine tunning
 
@@ -122,6 +113,7 @@ def NN_PSF_star_chooser(cutouts, xs, ys, model_dir_name, min_num_stars=10, max_s
     cutouts = regularize(cutouts, mean, std)
 
     # algorithm to find best stars in image
+    cutouts_best = []
     xs_best = []
     ys_best = []
     cn_prob = []
@@ -139,7 +131,8 @@ def NN_PSF_star_chooser(cutouts, xs, ys, model_dir_name, min_num_stars=10, max_s
             center = crop_center(cutouts[i],5,5)
             sum_c = center.sum()
             SNR_proxy = math.sqrt(sum_c)
-            if SNR_proxy > SNR_proxy_cutoff and good_probability > conf_cutoff:       
+            if SNR_proxy > SNR_proxy_cutoff and good_probability > conf_cutoff: 
+                cutouts_best.append(cutouts[i])      
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
                 saved_stars += 1 
@@ -151,7 +144,8 @@ def NN_PSF_star_chooser(cutouts, xs, ys, model_dir_name, min_num_stars=10, max_s
         print('Please lower one of these numbers and try again to use NN_PSF')
         sys.exit()
 
+    cutouts_best = np.array(cutouts_best)
     xs_best = np.array(xs_best)
     ys_best = np.array(ys_best)
 
-    return xs_best, ys_best
+    return cutouts_best, xs_best, ys_best

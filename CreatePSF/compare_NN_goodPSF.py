@@ -12,7 +12,6 @@ import keras
 import matplotlib.pyplot as plt
 from optparse import OptionParser
 parser = OptionParser()
-
 zscale = ZScaleInterval()
 
 pwd = '/arc/projects/uvickbos/ML-PSF/'
