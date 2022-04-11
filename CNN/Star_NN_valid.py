@@ -129,7 +129,8 @@ def load_presaved_data(cutout_size, model_dir_name):
             files (arr): 1D array containing file names for each cutout
 
     '''
-
+    print(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle')
+    print(os.path.exists(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle'))
     with open(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
 
