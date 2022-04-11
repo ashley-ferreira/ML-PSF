@@ -91,7 +91,7 @@ def int_to_str(i):
     elif i>=100:
         num_str = str(i)
     else:
-        print('ERROR')
+        print('ERROR: incorrect i=',i)
         sys.exit()
 
     return num_str

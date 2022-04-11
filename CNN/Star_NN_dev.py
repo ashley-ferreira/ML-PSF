@@ -381,9 +381,8 @@ def train_CNN(model_dir_name, num_epochs, data):
         files_train, files_test = files[train_index], files[test_index]
         fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
     
-    # unique_labs = len(np.unique(y_train))
-    unique_labels = 2
-    y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labels)
+    unique_labs = len(np.unique(y_train)) # should be 2
+    y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
     # train the model
     cn_model = convnet_model(X_train.shape[1:], unique_labs=unique_labels, dropout_rate=dropout_rate)
@@ -402,7 +401,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     print('Process completed in', round(end-start, 2), ' seconds')
 
     # save trained model 
-    cn_model.save(model_dir_name + 'model_' + str(end))
+    cn_model.save(model_dir_name + 'model_traintime=' + str(end))
 
     # plot accuracy/loss versus epoch
     fig1 = pyl.figure(figsize=(10,3))
@@ -453,6 +452,8 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     '''
     # get the model output classifications for the train and test sets
     X_test = np.asarray(X_test).astype('float32')
+    unique_labs = len(np.unique(y_test)) # should be 2
+    y_test_binary = keras.utils.np_utils.to_categorical(y_test, unique_labs)
     y_test_binary = np.asarray(y_test_binary).astype('float32')
     preds_test = cn_model.predict(X_test, verbose=1)
     preds_train = cn_model.predict(X_train, verbose=1)
@@ -470,7 +471,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
 
     for (i, j), z in np.ndenumerate(cm):
         pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-    pyl.title('Confusion matrix')
+    pyl.title('Confusion matrix (testing data)')
     pyl.colorbar()
     pyl.xlabel('Predicted labels')
     pyl.ylabel('True labels')
