@@ -129,7 +129,7 @@ def get_user_input():
 
     model_dir_name = model_dir + options.model_name
 
-    NN_cutoff_vals = [parser.conf_cutoff, parser.SNR_proxy_cutoff, parser.min_num_stars]
+    NN_cutoff_vals = [options.conf_cutoff, options.SNR_proxy_cutoff, options.min_num_stars]
 
     input_file = 'CORR-' + str(options.img_file) + '.fits'
 
