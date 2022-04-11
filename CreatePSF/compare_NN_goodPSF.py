@@ -133,7 +133,7 @@ def get_user_input():
 
     input_file = 'CORR-' + str(options.img_file) + '.fits'
 
-    file_dir = options.pwd + '/HSC_May25-lsst/rerun/processCcdOutputs/' + options.night_dir + '/HSC-R2/corr'
+    file_dir = options.pwd + 'HSC_May25-lsst/rerun/processCcdOutputs/' + options.night_dir + '/HSC-R2/corr/'
 
     return input_file, file_dir, model_dir_name, NN_cutoff_vals, options.cutout_size
 
