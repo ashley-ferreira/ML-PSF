@@ -128,7 +128,6 @@ def main():
                         HSCgetStars_main(file_dir, file_in, cutout_file, fixed_cutout_len)
 
                     # run HSCpolishPSF_main no matter what
-                    print('try polish')
                     HSCpolishPSF_main(file_dir, file_in, cutout_file, fixed_cutout_len, training_dir)
 
                 except Exception as Argument:

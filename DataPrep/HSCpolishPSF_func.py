@@ -33,7 +33,7 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len, train
 
     '''
     #   outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_cutouts_savedFits.pickle')
-    try:
+    if True:#try:
         # read in saved cutout file created from HSCgetStars_main    
         with open(cutout_file, 'rb') as han:
             [stds, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pick.load(han)
@@ -109,7 +109,7 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len, train
                     pick.dump([count, cutout, label, y, x, fwhm, inputFile], han)
         else:
             print('Cutouts of wrong shape:', cutouts.shape)
-
+    '''
     except Exception as Argument:
         print(Argument)
 
@@ -121,3 +121,4 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len, train
         
         # closing the file
         err_log.close()  
+    '''
