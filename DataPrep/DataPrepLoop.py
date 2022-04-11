@@ -1,4 +1,4 @@
-from sympy import trailing
+#from sympy import trailing
 from HSCgetStars_func import HSCgetStars_main 
 from HSCpolishPSF_func import HSCpolishPSF_main
 import os
