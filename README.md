@@ -15,7 +15,7 @@ There are two main components:
 1. FinalProgram: 
 2. DevelopmentCode:
 production code and final NN
-development code for those interested in further work
+development code for those interested in how was made/ further work
 
 
 #### Acknowledgments:
