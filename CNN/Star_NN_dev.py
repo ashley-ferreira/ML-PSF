@@ -338,7 +338,7 @@ def load_presaved_data(cutout_size, model_dir_name):
     cutouts = np.asarray(cutouts).astype('float32')
     std = np.nanstd(cutouts)
     mean = np.nanmean(cutouts)
-    cutouts = regularize(cutouts)
+    cutouts = regularize(cutouts, mean, std)
 
     with open(model_dir_name + 'regularization_data.pickle', 'wb+') as han:
         pickle.dump([std, mean], han)

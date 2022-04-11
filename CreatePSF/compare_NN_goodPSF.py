@@ -196,7 +196,7 @@ def compare_NN_goodPSF(input_file, file_dir, model_dir_name, NN_cutoff_vals, cut
         [std, mean] = pickle.load(han)
 
     # use std and mean to regularize cutout
-    cutouts = regularize(cutouts, std, mean)
+    cutouts = regularize(cutouts, mean, std)
 
     xs_best = []
     ys_best = []
@@ -274,7 +274,7 @@ def compare_NN_goodPSF(input_file, file_dir, model_dir_name, NN_cutoff_vals, cut
         x_int = int(goodPSF_x[i])
         cutout_goodPSF = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
    
-        cutout_goodPSF = regularize(cutout_goodPSF)
+        cutout_goodPSF = regularize(cutout_goodPSF, mean, std)
 
         (z1, z2) = zscale.get_limits(cutout_goodPSF)
         normer = interval.ManualInterval(z1,z2)

@@ -144,7 +144,7 @@ def load_presaved_data(cutout_size, model_dir_name):
     with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
-    cutouts = regularize(cutouts, std, mean)
+    cutouts = regularize(cutouts, mean, std)
 
     return [cutouts, labels, xs, ys, fwhms, files]
 
