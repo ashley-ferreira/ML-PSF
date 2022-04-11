@@ -6,35 +6,35 @@ import sys
 from optparse import OptionParser
 parser = OptionParser()
 
-parser.add_option('-f', '--file_dir', dest='file_dir', \
-        default='/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03068/HSC-R2/corr', \
+parser.add_option('-f', '--file_dir', dest='file_dir', 
+        default='/arc/projects/uvickbos/ML-PSF/home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/03068/HSC-R2/corr', \
         type='str', help='directory which contains data, default=%default.')
 
-parser.add_option('-r', '--retwrite_cutouts', dest='rewrite_cutouts', \
-    default='False', type='bool', \ 
+parser.add_option('-r', '--retwrite_cutouts', dest='rewrite_cutouts', 
+    default='False', type='bool',  
     help='"True" to retwrite cutouts, "False" to not, default=%default.')
 
 parser.add_option('-l', '--fixed_cutout_length', dest='fixed_cutout_len', \
-    default='111', type='int', \
+    default='111', type='int', 
     help='l is size of cutout required, produces (l,l) shape. enter 0 for FWHM*5 size default=%default.')
 
-parser.add_option('-n', '--night_dir', dest='night_dir', \
+parser.add_option('-n', '--night_dir', dest='night_dir', 
     default='03068', type='str', help='directory for specific night to use, default=%default.')
     
-parser.add_option('-s', '--start_indx', dest='start_indx', \
+parser.add_option('-s', '--start_indx', dest='start_indx', 
     default='216730', type='int', help='index of image to start on, default=%default.')
 
-parser.add_option('-e', '--end_indx', dest='end_indx', \
+parser.add_option('-e', '--end_indx', dest='end_indx', 
     default='216732', type='int', help='index of image to end on, default=%default.')
 
-default_training_dir = '~/PSF_star_selection/NN_data_' + str(fixed_cutout_len)
+default_training_dir = '/arc/projects/uvickbos/ML-PSF/NN_data_' + str(fixed_cutout_len)
 
-parser.add_option('-t', '--training_dir', dest='training_dir', \
-    default=default_training_dir, type='str', \
+parser.add_option('-t', '--training_dir', dest='training_dir', 
+    default=default_training_dir, type='str', 
     help='directory to save cutouts to for training, default=%default.')
 
 
-def get_user_input(): # need function?? not a prompt anymore?
+def get_user_input(): 
     '''
     Gets user preferences for data prep parameters/options
 
