@@ -108,7 +108,7 @@ def get_user_input():
     (options, args) = parser.parse_args()
 
     model_dir_name = model_dir + options.model_name
-    os.mkdir(model_dir_name)
+    os.mkdir(model_dir_name, exist_ok=True)
     os.mkdir(model_dir_name + 'plots/')
     
     return options.balanced_data_method, options.data_load, options.size_of_data, \

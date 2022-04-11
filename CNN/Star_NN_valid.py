@@ -344,10 +344,11 @@ def validate_CNN(model_dir_name, data):
 def main():
     model_dir_name, cutout_size, pwd, training_subdir = get_user_input()
 
-    try:
+    if True:#try:
         data = load_presaved_data(cutout_size, model_dir_name)
         validate_CNN(model_dir_name, data)
 
+    '''
     except Exception as Argument:
         print('Star_NN_valid.py' + str(Argument))
 
@@ -359,6 +360,7 @@ def main():
         
         # closing the file
         err_log.close()  
+    '''
 
 if __name__ == '__main__':
     main()
