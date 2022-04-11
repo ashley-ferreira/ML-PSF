@@ -98,7 +98,7 @@ def int_to_str(i):
 
 def main():
     ''' 
-    This program creates the data needed to perform Star_NN_dev.py training on. 
+    This program creates the data needed to perform Star_NN_dev.py training on 
     '''
 
     file_dir, fixed_cutout_len, rewrite_cutouts, night_dir, start_indx, end_indx, training_dir = get_user_input()
@@ -127,7 +127,8 @@ def main():
                     else: 
                         HSCgetStars_main(file_dir, file_in, cutout_file, fixed_cutout_len)
 
-                    # run HSCpolishPSF_main no matter what (is this not running?)
+                    # run HSCpolishPSF_main no matter what
+                    print('try polish')
                     HSCpolishPSF_main(file_dir, file_in, cutout_file, fixed_cutout_len, training_dir)
 
                 except Exception as Argument:
