@@ -204,7 +204,7 @@ def compare_NN_goodPSF(inputs):
         sys.exit()
 
     # load training set std and mean
-    with open(model_dir + 'regularization_data.pickle', 'rb') as han:
+    with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
     # use std and mean to regularize cutout
