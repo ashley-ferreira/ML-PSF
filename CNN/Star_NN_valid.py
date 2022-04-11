@@ -3,11 +3,11 @@ import sys
 import pickle
 from os import path
 
+import tensorflow as tf
 from keras import models, utils
 import matplotlib as mpl
 import matplotlib.pyplot as pyl
 import numpy as np
-import tensorflow as tf
 from astropy.visualization import ZScaleInterval, interval
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import StratifiedShuffleSplit
