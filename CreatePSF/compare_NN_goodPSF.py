@@ -51,7 +51,7 @@ parser.add_option('-s', '--min_num_stars', dest='min_num_stars',
         help='minimum number of stars acceptable, default=%default.')
 
 parser.add_option('-f', '--file_dir', dest='file_dir', 
-    default=pwd+'/home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/'+night_dir+'/HSC-R2/corr/', 
+    default=pwd+'home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/'+night_dir+'/HSC-R2/corr/', 
     type='str', help='directory which contains data, default=%default.')
 
 ## images in here, data in datadir????????
@@ -179,7 +179,8 @@ def compare_NN_goodPSF(inputs):
     min_num_stars = NN_cutoff_vals[2]
         
     # read in cutout data for input_file
-    outFile = file_dir+input_file.replace('.fits', str(cutout_size) + '_cutouts_savedFits.pickle')
+    outFile = file_dir+input_file.replace('.fits', '_cutouts_savedFits.pickle')
+    # could also be _ + str(cutout_size) + _cutout, change when this matters
 
     with open(outFile, 'rb') as han:
         [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
