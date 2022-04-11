@@ -316,6 +316,7 @@ def validate_CNN(model_dir_name, data):
     perfect_PR[len(xy)-1] = 0
 
     pyl.title('PR Curve')
+    pyl.plot(xy, np.ones(len(xy))/2, '--', label='random chance refence line')
     pyl.plot(xy, perfect_PR, '--', label='perfect classifier')
     pyl.plot(recall, precision, label='trained CNN')
     pyl.legend()
