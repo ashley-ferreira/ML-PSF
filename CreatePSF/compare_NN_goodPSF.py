@@ -29,8 +29,9 @@ parser.add_option('-l', '--cutout_size', dest='cutout_size', \
         default=cutout_size, type='int', \
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
 
+night_dir = '03068'
 parser.add_option('-n', '--night_dir', dest='night_dir', 
-        default='03068', type='str', \
+        default=night_dir, type='str', \
         help='image file directory, default=%default.')
 
 parser.add_option('-i', '--img_file', dest='img_file', 
@@ -48,6 +49,12 @@ parser.add_option('-S', '--SNR_proxy_cutoff', dest='SNR_proxy_cutoff',
 parser.add_option('-s', '--min_num_stars', dest='min_num_stars', 
         default='10', type='int', 
         help='minimum number of stars acceptable, default=%default.')
+
+parser.add_option('-f', '--file_dir', dest='file_dir', 
+    default=pwd+'/home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/'+night_dir+'/HSC-R2/corr/', 
+    type='str', help='directory which contains data, default=%default.')
+
+## images in here, data in datadir????????
 
 
 def crop_center(img, cropx, cropy):
@@ -133,7 +140,8 @@ def get_user_input():
 
     input_file = 'CORR-' + str(options.img_file) + '.fits'
 
-    file_dir = options.pwd + 'HSC_May25-lsst/rerun/processCcdOutputs/' + options.night_dir + '/HSC-R2/corr/'
+    #file_dir = options.pwd + 'HSC_May25-lsst/rerun/processCcdOutputs/' + options.night_dir + '/HSC-R2/corr/'
+    file_dir = options.file_dir
 
     return input_file, file_dir, model_dir_name, NN_cutoff_vals, options.cutout_size
 
@@ -171,8 +179,7 @@ def compare_NN_goodPSF(inputs):
     min_num_stars = NN_cutoff_vals[2]
         
     # read in cutout data for input_file
-    outFile = file_dir+input_file.replace('.fits', str(cutout_size) + \
-         '_metadata_cutouts_savedFits.pickle')
+    outFile = file_dir+input_file.replace('.fits', str(cutout_size) + '_cutouts_savedFits.pickle')
 
     with open(outFile, 'rb') as han:
         [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
