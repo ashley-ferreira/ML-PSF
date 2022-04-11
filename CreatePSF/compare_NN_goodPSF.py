@@ -179,11 +179,18 @@ def compare_NN_goodPSF(inputs):
     min_num_stars = NN_cutoff_vals[2]
         
     # read in cutout data for input_file
-    outFile = file_dir+input_file.replace('.fits', '_cutouts_savedFits.pickle')
-    # could also be _ + str(cutout_size) + _cutout, change when this matters
-
-    with open(outFile, 'rb') as han:
-        [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
+    outFile_wMetadata = file_dir+input_file.replace('.fits', '_'+str(cutout_size)+'_cutouts_savedFits.pickle')
+    outFile_simple = file_dir+input_file.replace('.fits', '_cutouts_savedFits.pickle')
+    if os.path.exists(outFile_wMetadata):
+        with open(outFile_wMetadata, 'rb') as han:
+            [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
+    elif os.path.exists(outFile_simple):
+        with open(outFile_simple, 'rb') as han:
+            [std, seconds, peaks, xs, ys, cutouts] = pickle.load(han)
+    else:
+        print('could not find cutout file, tried:')
+        print(outFile_wMetadata)
+        print(outFile_simple)
 
     # load previously trained Neural Network 
     model_found = False 
