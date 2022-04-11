@@ -88,7 +88,7 @@ def int_to_str(i):
         num_str = '00' + str(i)
     elif i<100:
         num_str = '0' + str(i)
-    elif i>100:
+    elif i>=100:
         num_str = str(i)
     else:
         print('ERROR')

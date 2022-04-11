@@ -85,7 +85,7 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len, train
             goodPSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
             fwhm = goodPSF.FWHM()
 
-            newPSFFile = file_dir+'/psfStars/'+input_file.replace('.fits','._goodPSF.fits')
+            newPSFFile = file_dir+'psfStars/'+input_file.replace('.fits','._goodPSF.fits')
             print('Saving to', newPSFFile)
             goodPSF.psfStore(newPSFFile, psfV2=True)
 
