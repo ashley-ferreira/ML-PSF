@@ -53,8 +53,8 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
     scamp.makeParFiles.writeParam(numAps=1) 
 
     fits.writeto('junk.fits', img_data, header=header, overwrite=True)
-    scamp.runSex('HSC.sex', 'junk.fits' ,options={'CATALOG_NAME':f'{dir}/{inputFile}.cat'},verbose=False)
-    catalog = scamp.getCatalog(f'{dir}/{inputFile}.cat',paramFile='def.param')
+    scamp.runSex('HSC.sex', 'junk.fits' ,options={'CATALOG_NAME':f'{dir}/{input_file}.cat'},verbose=False)
+    catalog = scamp.getCatalog(f'{dir}/{input_file}.cat',paramFile='def.param')
     os.system('rm junk.fits')
 
 
@@ -68,7 +68,7 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
     file_psf = input_file.replace('.fits','.psf_cleaned.fits')
     goodPSF = psf.modelPSF(restore=file_dir+'/'+file_psf)
     fwhm = goodPSF.FWHM()
-    print('########################## FWHM ######################')
+    print('#################### FWHM ######################')
     print(fwhm)
 
     if fixed_cutout_len == 0:
@@ -113,7 +113,7 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
             (aa,bb) = cutout.shape
             if int(aa) == 1+(cutoutWidth*2) and int(bb) == 1+(cutoutWidth*2):
 
-                model_cutout = goodPSF.plant(fitPars[0], fitPars[1], fitPars[2], \
+                model_cutout = goodPSF.plant(fitPars[0], fitPars[1], fitPars[2], 
                                         cutout*0.0,returnModel=True,addNoise=False)
                 pixel_weights = 1.0/(np.abs(model_cutout)+1.0)
                 pixel_weights /= np.sum(pixel_weights)
@@ -121,8 +121,7 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
                 rem_cutout = goodPSF.remove(fitPars[0], fitPars[1], fitPars[2], 
                                                         cutout,useLinePSF=False)
 
-                weighted_std = np.sum(pixel_weights*(rem_cutout - \
-                             np.mean(rem_cutout))**2)/np.sum(model_cutout)*(aa*bb)
+                weighted_std = np.sum(pixel_weights*(rem_cutout - np.mean(rem_cutout))**2)/np.sum(model_cutout)*(aa*bb)
 
                 sorted = np.sort(rem_cutout.reshape(aa*bb))
                 second_highest = sorted[-2]
@@ -147,13 +146,13 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
 
     ## save the fits data to file.
     # save original cutouts
-    outFile = dir+'/'+input_file.replace('.fits', '_' + str(fixed_cutout_len) + \
+    outFile = dir+'/'+input_file.replace('.fits', '_' + str(fixed_cutout_len) + 
                                                     '_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
         pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, input_file], han)
     # save cutouts with PSF removed
-    outFile = dir+'/'+input_file.replace('.fits', '_' + str(fixed_cutout_len) + \ 
+    outFile = dir+'/'+input_file.replace('.fits', '_' + str(fixed_cutout_len) +  
                                                 '_rem_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
