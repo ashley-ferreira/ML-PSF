@@ -1,26 +1,3 @@
-'''
-import os
-import sys
-import pickle
-from os import path
-
-import tensorflow as tf
-import keras
-#from keras import models, utils
-import matplotlib as mpl
-import matplotlib.pyplot as pyl
-import numpy as np
-from astropy.visualization import ZScaleInterval, interval
-from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import StratifiedShuffleSplit
-from sklearn.utils import class_weight
-from sklearn.utils.multiclass import unique_labels
-from astropy.visualization import interval, ZScaleInterval
-zscale = ZScaleInterval()
-
-from optparse import OptionParser
-parser = OptionParser()
-'''
 import os
 import sys
 import numpy as np
