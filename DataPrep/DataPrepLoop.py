@@ -11,8 +11,8 @@ parser.add_option('-f', '--file_dir', dest='file_dir',
         type='str', help='directory which contains data, default=%default.')
 
 parser.add_option('-r', '--retwrite_cutouts', dest='rewrite_cutouts', 
-    default='False', type='bool',  
-    help='"True" to retwrite cutouts, "False" to not, default=%default.')
+    default='0', type='int',  
+    help='"1" to retwrite cutouts, "0" to not, default=%default.')
 
 parser.add_option('-l', '--fixed_cutout_length', dest='fixed_cutout_len', 
     default='111', type='int', 
@@ -120,7 +120,7 @@ def main():
                     # check if HSCgetStars_main has already been run (AKA if cutout file exists)
                     cutout_file = file_dir + '/' + file_in.replace('.fits', str(fixed_cutout_len) 
                                                                 + '_cutouts_savedFits.pickle')
-                    if os.path.isfile(cutout_file) and rewrite_cutouts == False:
+                    if os.path.isfile(cutout_file) and rewrite_cutouts == 0:
                         print('HSCgetStars already successfully run, skipping to HSCpolishPSF')
                     else: 
                         HSCgetStars_main(file_dir, file_in, cutout_file, fixed_cutout_len)
