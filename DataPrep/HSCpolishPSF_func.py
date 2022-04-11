@@ -101,9 +101,8 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len, train
                 else: 
                     label = 0
 
-                final_file = training_dir \
-                             + '/' + input_file.replace('.fits', '_cutout_' + str(count) \
-                             + '_cutoutData.pickle')
+                final_file = training_dir + input_file.replace('.fits', '_cutout_' + \
+                             str(count) + '_cutoutData.pickle')
 
                 with open(final_file, 'wb+') as han:
                     pick.dump([count, cutout, label, y, x, fwhm, inputFile], han)
@@ -111,7 +110,7 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len, train
             print('Cutouts of wrong shape:', cutouts.shape)
     
     except Exception as Argument:
-        print('HSCpolishPSF.py' + Argument)
+        print('HSCpolishPSF.py' + str(Argument))
 
         # creating/opening a file
         err_log = open(training_dir + 'data_prep_error_log.txt', 'a')
