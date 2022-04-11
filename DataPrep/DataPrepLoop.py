@@ -140,7 +140,7 @@ def main():
                     err_log.close()   
 
             else: 
-                print(file_in, ' does not exist')
+                print(file_dir + file_in, ' does not exist')
 
 if __name__ == '__main__':
     main()
