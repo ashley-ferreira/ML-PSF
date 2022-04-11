@@ -286,32 +286,6 @@ def validate_CNN(model_dir_name, data):
         bad_stars_above_c = 0
 
         for i in range(len(preds_valid)):
-            '''
-            if y_test[i] == 0 and preds_test[i][1] > c:
-                #(c1, c2) = zscale.get_limits(X_test[i])
-                #normer5 = interval.ManualInterval(c1,c2)
-                #pyl.title('labeled bad star, predicted good star at conf=' + str(preds_test[i][1])) # so great you already have this
-                #pyl.imshow(normer5(X_test[i]))
-                #pyl.show()
-                #pyl.close()
-                misclass_80p += 1
-            elif y_test[i] == 1 and preds_test[i][1] > c:
-                good_class_80p += 1
-            '''
-            '''
-            if preds_test[i][0] > c:
-                bad_stars_above_c +=1
-                if y_test[i] == 0:
-                    bad_stars_correct +=1
-                elif y_test[i] == 1:
-                    bad_stars_incorrect +=1
-            elif preds_test[i][1] > c:
-                good_stars_above_c +=1 # wrong way? out of all preds?
-                if y_test[i] == 1:
-                    good_stars_correct +=1 
-                elif y_test[i] == 0:
-                    good_stars_incorrect +=1      
-            '''
             if preds_valid[i][1] > c:
                 good_stars_above_c +=1 
                 if y_valid[i] == 1:
@@ -325,14 +299,11 @@ def validate_CNN(model_dir_name, data):
                 elif y_valid[i] == 1:
                     bad_stars_incorrect +=1
                     
-
-        print('good', good_stars_correct, good_stars_incorrect, good_stars_above_c)
-        print('bad', bad_stars_correct, bad_stars_incorrect, bad_stars_above_c)
+        #print('good', good_stars_correct, good_stars_incorrect, good_stars_above_c)
+        #print('bad', bad_stars_correct, bad_stars_incorrect, bad_stars_above_c)
         good_star_acc.append(good_stars_correct/good_stars_above_c)
         bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
-        # double check recall and precision calculations, switch to fp..
         recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) 
-        #fp_rate.append(bad_stars_incorrect/(bad_stars_incorrect+bad_stars_correct)) 
         fp_rate.append(good_stars_incorrect/(good_stars_incorrect+bad_stars_correct)) 
         precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
 
@@ -346,12 +317,12 @@ def validate_CNN(model_dir_name, data):
     pyl.close()
     pyl.clf()
 
+    # create ROC and PR curves
     xy = np.arange(0,1, confidence_step)
     #perfect_ROC = np.concatenate(([0],np.ones(int(1/confidence_step)-1)))
     perfect_ROC = np.ones(len(xy))
     perfect_ROC[0] = 0
 
-    # FIX THIS PLOT BUT THEN YOU ARE GOOD
     pyl.title('ROC Curve')
     pyl.plot(xy, xy, '--', label='random chance refence line')
     pyl.plot(xy, perfect_ROC, '--', label='perfect classifier')
