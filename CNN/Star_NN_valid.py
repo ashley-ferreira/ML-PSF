@@ -3,7 +3,7 @@ import sys
 import pickle
 from os import path
 
-import keras
+#import keras
 import matplotlib as mpl
 import matplotlib.pyplot as pyl
 import numpy as np
@@ -187,7 +187,6 @@ def validate_CNN(model_dir_name, data):
 
     X_valid = np.squeeze(X_valid, axis=3)
     print(X_valid.shape) 
-
 
     # plot confusion matrix
     fig2 = pyl.figure()
