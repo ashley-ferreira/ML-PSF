@@ -7,14 +7,14 @@ from optparse import OptionParser
 parser = OptionParser()
 
 parser.add_option('-f', '--file_dir', dest='file_dir', 
-        default='/arc/projects/uvickbos/ML-PSF/home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/03068/HSC-R2/corr', \
+        default='/arc/projects/uvickbos/ML-PSF/home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/03068/HSC-R2/corr', 
         type='str', help='directory which contains data, default=%default.')
 
 parser.add_option('-r', '--retwrite_cutouts', dest='rewrite_cutouts', 
     default='False', type='bool',  
     help='"True" to retwrite cutouts, "False" to not, default=%default.')
 
-parser.add_option('-l', '--fixed_cutout_length', dest='fixed_cutout_len', \
+parser.add_option('-l', '--fixed_cutout_length', dest='fixed_cutout_len', 
     default='111', type='int', 
     help='l is size of cutout required, produces (l,l) shape. enter 0 for FWHM*5 size default=%default.')
 
