@@ -162,9 +162,8 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
 
                 with open(data_dir + filename, 'rb') as f:
                     [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
-                    print(label)
                     if cutout.shape == (cutout_size, cutout_size):
-                        if label == 1:#each one is founding? do they all have lebel1?
+                        if label == 1:
                             good_x_lst.append(x)
                             good_y_lst.append(y)
                             good_fwhm_lst.append(fwhm)
