@@ -1,4 +1,5 @@
 #from sympy import trailing
+from re import A
 from HSCgetStars_func import HSCgetStars_main 
 from HSCpolishPSF_func import HSCpolishPSF_main
 import os
@@ -29,7 +30,7 @@ parser.add_option('-s', '--start_indx', dest='start_indx',
 parser.add_option('-e', '--end_indx', dest='end_indx', 
     default='219620', type='int', help='index of image to end on, default=%default.')
 
-default_training_dir = '/arc/projects/uvickbos/ML-PSF/NN_data_' + str(fixed_cutout_len)
+default_training_dir = '/arc/projects/uvickbos/ML-PSF/NN_data_' + str(fixed_cutout_len) + '/'
 parser.add_option('-t', '--training_dir', dest='training_dir', 
     default=default_training_dir, type='str', 
     help='directory to save cutouts to for training, default=%default.')
@@ -126,12 +127,14 @@ def main():
                     else: 
                         HSCgetStars_main(file_dir, file_in, cutout_file, fixed_cutout_len)
 
-                    # run HSCpolishPSF_main no matter what
+                    # run HSCpolishPSF_main no matter what (is this not running?)
                     HSCpolishPSF_main(file_dir, file_in, cutout_file, fixed_cutout_len, training_dir)
 
                 except Exception as Argument:
+                    print(Argument)
+
                     # creating/opening a file
-                    err_log = open(file_dir + '/data_prep_error_log.txt', 'a')
+                    err_log = open(training_dir + 'data_prep_error_log.txt', 'a')
 
                     # writing in the file
                     err_log.write('DataPrepLoop.py' + file_in + str(Argument))

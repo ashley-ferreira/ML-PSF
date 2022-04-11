@@ -111,8 +111,10 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len, train
             print('Cutouts of wrong shape:', cutouts.shape)
 
     except Exception as Argument:
+        print(Argument)
+
         # creating/opening a file
-        err_log = open(file_dir + '/data_prep_error_log.txt', 'a')
+        err_log = open(training_dir + 'data_prep_error_log.txt', 'a')
 
         # writing in the file
         err_log.write('HSCpolishPSF.py' + input_file + str(Argument))
