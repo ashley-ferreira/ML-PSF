@@ -14,6 +14,7 @@ parser.add_option('-r', '--retwrite_cutouts', dest='rewrite_cutouts',
     default='0', type='int',  
     help='"1" to retwrite cutouts, "0" to not, default=%default.')
 
+fixed_cutout_len = 111
 parser.add_option('-l', '--fixed_cutout_length', dest='fixed_cutout_len', 
     default='111', type='int', 
     help='l is size of cutout required, produces (l,l) shape. enter 0 for FWHM*5 size default=%default.')
