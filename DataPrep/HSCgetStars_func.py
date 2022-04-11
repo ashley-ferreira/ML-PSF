@@ -66,7 +66,7 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
 
     ## load the PSF that Wes generated at an earlier point. This is not a great PSF!
     file_psf = input_file.replace('.fits','.psf_cleaned.fits')
-    goodPSF = psf.modelPSF(restore=file_dir+file_psf)
+    goodPSF = psf.modelPSF(restore=file_dir+'psfStars/'+file_psf)
     fwhm = goodPSF.FWHM()
     print('#################### FWHM ######################')
     print(fwhm)
