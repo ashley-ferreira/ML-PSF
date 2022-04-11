@@ -107,10 +107,10 @@ def get_user_input():
     '''
     (options, args) = parser.parse_args()
 
+    # can't get exist_ok=True option working so this is solution
     model_dir_name = model_dir + options.model_name
     if not(os.path.exists(model_dir_name)):
-        os.mkdir(model_dir_name)#, exist_ok=True)
-
+        os.mkdir(model_dir_name)
     plots_dir = model_dir_name + 'plots/'
     if not(os.path.exists(plots_dir)):
         os.mkdir(plots_dir)
