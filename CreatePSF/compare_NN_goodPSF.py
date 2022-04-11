@@ -37,7 +37,7 @@ parser.add_option('-i', '--img_file', dest='img_file',
         default='0216730-000', type='str', \
         help='input file to use for comparison, default=%default.')
 
-parser.add_option('-cc', '--conf_cutoff', dest='conf_cutoff', 
+parser.add_option('-C', '--conf_cutoff', dest='conf_cutoff', 
         default='0.95', type='float', \
         help='confidence cutoff, default=%default.')
 
