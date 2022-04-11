@@ -118,7 +118,7 @@ def main():
 
             elif os.path.isfile(file_dir + file_in):
 
-                try:
+                if True:#try:
                     # check if HSCgetStars_main has already been run (AKA if cutout file exists)
                     cutout_file = file_dir + '/' + file_in.replace('.fits', str(fixed_cutout_len) 
                                                                 + '_cutouts_savedFits.pickle')
@@ -129,7 +129,7 @@ def main():
 
                     # run HSCpolishPSF_main no matter what
                     HSCpolishPSF_main(file_dir, file_in, cutout_file, fixed_cutout_len, training_dir)
-
+                '''
                 except Exception as Argument:
                     print(Argument)
 
@@ -141,7 +141,7 @@ def main():
                     
                     # closing the file
                     err_log.close()   
-
+                '''
             else: 
                 print(file_dir + file_in, ' does not exist')
 
