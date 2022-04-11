@@ -116,6 +116,30 @@ def get_user_input():
             options.pwd, options.training_subdir, options.validation_fraction
 
 
+def regularize(cutout, mean, std):
+    '''
+    Regularizes either single cutout or array of cutouts
+
+    Parameters:
+
+        mean (float): mean used in training data regularization  
+
+        std (float): std used in training data regularization
+
+    Returns:
+
+        regularized_cutout (arr): regularized cutout
+    
+    '''
+    cutout -= mean
+    cutout /= std
+    w_bad = np.where(np.isnan(cutout))
+    cutout[w_bad] = 0.0
+    regularized_cutout = cutout
+
+    return regularized_cutout
+
+
 def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method, validation_fraction):
     '''
     Create presaved data file to use for neural network training
@@ -310,10 +334,7 @@ def load_presaved_data(cutout_size, model_dir_name):
     cutouts = np.asarray(cutouts).astype('float32')
     std = np.nanstd(cutouts)
     mean = np.nanmean(cutouts)
-    cutouts -= mean
-    cutouts /= std
-    w_bad = np.where(np.isnan(cutouts))
-    cutouts[w_bad] = 0.0
+    cutouts = regularize(cutouts)
 
     with open(model_dir_name + 'regularization_data.pickle', 'wb+') as han:
         pickle.dump([std, mean], han)

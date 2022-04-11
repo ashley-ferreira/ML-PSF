@@ -1,6 +1,6 @@
 import pylab as pyl
 from trippy import psf, psfStarChooser
-from os import path
+import os
 import sys
 from astropy.visualization import interval, ZScaleInterval
 from astropy.io import fits
@@ -14,32 +14,46 @@ from optparse import OptionParser
 parser = OptionParser()
 
 zscale = ZScaleInterval()
-fixed_cutout_len = 111 # add option
-pwd = '/arc/home/ashley' # will change to /arc/projects/uvickbos/ML-PSF or option
 
-parser.add_option('-n', '--night_dir', dest='night_dir', \
+pwd = '/arc/projects/uvickbos/ML-PSF/'
+parser.add_option('-p', '--pwd', dest='pwd', 
+        default=pwd, type='str', 
+        help=', default=%default.')
+
+model_dir = pwd + 'Saved_Model/' 
+parser.add_option('-m', '--model_dir_name', dest='model_name', \
+        default='default_model/', type='str', \
+        help='name for model directory, default=%default.')
+
+cutout_size = 111
+parser.add_option('-c', '--cutout_size', dest='cutout_size', \
+        default=cutout_size, type='int', \
+        help='c is size of cutout required, produces (c,c) shape, default=%default.')
+
+parser.add_option('-t', '--training_subdir', dest='training_subdir', \
+        default='NN_data_' + str(cutout_size) + '/', type='str', \
+        help='subdir in pwd for training data, default=%default.')
+
+parser.add_option('-n', '--night_dir', dest='night_dir', 
         default='03068', type='str', \
         help='image file directory, default=%default.')
 
-parser.add_option('-i', '--img_file', dest='img_file', \
+parser.add_option('-i', '--img_file', dest='img_file', 
         default='0216730-000', type='str', \
         help='input file to use for comparison, default=%default.')
 
-parser.add_option('-m', '--model_dir', dest='model_dir', \
-        default='None', type='str', \
-        help='neural network model directory, default=%default.') # can add default
-
-parser.add_option('-c', '--conf_cutoff', dest='conf_cutoff', \
+parser.add_option('-c', '--conf_cutoff', dest='conf_cutoff', 
         default='0.95', type='float', \
         help='confidence cutoff, default=%default.')
 
-parser.add_option('-S', '--SNR_proxy_cutoff', dest='SNR_proxy_cutoff', \
-        default='10.0', type='float', \
+parser.add_option('-S', '--SNR_proxy_cutoff', dest='SNR_proxy_cutoff', 
+        default='10.0', type='float', 
         help='SNR proxy cutoff, default=%default.')
 
-parser.add_option('-s', '--min_num_stars', dest='min_num_stars', \
-        default='10', type='int', \
+parser.add_option('-s', '--min_num_stars', dest='min_num_stars', 
+        default='10', type='int', 
         help='minimum number of stars acceptable, default=%default.')
+
 
 def crop_center(img, cropx, cropy):
     '''
@@ -105,25 +119,32 @@ def get_user_input():
         
         file_dir (str): directory where input_file is saved
         
-        model_dir (str): directory where Neural Network model is saved
+        model_dir_name (str): directory where Neural Network model is saved
         
         NN_cutoff_vals (lst): cutoff values that Neural Network uses when picking
                               best stars, [conf_cutoff, SNR_proxy_cutoff, min_num_stars]
 
+        cutout_size (int): defines shape of cutouts (cutout_size, cutout_size)
+
     '''
     (options, args) = parser.parse_args()
+
+    model_dir_name = model_dir + options.model_name
 
     NN_cutoff_vals = [parser.conf_cutoff, parser.SNR_proxy_cutoff, parser.min_num_stars]
 
     input_file = 'CORR-' + str(options.img_file) + '.fits'
 
-    # update below
-    file_dir = pwd + '/HSC_May25-lsst/rerun/processCcdOutputs/' + options.night_dir + '/HSC-R2/corr'
+    file_dir = options.pwd + '/HSC_May25-lsst/rerun/processCcdOutputs/' + options.night_dir + '/HSC-R2/corr'
 
-    return input_file, file_dir, options.model_dir, NN_cutoff_vals
+    # other vars
+    training_dir = options.training_dir
+
+
+    return input_file, file_dir, model_dir_name, NN_cutoff_vals, options.cutout_size
 
     
-def compare_NN_goodPSF(input_file, file_dir, model_dir, NN_cutoff_vals):
+def compare_NN_goodPSF(input_file, file_dir, model_dir_name, NN_cutoff_vals, cutout_size):
     '''
     Compares top 25 stars chosen from goodPSF method to top stars chosen by 
     Neural network by plotting them next to one another. Creates and pltos two 
@@ -135,10 +156,12 @@ def compare_NN_goodPSF(input_file, file_dir, model_dir, NN_cutoff_vals):
         
         file_dir (str): directory where input_file is saved
         
-        model_dir (str): directory where Neural Network model is saved
+        model_dir_name (str): directory where Neural Network model is saved
         
         NN_cutoff_vals (lst): cutoff values that Neural Network uses when picking
                               best stars, [conf_cutoff, SNR_proxy_cutoff, min_num_stars]
+
+        cutout_size (int): defines shape of cutouts (cutout_size, cutout_size)
 
     Returns:
 
@@ -151,19 +174,28 @@ def compare_NN_goodPSF(input_file, file_dir, model_dir, NN_cutoff_vals):
     min_num_stars = NN_cutoff_vals[2]
         
     # read in cutout data for input_file
-    outFile = file_dir+'/'+input_file.replace('.fits', str(fixed_cutout_len) + \
+    outFile = file_dir+input_file.replace('.fits', str(cutout_size) + \
          '_metadata_cutouts_savedFits.pickle')
+
     with open(outFile, 'rb') as han:
         [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
 
     # load previously trained Neural Network 
-    model = keras.models.load_model(model_dir)
+    model_found = False 
+    for file in os.listdir(model_dir_name):
+        if file.startswith('model_'):
+            model = keras.models.load_model(model_dir_name + file)
+            model_found = True
+            break
+    if model_found == False: 
+        print('ERROR: no model file in', model_dir_name)
+        sys.exit()
 
     # load training set std and mean
-    with open(model_dir + '/regularization_data.pickle', 'rb') as han:
+    with open(model_dir + 'regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
-    # use std and mean to standardized cutout
+    # use std and mean to regularize cutout
     cutouts = regularize(cutouts, std, mean)
 
     xs_best = []
@@ -180,7 +212,7 @@ def compare_NN_goodPSF(input_file, file_dir, model_dir, NN_cutoff_vals):
 
     fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
     axs = axs.ravel()
-    #plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) 
+    plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) 
     plotted_stars = 0
     for i in range(len(cutouts)): 
         if plotted_stars < 25:
@@ -212,14 +244,13 @@ def compare_NN_goodPSF(input_file, file_dir, model_dir, NN_cutoff_vals):
     plt.subplots_adjust(wspace=0., hspace=0.3)
     plt.show()
 
-
     # load image data
-    with fits.open(file_dir+'/'+input_file) as han:
+    with fits.open(file_dir+input_file) as han:
         img_data = han[1].data.astype('float64')
         img_header = han[0].header
 
-    # load 
-    goodPSF = file_dir+'/psfStars/'+input_file.replace('.fits','.metadata_goodPSF.fits')
+    # load goodPSF
+    goodPSF = file_dir+'psfStars/'+input_file.replace('.fits','.metadata_goodPSF.fits')
     with fits.open(goodPSF) as han:
         goodPSF_img_data = han[1].data
         goodPSF_header = han[0].header
@@ -237,7 +268,7 @@ def compare_NN_goodPSF(input_file, file_dir, model_dir, NN_cutoff_vals):
     fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
     axs = axs.ravel()
     plt.title('goodPSF selected top 25 stars:' + input_file, x=-1.5, y=5)
-    cutoutWidth = fixed_cutout_len // 2
+    cutoutWidth = cutout_size // 2
     for i in range(len(goodPSF_x)):
         y_int = int(goodPSF_y[i])
         x_int = int(goodPSF_x[i])

@@ -22,32 +22,16 @@ from optparse import OptionParser
 parser = OptionParser()
 '''
 import os
-from os import path
-import time
-from datetime import date 
-from datetime import datetime
 import sys
 import numpy as np
 import matplotlib.pyplot as pyl
 import pickle
-import heapq
 
 import tensorflow as tf
-from tensorflow.keras.optimizers import Adam
-
 import keras
-from keras.models import Sequential
-from keras.layers import Dense, BatchNormalization, Flatten, Conv2D, MaxPool2D
-from keras.layers.core import Dropout
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-
 from sklearn.metrics import confusion_matrix
 from sklearn.utils.multiclass import unique_labels
-from sklearn.model_selection import StratifiedShuffleSplit
-from sklearn.utils import class_weight
-from sklearn.utils.multiclass import unique_labels
 import matplotlib as mpl
-from convnet_model import convnet_model
 
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
@@ -102,6 +86,29 @@ def get_user_input():
     return model_dir_name, options.cutout_size, options.pwd, options.training_subdir
 
 
+def regularize(cutout, mean, std):
+    '''
+    Regularizes either single cutout or array of cutouts
+
+    Parameters:
+
+        mean (float): mean used in training data regularization  
+
+        std (float): std used in training data regularization
+
+    Returns:
+
+        regularized_cutout (arr): regularized cutout
+    
+    '''
+    cutout -= mean
+    cutout /= std
+    w_bad = np.where(np.isnan(cutout))
+    cutout[w_bad] = 0.0
+    regularized_cutout = cutout
+
+    return regularized_cutout
+
 def load_presaved_data(cutout_size, model_dir_name):
     '''
     Create presaved data file to use for neural network training
@@ -134,25 +141,12 @@ def load_presaved_data(cutout_size, model_dir_name):
     with open(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
 
-    cutouts = np.asarray(cutouts).astype('float32')
-    std = np.nanstd(cutouts)
-    mean = np.nanmean(cutouts)
-    cutouts -= mean
-    cutouts /= std
-    w_bad = np.where(np.isnan(cutouts))
-    cutouts[w_bad] = 0.0
-
     with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
-    cutouts = np.asarray(cutouts).astype('float32')
-    cutouts -= mean
-    cutouts /= std
-    w_bad = np.where(np.isnan(cutouts))
-    cutouts[w_bad] = 0.0
+    cutouts = regularize(cutouts, std, mean)
 
     return [cutouts, labels, xs, ys, fwhms, files]
-
 
 def validate_CNN(model_dir_name, data):
     '''
