@@ -33,7 +33,7 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
     '''
 
     ### open the fits image
-    with fits.open(dir+'/'+input_file) as han:
+    with fits.open(file_dir+'/'+input_file) as han:
         img_data = han[1].data.astype('float64')
         header = han[0].header
     (A,B)  = img_data.shape
@@ -53,8 +53,8 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
     scamp.makeParFiles.writeParam(numAps=1) 
 
     fits.writeto('junk.fits', img_data, header=header, overwrite=True)
-    scamp.runSex('HSC.sex', 'junk.fits' ,options={'CATALOG_NAME':f'{dir}/{input_file}.cat'},verbose=False)
-    catalog = scamp.getCatalog(f'{dir}/{input_file}.cat',paramFile='def.param')
+    scamp.runSex('HSC.sex', 'junk.fits' ,options={'CATALOG_NAME':f'{file_dir}/{input_file}.cat'},verbose=False)
+    catalog = scamp.getCatalog(f'{file_dir}/{input_file}.cat',paramFile='def.param')
     os.system('rm junk.fits')
 
 
