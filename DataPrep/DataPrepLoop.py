@@ -52,8 +52,8 @@ def get_user_input():
               --> set to zero for cutoutWidth = max(30, int(5*fwhm))
         
         rewrite_cutouts (bool): if cutout_file already exists
-                                --> True = rewrite file
-                                --> False = don't rewrite
+                                --> 1 = rewrite file
+                                --> 0 = don't rewrite
         
         night_dir (str): directory which corresponds to night of interest
         
@@ -115,7 +115,7 @@ def main():
                 print('chip 9 broken, not including')
                 continue 
 
-            elif os.path.isfile(file_in):
+            elif os.path.isfile(file_dir + file_in):
 
                 try:
                     # check if HSCgetStars_main has already been run (AKA if cutout file exists)
