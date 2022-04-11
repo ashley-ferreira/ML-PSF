@@ -120,12 +120,12 @@ def main():
 
                 if True:#try:
                     # check if HSCgetStars_main has already been run (AKA if cutout file exists)
-                    cutout_file = file_dir + '/' + file_in.replace('.fits', str(fixed_cutout_len) 
+                    cutout_file = training_dir + '/' + file_in.replace('.fits', str(fixed_cutout_len) 
                                                                 + '_cutouts_savedFits.pickle')
                     if os.path.isfile(cutout_file) and rewrite_cutouts == 0:
                         print('HSCgetStars already successfully run, skipping to HSCpolishPSF')
                     else: 
-                        HSCgetStars_main(file_dir, file_in, cutout_file, fixed_cutout_len)
+                        HSCgetStars_main(file_dir, file_in, cutout_file, fixed_cutout_len, training_dir)
 
                     # run HSCpolishPSF_main no matter what
                     HSCpolishPSF_main(file_dir, file_in, cutout_file, fixed_cutout_len, training_dir)

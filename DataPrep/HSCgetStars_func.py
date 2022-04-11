@@ -6,7 +6,7 @@ import pickle as pick
 import sys, os
 
 
-def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
+def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len, training_dir):
     '''
     This function uses Source-Extractor to create cutouts from all the sources 
     in an image.
@@ -146,13 +146,13 @@ def HSCgetStars_main(file_dir, input_file, cutout_file, fixed_cutout_len = 111):
 
     ## save the fits data to file.
     # save original cutouts
-    outFile = file_dir+input_file.replace('.fits', '_' + str(fixed_cutout_len) + 
+    outFile = training_dir+input_file.replace('.fits', '_' + str(fixed_cutout_len) + 
                                                     '_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
         pick.dump([std, seconds, peaks, xs, ys, cutouts, fwhm, input_file], han)
     # save cutouts with PSF removed
-    outFile = file_dir+'/'+input_file.replace('.fits', '_' + str(fixed_cutout_len) +  
+    outFile = training_dir+'/'+input_file.replace('.fits', '_' + str(fixed_cutout_len) +  
                                                 '_rem_cutouts_savedFits.pickle')
     print("Saving to", outFile)
     with open(outFile, 'wb+') as han:
