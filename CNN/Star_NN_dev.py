@@ -37,30 +37,30 @@ parser = OptionParser()
 # keras.utils.set_random_seed(1234)
 np.random.seed(432)
 
-
-parser.add_option('-p', '--pwd', dest='pwd', \
-        default='/arc/projects/uvickbos/ML-PSF/', type='str', \
+pwd = '/arc/projects/uvickbos/ML-PSF/'
+parser.add_option('-p', '--pwd', dest='pwd', 
+        default=pwd, type='str', 
         help=', default=%default.')
 
 # likely removing this option as it hasnt worked well and right now not an option for training
-parser.add_option('-b', '--balanced_data_method', dest='balanced_data_method', \
-        default='even', type='str', \ 
+parser.add_option('-b', '--balanced_data_method', dest='balanced_data_method', 
+        default='even', type='str', 
         help='method to balanced classes (even or weighted), default=%default.')
 
-parser.add_option('-d', '--data_load', dest='data_load', \
-        default='scratch', type='str', \ 
+parser.add_option('-d', '--data_load', dest='data_load', 
+        default='scratch', type='str', 
         help='how to load data (presaved or scratch), default=%default.')
 
-parser.add_option('-s', '--size_of_data', dest='size_of_data', \
-        default='0', type='int', \ 
+parser.add_option('-s', '--size_of_data', dest='size_of_data', 
+        default='0', type='int', 
         help='number of cutouts to use, default=%default.')
 
-parser.add_option('-c', '--cutout_size', dest='cutout_size', \
-        default='111', type='int', \
+parser.add_option('-c', '--cutout_size', dest='cutout_size', 
+        default='111', type='int', 
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
 
-parser.add_option('-n', '--num_epochs', dest='num_epochs', \
-        default='500', type='int', \
+parser.add_option('-n', '--num_epochs', dest='num_epochs', 
+        default='500', type='int', 
         help='how many epochs to train for, default=%default.')
 
 model_dir_name_default = pwd + 'Saved_Model/' + \
@@ -70,8 +70,9 @@ parser.add_option('-m', '--model_dir_name', dest='model_dir_name', \
         default=model_dir_name_default, type='str', \
         help='name for model directory, default=%default.')
 
+cutout_size = 111
 parser.add_option('-c', '--cutout_size', dest='cutout_size', \
-        default='111', type='int', \
+        default=cutout_size, type='int', \
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
 
 parser.add_option('-t', '--training_subdir', dest='training_subdir', \
@@ -191,6 +192,8 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                         err_log.close() 
 
     except Exception as Argument:
+        print('Star_NN_dev.py' + str(Argument))
+
         # creating/opening a file
         err_log = open(model_dir_name + 'error_log.txt', 'a')
 
@@ -297,8 +300,7 @@ def load_presaved_data(cutout_size, model_dir_name):
         labels (arr): 1D array containing 0 or 1 label for bad or good star respectively
 
     '''
-    
-    with open(model_dir_name + 'USED_' str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
+    with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhm, files] = pickle.load(han) 
 
     cutouts = np.asarray(cutouts).astype('float32')
@@ -373,9 +375,8 @@ def train_CNN(model_dir_name, num_epochs, cutouts, labels, xs, ys, fwhms, files)
     unique_labels = 2
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labels)
 
-    ### train the model!
-    cn_model = convnet_model(X_train.shape[1:], training_labels=y_train, unique_labs=unique_labels)
-    #cn_model = convnet_model(X_train.shape[1:], y_train)
+    # train the model
+    cn_model = convnet_model(X_train.shape[1:], unique_labs=unique_labels, dropout_rate=dropout_rate)
     cn_model.summary()
 
     opt = Adam(learning_rate=learning_rate) 
@@ -416,9 +417,9 @@ def train_CNN(model_dir_name, num_epochs, cutouts, labels, xs, ys, fwhms, files)
     pyl.close()
     pyl.clf()
 
-    return X_train, y_train, X_test, y_test
+    return cn_model, X_train, y_train, X_test, y_test
 
-def test_CNN(model_dir_name, X_train, y_train, X_test, y_test):
+def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     ''' 
     Tests previously trained Convolutional Neural Network (CNN).
     Plots confusion matrix for 50% confidence cutoff.
@@ -475,9 +476,10 @@ def main():
     if data_load == 'scratch':
         save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method)
 
-    X_train, y_train, X_test, y_test = train_CNN(model_dir_name, num_epochs, load_presaved_data(cutout_size, model_dir_name))
+    cn_model, X_train, y_train, X_test, y_test = train_CNN(model_dir_name, num_epochs, 
+                                                    load_presaved_data(cutout_size, model_dir_name))
 
-    test_CNN(model_dir_name, X_train, y_train, X_test, y_test)
+    test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test)
     
 if __name__ == '__main__':
     main()
