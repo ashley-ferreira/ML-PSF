@@ -112,7 +112,7 @@ def get_user_input():
         os.mkdir(model_dir_name)#, exist_ok=True)
 
     plots_dir = model_dir_name + 'plots/'
-    if not(os.path.exists()):
+    if not(os.path.exists(plots_dir)):
         os.mkdir(plots_dir)
     
     return options.balanced_data_method, options.data_load, options.size_of_data, \
