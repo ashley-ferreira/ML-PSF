@@ -1,23 +1,115 @@
 import os
-from os import path
-import numpy as np
-import matplotlib.pyplot as pyl
 import pickle
-import tensorflow as tf
+from os import path
+
 import keras
+import matplotlib as mpl
+import matplotlib.pyplot as pyl
+import numpy as np
+import tensorflow as tf
+from astropy.visualization import ZScaleInterval, interval
 from sklearn.metrics import confusion_matrix
-from sklearn.utils.multiclass import unique_labels
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils import class_weight
 from sklearn.utils.multiclass import unique_labels
 from astropy.visualization import interval, ZScaleInterval
-import matplotlib as mpl
 zscale = ZScaleInterval()
 
-file_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
-model_dir = '/arc/home/ashley/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr'
-# need more specific model dir
-model_dir_name = ''
+from optparse import OptionParser
+parser = OptionParser()
+
+np.random.seed(432)
+
+pwd = '/arc/projects/uvickbos/ML-PSF/'
+parser.add_option('-p', '--pwd', dest='pwd', 
+        default=pwd, type='str', 
+        help=', default=%default.')
+
+model_dir = pwd + 'Saved_Model/' 
+parser.add_option('-m', '--model_dir_name', dest='model_name', \
+        default='default_model', type='str', \
+        help='name for model directory, default=%default.')
+
+cutout_size = 111
+parser.add_option('-c', '--cutout_size', dest='cutout_size', \
+        default=cutout_size, type='int', \
+        help='c is size of cutout required, produces (c,c) shape, default=%default.')
+
+parser.add_option('-t', '--training_subdir', dest='training_subdir', \
+        default='NN_data_' + str(cutout_size) + '/', type='str', \
+        help='subdir in pwd for training data, default=%default.')
+
+def get_user_input():
+    '''
+    Gets user user preferences for neural network training parameters/options
+
+    Parameters:    
+
+        None
+
+    Returns:
+
+        model_dir_name (str): directory to where trained model is stored
+
+        cutout_size (int): is size of cutout required, produces (cutout_size,cutout_size) shape
+
+        pwd (str): working directory, will load data from subdir and save model into subdir
+
+        training_sub_dir (str): subdir in pwd for training data
+
+    '''
+    (options, args) = parser.parse_args()
+
+    model_dir_name = model_dir + options.model_name
+    os.mkdir(model_dir_name)
+    
+    return model_dir_name, options.cutout_size, options.pwd, options.training_subdir
+
+
+
+def load_presaved_data(cutout_size, model_dir_name):
+    '''
+    Create presaved data file to use for neural network training
+
+    Parameters:    
+
+        cutout_size (int): defines shape of cutouts (cutout_size, cutout_size)
+
+        model_dir_name (str): directory to load data and save regularization params
+
+    Returns:
+        
+        data (lst), which consists of:
+
+            cutouts (arr): 3D array conisting of 2D image data for each cutout
+
+            labels (arr): 1D array containing 0 or 1 label for bad or good star respectively
+
+            xs (arr): 1D array containing central x position of cutout 
+
+            ys (arr): 1D array containing central y position of cutout 
+
+            fwhms (arr): 1D array containing fwhm values for each cutout 
+            
+            files (arr): 1D array containing file names for each cutout
+
+    '''
+    with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
+        [cutouts, labels, xs, ys, fwhm, files] = pickle.load(han) 
+
+    cutouts = np.asarray(cutouts).astype('float32')
+    std = np.nanstd(cutouts)
+    mean = np.nanmean(cutouts)
+    cutouts -= mean
+    cutouts /= std
+    w_bad = np.where(np.isnan(cutouts))
+    cutouts[w_bad] = 0.0
+
+    with open(model_dir_name + 'regularization_data.pickle', 'wb+') as han:
+        pickle.dump([std, mean], han)
+
+    return [cutouts, labels, xs, ys, fwhm, files]
+
 
 batch_size = 16
 good_cutouts = [] # label 1
@@ -31,7 +123,6 @@ bad_fwhm_lst = []
 bad_x_lst = []
 bad_y_lst = []
 bad_inputFile_lst = []
-np.random.seed(432)
 max_size = 111 
 
 data_pull = 'saved'

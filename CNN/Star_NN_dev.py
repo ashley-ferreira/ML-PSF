@@ -59,10 +59,10 @@ parser.add_option('-n', '--num_epochs', dest='num_epochs',
         default='500', type='int', 
         help='how many epochs to train for, default=%default.')
 
-model_dir_name_default = pwd + 'Saved_Model/' + \
-                datetime.today().strftime('%Y-%m-%d-%H:%M:%S') + '/'
-parser.add_option('-m', '--model_dir_name', dest='model_dir_name', \
-        default=model_dir_name_default, type='str', \
+model_dir = pwd + 'Saved_Model/' 
+model_name_default = datetime.today().strftime('%Y-%m-%d-%H:%M:%S') + '/'
+parser.add_option('-m', '--model_dir_name', dest='model_name', \
+        default=model_name_default, type='str', \
         help='name for model directory, default=%default.')
 
 cutout_size = 111
@@ -77,8 +77,6 @@ parser.add_option('-t', '--training_subdir', dest='training_subdir', \
 parser.add_option('-v', '--validation_fraction', dest='validation_fraction', \
         default='0.1', type='float', \
         help='fraction of images saved to only use in validation step, default=%default.')
-
-
 
 def get_user_input():
     '''
@@ -109,10 +107,12 @@ def get_user_input():
     '''
     (options, args) = parser.parse_args()
 
-    os.mkdir(options.model_dir_name)
+    model_dir_name = model_dir + options.model_name
+    os.mkdir(model_dir_name)
+    os.mkdir(model_dir_name + 'plots/')
     
     return options.balanced_data_method, options.data_load, options.size_of_data, \
-            options.num_epochs, options.model_dir_name, options.cutout_size,  \
+            options.num_epochs, model_dir_name, options.cutout_size,  \
             options.pwd, options.training_subdir, options.validation_fraction
 
 
@@ -270,10 +270,10 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
         used_files, withheld_files = files[used_index], files[withheld_index]
         used_fwhms, withheld_fwhms = fwhms[used_index], fwhms[withheld_index]
 
-    with open(model_dir_name + '/USED_' + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
+    with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
         pickle.dump([used_cutouts, used_labels, used_xs, used_ys, used_fwhms, used_files], han)
 
-    with open(model_dir_name + '/WITHHELD_' + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
+    with open(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
         pickle.dump([withheld_cutouts, withheld_labels, withheld_xs, withheld_ys, withheld_fwhms, withheld_files], han)
 
 
@@ -289,9 +289,19 @@ def load_presaved_data(cutout_size, model_dir_name):
 
     Returns:
         
-        cutouts (arr): 3D array conisting of 2D image data for each cutout
+        data (lst), which consists of:
 
-        labels (arr): 1D array containing 0 or 1 label for bad or good star respectively
+            cutouts (arr): 3D array conisting of 2D image data for each cutout
+
+            labels (arr): 1D array containing 0 or 1 label for bad or good star respectively
+
+            xs (arr): 1D array containing central x position of cutout 
+
+            ys (arr): 1D array containing central y position of cutout 
+
+            fwhms (arr): 1D array containing fwhm values for each cutout 
+            
+            files (arr): 1D array containing file names for each cutout
 
     '''
     with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
@@ -322,19 +332,23 @@ def train_CNN(model_dir_name, num_epochs, data):
         
         num_epochs (int): number of epochs to train for
 
-        cutouts (arr): 3D array conisting of 2D image data for each cutout
+        data (lst), which consists of:
 
-        labels (arr): 1D array containing 0 or 1 label for bad or good star respectively
+            cutouts (arr): 3D array conisting of 2D image data for each cutout
 
-        xs (arr): 1D array containing central x position of cutout 
+            labels (arr): 1D array containing 0 or 1 label for bad or good star respectively
 
-        ys (arr): 1D array containing central y position of cutout 
+            xs (arr): 1D array containing central x position of cutout 
 
-        fwhms (arr): 1D array containing fwhm values for each cutout 
-        
-        files (arr): 1D array containing file names for each cutout
+            ys (arr): 1D array containing central y position of cutout 
+
+            fwhms (arr): 1D array containing fwhm values for each cutout 
+            
+            files (arr): 1D array containing file names for each cutout
 
     Return: 
+
+        cn_model (keras model): trained neural network
 
         X_train (arr): X values (images) for training
         
@@ -422,6 +436,8 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
 
     Parameters:    
 
+        cn_model (keras model): trained neural network
+
         X_train (arr): X values (images) for training
         
         y_train (arr): real y values (labels) for training
@@ -459,7 +475,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     pyl.xlabel('Predicted labels')
     pyl.ylabel('True labels')
     pyl.show()
-    fig2.savefig(model_dir_name +'/plots/'+'NN_confusion_matrix.png')
+    fig2.savefig(model_dir_name +'plots/'+'NN_confusion_matrix.png')
     pyl.close()
 
 def main():
