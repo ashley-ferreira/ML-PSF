@@ -61,7 +61,6 @@ parser.add_option('-n', '--num_epochs', dest='num_epochs',
 
 model_dir_name_default = pwd + 'Saved_Model/' + \
                 datetime.today().strftime('%Y-%m-%d-%H:%M:%S') + '/'
-
 parser.add_option('-m', '--model_dir_name', dest='model_dir_name', \
         default=model_dir_name_default, type='str', \
         help='name for model directory, default=%default.')
@@ -109,6 +108,8 @@ def get_user_input():
 
     '''
     (options, args) = parser.parse_args()
+
+    os.mkdir(options.model_dir_name)
     
     return options.balanced_data_method, options.data_load, options.size_of_data, \
             options.num_epochs, options.model_dir_name, options.cutout_size,  \
@@ -141,7 +142,6 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
 
     good_cutouts = [] # label 1
     bad_cutouts = [] # label 0
-    cutout_len = []
     good_fwhm_lst = []
     good_x_lst = []
     good_y_lst = []
@@ -154,7 +154,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     files_counted = 0
     try:
         for filename in os.listdir(data_dir):
-            if filename.endswith('_cutoutData.pickle') and os.path.getsize(filename) > 0:
+            if filename.endswith('_cutoutData.pickle') and os.path.getsize(data_dir + filename) > 0:
                 if files_counted >= size_of_data:
                     break
                 print(files_counted, size_of_data)
