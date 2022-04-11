@@ -120,6 +120,27 @@ def load_presaved_data(cutout_size, model_dir_name):
 
 def validate_CNN(model_dir_name, data):
     '''
+    Parameters:    
+
+        model_dir_name (str): directory where trained model is saved
+
+        data (lst), which consists of:
+
+            cutouts (arr): 3D array conisting of 2D image data for each cutout
+
+            labels (arr): 1D array containing 0 or 1 label for bad or good star respectively
+
+            xs (arr): 1D array containing central x position of cutout 
+
+            ys (arr): 1D array containing central y position of cutout 
+
+            fwhms (arr): 1D array containing fwhm values for each cutout 
+            
+            files (arr): 1D array containing file names for each cutout
+
+    Returns:
+        
+        None
     
     '''
     # section for setting up hyperparameters
@@ -159,13 +180,13 @@ def validate_CNN(model_dir_name, data):
     pyl.close()
     pyl.clf()
 
-    results = cn_model.evaluate(X_test, y_valid_binary, batch_size=batch_size)
+    results = cn_model.evaluate(X_valid, y_valid_binary, batch_size=batch_size)
     print("validation loss, validation acc:", results)
 
     zscale = ZScaleInterval()
 
-    X_test = np.squeeze(X_test, axis=3)
-    print(X_test.shape) 
+    X_valid = np.squeeze(X_valid, axis=3)
+    print(X_valid.shape) 
 
 
     # plot confusion matrix
@@ -259,17 +280,17 @@ def validate_CNN(model_dir_name, data):
                 elif y_test[i] == 0:
                     good_stars_incorrect +=1      
             '''
-            if preds_test[i][1] > c:
+            if preds_valid[i][1] > c:
                 good_stars_above_c +=1 
-                if y_test[i] == 1:
+                if y_valid[i] == 1:
                     good_stars_correct +=1 
-                elif y_test[i] == 0:
+                elif y_valid[i] == 0:
                     good_stars_incorrect +=1
             else:
                 bad_stars_above_c +=1
-                if y_test[i] == 0:
+                if y_valid[i] == 0:
                     bad_stars_correct +=1
-                elif y_test[i] == 1:
+                elif y_valid[i] == 1:
                     bad_stars_incorrect +=1
                     
 
@@ -327,7 +348,7 @@ def main():
     try:
         model_dir_name, cutout_size, pwd, training_subdir = get_user_input()
         data = load_presaved_data(cutout_size, model_dir_name)
-        
+        validate_CNN(model_dir_name, data)
 
     except Exception as Argument:
         print('Star_NN_valid.py' + str(Argument))

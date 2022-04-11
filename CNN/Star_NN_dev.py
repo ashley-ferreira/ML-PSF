@@ -420,7 +420,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     ax2.set_ylabel('Loss')
     ax2.set_xlabel('Epoch')
 
-    fig1.savefig(model_dir_name +'/plots/'+'NN_training_history' + str(end) + '.png')
+    fig1.savefig(model_dir_name +'/plots/'+'NN_training_history.png')
 
     pyl.show()
     pyl.close()
@@ -478,6 +478,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     pyl.show()
     fig2.savefig(model_dir_name +'plots/'+'NN_confusion_matrix.png')
     pyl.close()
+    pyl.clf()
 
 def main():
 
