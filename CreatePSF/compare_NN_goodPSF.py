@@ -29,10 +29,6 @@ parser.add_option('-c', '--cutout_size', dest='cutout_size', \
         default=cutout_size, type='int', \
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
 
-parser.add_option('-t', '--training_subdir', dest='training_subdir', \
-        default='NN_data_' + str(cutout_size) + '/', type='str', \
-        help='subdir in pwd for training data, default=%default.')
-
 parser.add_option('-n', '--night_dir', dest='night_dir', 
         default='03068', type='str', \
         help='image file directory, default=%default.')
