@@ -12,7 +12,7 @@ parser.add_option('-r', '--retwrite_cutouts', dest='rewrite_cutouts',
 
 fixed_cutout_len = 111
 parser.add_option('-l', '--fixed_cutout_length', dest='fixed_cutout_len', 
-    default='fixed_cutout_len', type='int', 
+    default=fixed_cutout_len, type='int', 
     help='l is size of cutout required, produces (l,l) shape. enter 0 for FWHM*5 size default=%default.')
 
 night_dir = '03074'
