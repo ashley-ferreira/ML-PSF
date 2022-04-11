@@ -62,7 +62,6 @@ def get_user_input():
     (options, args) = parser.parse_args()
 
     model_dir_name = model_dir + options.model_name
-    os.mkdir(model_dir_name)
     
     return model_dir_name, options.cutout_size, options.pwd, options.training_subdir
 
