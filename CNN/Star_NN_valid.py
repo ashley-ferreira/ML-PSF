@@ -343,9 +343,9 @@ def validate_CNN(model_dir_name, data):
     pyl.clf()
 
 def main():
+    model_dir_name, cutout_size, pwd, training_subdir = get_user_input()
 
     try:
-        model_dir_name, cutout_size, pwd, training_subdir = get_user_input()
         data = load_presaved_data(cutout_size, model_dir_name)
         validate_CNN(model_dir_name, data)
 
