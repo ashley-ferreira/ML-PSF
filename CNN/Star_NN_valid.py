@@ -3,7 +3,7 @@ import sys
 import pickle
 from os import path
 
-#import keras
+from keras import models, utils
 import matplotlib as mpl
 import matplotlib.pyplot as pyl
 import numpy as np
@@ -94,7 +94,7 @@ def load_presaved_data(cutout_size, model_dir_name):
 
     '''
 
-    with open(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
+    with open(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
 
     cutouts = np.asarray(cutouts).astype('float32')
@@ -152,7 +152,7 @@ def validate_CNN(model_dir_name, data):
     model_found = False 
     for file in os.listdir(model_dir_name):
         if file.startswith('model_'):
-            cn_model = keras.models.load_model(model_dir_name + file)
+            cn_model = models.load_model(model_dir_name + file)
             model_found = True
             break
     if model_found == False: 
@@ -162,7 +162,7 @@ def validate_CNN(model_dir_name, data):
     X_valid = cutouts
     y_valid = labels
     unique_labs = int(len(np.unique(y_valid)))
-    y_valid_binary = keras.utils.np_utils.to_categorical(y_valid, unique_labs)
+    y_valid_binary = utils.np_utils.to_categorical(y_valid, unique_labs)
     X_valid = np.asarray(X_valid).astype('float32')
     preds_valid = cn_model.predict(X_valid, verbose=1)
 
