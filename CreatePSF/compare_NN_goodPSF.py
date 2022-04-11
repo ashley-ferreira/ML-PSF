@@ -25,7 +25,7 @@ parser.add_option('-m', '--model_dir_name', dest='model_name', \
         help='name for model directory, default=%default.')
 
 cutout_size = 111
-parser.add_option('-l', '--cutout_size', dest='cutout_size', \
+parser.add_option('-c', '--cutout_size', dest='cutout_size', \
         default=cutout_size, type='int', \
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
 
@@ -54,8 +54,10 @@ parser.add_option('-f', '--file_dir', dest='file_dir',
     default=pwd+'home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/'+night_dir+'/HSC-R2/corr/', 
     type='str', help='directory which contains data, default=%default.')
 
-## images in here, data in datadir????????
-
+default_data_dir = pwd+'/NN_data_' + str(cutout_size) + '_never_trained/'
+parser.add_option('-d', '--data_dir', dest='data_dir', 
+    default=default_data_dir, type='str', 
+    help='directory where cutouts are saved, default=%default.')
 
 def crop_center(img, cropx, cropy):
     '''
@@ -123,6 +125,8 @@ def get_user_input():
         input_file (str): file of interest to generate PSF for
         
         file_dir (str): directory where input_file is saved
+
+        data_dir (str): directory where source cutouts from input_file are saved
         
         model_dir_name (str): directory where Neural Network model is saved
         
@@ -143,7 +147,7 @@ def get_user_input():
     #file_dir = options.pwd + 'HSC_May25-lsst/rerun/processCcdOutputs/' + options.night_dir + '/HSC-R2/corr/'
     file_dir = options.file_dir
 
-    return input_file, file_dir, model_dir_name, NN_cutoff_vals, options.cutout_size
+    return input_file, file_dir, options.data_dir, model_dir_name, NN_cutoff_vals, options.cutout_size
 
     
 def compare_NN_goodPSF(inputs):
@@ -157,6 +161,8 @@ def compare_NN_goodPSF(inputs):
         input_file (str): file of interest to generate PSF for
         
         file_dir (str): directory where input_file is saved
+
+        data_dir (str): directory where source cutouts from input_file are saved
         
         model_dir_name (str): directory where Neural Network model is saved
         
@@ -171,7 +177,7 @@ def compare_NN_goodPSF(inputs):
 
     '''
     # unpack inputs
-    input_file, file_dir, model_dir_name, NN_cutoff_vals, cutout_size = inputs
+    input_file, file_dir, model_dir_name, data_dir, NN_cutoff_vals, cutout_size = inputs
 
     # unpack cutoff values
     conf_cutoff = NN_cutoff_vals[0]
@@ -179,18 +185,18 @@ def compare_NN_goodPSF(inputs):
     min_num_stars = NN_cutoff_vals[2]
         
     # read in cutout data for input_file
-    outFile_wMetadata = file_dir+input_file.replace('.fits', '_'+str(cutout_size)+'_cutouts_savedFits.pickle')
-    outFile_simple = file_dir+input_file.replace('.fits', '_cutouts_savedFits.pickle')
+    outFile_wMetadata = data_dir+input_file.replace('.fits', '_'+str(cutout_size)+'_cutouts_savedFits.pickle')
+    #outFile_simple = file_dir+input_file.replace('.fits', '_cutouts_savedFits.pickle')
     if os.path.exists(outFile_wMetadata):
         with open(outFile_wMetadata, 'rb') as han:
             [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
-    elif os.path.exists(outFile_simple):
-        with open(outFile_simple, 'rb') as han:
-            [std, seconds, peaks, xs, ys, cutouts] = pickle.load(han)
+    #elif os.path.exists(outFile_simple):
+    #    with open(outFile_simple, 'rb') as han:
+    #        [std, seconds, peaks, xs, ys, cutouts] = pickle.load(han)
     else:
         print('could not find cutout file, tried:')
         print(outFile_wMetadata)
-        print(outFile_simple)
+        #print(outFile_simple)
 
     # load previously trained Neural Network 
     model_found = False 
