@@ -35,7 +35,7 @@ parser.add_option('-n', '--night_dir', dest='night_dir',
         help='image file directory, default=%default.')
 
 parser.add_option('-i', '--img_file', dest='img_file', 
-        default='0216730-000', type='str', \
+        default='0216652-000', type='str', \
         help='input file to use for comparison, default=%default.')
 
 parser.add_option('-C', '--conf_cutoff', dest='conf_cutoff', 
