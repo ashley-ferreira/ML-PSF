@@ -387,6 +387,15 @@ def train_CNN(model_dir_name, num_epochs, data):
         y_test (arr): real y values (labels) for testing 
 
     '''
+    class CustomSaver(keras.callbacks.Callback):
+        '''
+        taken from:
+        https://stackoverflow.com/questions/54323960/save-keras-model-at-specific-epochs
+        '''
+        def on_epoch_end(self, epoch, logs={}):
+            if epoch % 10:
+                self.model.save(model_dir_name + "model_{}".format(epoch))
+
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
@@ -423,7 +432,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     X_train = np.asarray(X_train).astype('float32')
     y_train_binary = np.asarray(y_train_binary).astype('float32')
 
-    classifier = cn_model.fit(X_train, y_train_binary, epochs=num_epochs, batch_size=batch_size)
+    classifier = cn_model.fit(X_train, y_train_binary, epochs=num_epochs, batch_size=batch_size, callbacks=[saver])
 
     end = time.time()
     print('Process completed in', round(end-start, 2), ' seconds')
