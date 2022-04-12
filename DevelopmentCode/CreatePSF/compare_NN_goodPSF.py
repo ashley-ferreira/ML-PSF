@@ -227,7 +227,7 @@ def compare_NN_goodPSF(inputs):
 
     cn_prob, xs, ys, cutouts = zip(*sorted(zip(cn_prob, xs, ys, cutouts), reverse = True))
 
-    fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
+    fig, axs = plt.subplots(5,5,figsize=(7, 7))
     axs = axs.ravel()
     plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) 
     plotted_stars = 0
@@ -268,7 +268,7 @@ def compare_NN_goodPSF(inputs):
         img_header = han[0].header
 
     # load goodPSF
-    goodPSF = file_dir+'psfStars/'+input_file.replace('.fits','.metadata_goodPSF.fits')
+    goodPSF = file_dir+'psfStars/'+input_file.replace('.fits','._goodPSF.fits')
     with fits.open(goodPSF) as han:
         goodPSF_img_data = han[1].data
         goodPSF_header = han[0].header
@@ -283,7 +283,7 @@ def compare_NN_goodPSF(inputs):
             goodPSF_y.append(goodPSF_header[count])
         count += 1
 
-    fig, axs = plt.subplots(5,5,figsize=(5*5, 5*5))
+    fig, axs = plt.subplots(5,5,figsize=(5,5))
     axs = axs.ravel()
     plt.title('goodPSF selected top 25 stars:' + input_file, x=-1.5, y=5)
     cutoutWidth = cutout_size // 2
