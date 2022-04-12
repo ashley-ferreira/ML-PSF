@@ -1,5 +1,5 @@
 # NN-PSF: Almost Done
-### Part of NSERC-CREATE NTCO training program astronomy research project
+### Part of NSERC-CREATE NTCO Training Program Astronomy Research Project
 Student: Ashley Ferreira, Supervisor: Dr. Wesley Fraser
 
 #### Purpose:
