@@ -188,7 +188,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
             if filename.endswith('_cutoutData.pickle') and os.path.getsize(data_dir + filename) > 0:
                 if files_counted >= size_of_data:
                     break
-                print(files_counted, 'out of max size', size_of_data, 'files processed')
+                print(files_counted, 'good stars out of max number', size_of_data//2, 'processed')
                 print('file being processed: ', filename)
 
                 with open(data_dir + filename, 'rb') as f:
