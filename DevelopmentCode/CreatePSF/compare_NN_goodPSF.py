@@ -227,9 +227,9 @@ def compare_NN_goodPSF(inputs):
 
     cn_prob, xs, ys, cutouts = zip(*sorted(zip(cn_prob, xs, ys, cutouts), reverse = True))
 
-    fig, axs = plt.subplots(5,5,figsize=(10, 15))
+    fig, axs = plt.subplots(5,5,figsize=(10, 12))
     axs = axs.ravel()
-    plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=8) 
+    plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) 
     plotted_stars = 0
     for i in range(len(cutouts)): 
         if plotted_stars < 25:
