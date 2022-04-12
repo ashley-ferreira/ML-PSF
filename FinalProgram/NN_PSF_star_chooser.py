@@ -36,7 +36,11 @@ def NN_PSF_star_chooser(cutouts, xs, ys, model_dir_name=cwd+'/default_model/', m
 
     Returns:
         
-        None
+        cutouts_best (arr): cutout of chosen sources
+        
+        xs_best (arr): x positions of chosen sources
+        
+        ys_best (arr): y postition of chosen sources
     
     '''
 
