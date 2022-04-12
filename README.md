@@ -23,7 +23,7 @@ There are two main components:
 >>> CNN/Star_NN_valid.py analyzes the performance of the model using the validation dataset, randomly chosen data from the larger set of data but which the model has never trained or tested on 
 
 
->>> CreatePSF/compare_NN_goodPSF.py a program which plots the chosen sources from the model along with the PSF that is create by TRIPPy using these sources. This is compared to the 25 stars chosen by a non-machine learning technique and the PSF that is created from those. 
+>>> CreatePSF/compare_NN_goodPSF.py a program which plots the chosen sources from the model along with the PSF look-up table that is create by TRIPPy using these sources. This is compared to the 25 stars chosen by a non-machine learning technique and the PSF lookup-table that is created from those. 
 
 #### Acknowledgments:
 
