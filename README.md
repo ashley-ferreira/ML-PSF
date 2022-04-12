@@ -14,10 +14,10 @@ There are two main components:
 1. FinalProgram: the final trained machine learning model as well as a program 'NN_PSF_star_chooser.py' that interfaces with the model for easiest use. 
 2. DevelopmentCode: all of the code which was used to develop the final trained model. This code may be useful for others attempting to do similar work in the future. I have included the specific workflow below: 
 
-  DataPrep/DataPrepLoop.py to create training/testing/validation data from images
-  CNN/Star_NN_dev.py organizes data into training/testing/validation sets, trains and tests the model
-  CNN/Star_NN_valid.py analyzes the performance of the model using the validation dataset, randomly chosen data from the larger set of data but which the model has never trained or tested on 
-  CreatePSF/compare_NN_goodPSF.py a program which plots the chosen sources from the model along with the PSF that is create by TRIPPy using these sources. This is compared to the 25 stars chosen by a non-machine learning technique and the PSF that is created from those. 
+>>> DataPrep/DataPrepLoop.py to create training/testing/validation data from images
+>>> CNN/Star_NN_dev.py organizes data into training/testing/validation sets, trains and tests the model
+>>> CNN/Star_NN_valid.py analyzes the performance of the model using the validation dataset, randomly chosen data from the larger set of data but which the model has never trained or tested on 
+>>> CreatePSF/compare_NN_goodPSF.py a program which plots the chosen sources from the model along with the PSF that is create by TRIPPy using these sources. This is compared to the 25 stars chosen by a non-machine learning technique and the PSF that is created from those. 
 
 #### Acknowledgments:
 
