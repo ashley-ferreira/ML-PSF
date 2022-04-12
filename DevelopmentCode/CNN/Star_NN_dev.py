@@ -114,6 +114,9 @@ def get_user_input():
     plots_dir = model_dir_name + 'plots/'
     if not(os.path.exists(plots_dir)):
         os.mkdir(plots_dir)
+    submodels_dir = model_dir_name + 'models_each_10epochs/'
+    if not(os.path.exists(submodels_dir)):
+        os.mkdir(submodels_dir)
     
     return options.balanced_data_method, options.data_load, options.size_of_data, \
             options.num_epochs, model_dir_name, options.cutout_size,  \
@@ -394,7 +397,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         '''
         def on_epoch_end(self, epoch, logs={}):
             if epoch % 10 == 0 and epoch != 0:
-                self.model.save(model_dir_name + "model_{}".format(epoch))
+                self.model.save(model_dir_name + 'models_each_10epochs/' + "model_{}".format(epoch))
 
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
