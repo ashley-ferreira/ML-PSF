@@ -229,7 +229,7 @@ def compare_NN_goodPSF(inputs):
 
     fig, axs = plt.subplots(5,5,figsize=(10, 12))
     axs = axs.ravel()
-    plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6) 
+    plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6.5) 
     plotted_stars = 0
     for i in range(len(cutouts)): 
         if plotted_stars < 25:
