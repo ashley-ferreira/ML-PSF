@@ -221,7 +221,6 @@ def compare_NN_goodPSF(inputs):
     cn_prob = []
 
     output = model.predict(cutouts)
-
     for i in range(len(cutouts)):
         good_probability = output[i][1]
         cn_prob.append(good_probability) 
@@ -238,6 +237,7 @@ def compare_NN_goodPSF(inputs):
             center = crop_center(cutouts[i],5,5)
             sum_c = center.sum()
             SNR_proxy = math.sqrt(abs(sum_c))
+            print(good_probability, SNR_proxy)
             if SNR_proxy > SNR_proxy_cutoff and good_probability > conf_cutoff:       
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
