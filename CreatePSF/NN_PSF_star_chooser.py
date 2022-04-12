@@ -12,9 +12,10 @@ def NN_PSF_star_chooser(cutouts, xs, ys, model_dir_name=cwd+'/default_model/', m
     Final product of NN-PSF project.
 
     Given cutout of each source in an image along with their respective
-    x and y coordinates, it will return the optimal cutouts of stars to use 
+    x and y coordinates, this program calls on a pre-trained machine  
+    learnining model that will return a subset of cutouts of sources to use 
     for point spread function creation. It also returns the x and y coordinates
-    of these stars and these can be used to pass into the python module trippy
+    of these sources that can be used to pass into the python module trippy
     in order to create the desired point spread function.
 
     Parameters: provided by user   
