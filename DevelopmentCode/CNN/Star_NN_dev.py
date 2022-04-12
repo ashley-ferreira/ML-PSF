@@ -432,6 +432,8 @@ def train_CNN(model_dir_name, num_epochs, data):
     X_train = np.asarray(X_train).astype('float32')
     y_train_binary = np.asarray(y_train_binary).astype('float32')
 
+    # add saver for every 10 epochs
+    saver = CustomSaver()
     classifier = cn_model.fit(X_train, y_train_binary, epochs=num_epochs, batch_size=batch_size, callbacks=[saver])
 
     end = time.time()
