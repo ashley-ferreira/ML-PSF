@@ -177,7 +177,7 @@ def compare_NN_goodPSF(inputs):
 
     '''
     # unpack inputs
-    input_file, file_dir, model_dir_name, data_dir, NN_cutoff_vals, cutout_size = inputs
+    input_file, file_dir, data_dir, model_dir_name, NN_cutoff_vals, cutout_size = inputs
 
     # unpack cutoff values
     conf_cutoff = NN_cutoff_vals[0]
