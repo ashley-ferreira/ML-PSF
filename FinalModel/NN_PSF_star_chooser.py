@@ -102,7 +102,7 @@ def NN_PSF_star_chooser(cutouts, xs, ys, model_dir_name=cwd+'/default_model/', m
     # load previously trained Neural Network 
     model_found = False 
     for file in os.listdir(model_dir_name):
-        if file.startswith('model_'):
+        if file.startswith('model_final'):
             model = keras.models.load_model(model_dir_name + file)
             model_found = True
             break
