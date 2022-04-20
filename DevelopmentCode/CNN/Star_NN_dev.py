@@ -35,7 +35,7 @@ parser = OptionParser()
 ## initializing random seeds for reproducability
 # tf.random.set_seed(1234)
 # keras.utils.set_random_seed(1234)
-np.random.seed(432)
+np.random.seed(123) # cahnged from 432
 
 pwd = '/arc/projects/uvickbos/ML-PSF/'
 parser.add_option('-p', '--pwd', dest='pwd', 
@@ -403,10 +403,10 @@ def train_CNN(model_dir_name, num_epochs, data):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
     # section for setting up some flags and hyperparameters
-    batch_size = 16 
+    batch_size = 124 # up from 16
     dropout_rate = 0.2
     test_fraction = 0.05 
-    learning_rate = 0.001
+    learning_rate = 0.01 # up from 0.001
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)
