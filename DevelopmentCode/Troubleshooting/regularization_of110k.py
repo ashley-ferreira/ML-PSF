@@ -11,6 +11,8 @@ import heapq
 
 import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
+import csv
+
 
 import keras
 from keras.models import Sequential
@@ -156,6 +158,10 @@ def load_presaved_data(cutout_size, model_dir_name):
     indiv_maxpix = []
     indiv_minpix = []
     indiv_files = []
+
+    f = open(model_dir_name + 'indiv_reg_data.csv', 'w')
+    writer = csv.writer(f)
+    writer.writerow(['std','mean','pix_max','pix_min','indiv_file'])
     for i in range(len(cutouts)): #only one cutout?
         cutout = np.asarray(cutouts[i]).astype('float32')
         std = np.nanstd(cutout)
@@ -168,6 +174,9 @@ def load_presaved_data(cutout_size, model_dir_name):
         indiv_maxpix.append(pix_max)
         indiv_minpix.append(pix_min)
         indiv_files.append(indiv_file)
+        writer.writerow([std,mean,pix_max,pix_min,indiv_file])
+
+    f.close()
 
     with open(model_dir_name + 'indiv_reg_data.pickle', 'wb+') as han:
         pickle.dump([indiv_std,indiv_median,indiv_maxpix,indiv_minpix,indiv_files], han)
