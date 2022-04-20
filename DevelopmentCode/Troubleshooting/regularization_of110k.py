@@ -24,8 +24,6 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils import class_weight
 from sklearn.utils.multiclass import unique_labels
 
-from convnet_model import convnet_model
-
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
 
