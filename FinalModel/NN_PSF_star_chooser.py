@@ -4,9 +4,11 @@ import pickle
 import keras
 import math 
 import os
+from HSCgetStars_func import HSCgetStars_main 
 cwd = str(os.getcwd())
 
-def NN_PSF_star_chooser(cutouts, xs, ys, model_dir_name=cwd+'/default_model/', min_num_stars=10, 
+
+def NN_PSF_star_chooser(img_dir, img_file, model_dir_name=cwd+'/default_model/', min_num_stars=10, 
                                             max_stars=25, SNR_proxy_cutoff=10.0, conf_cutoff=0.95):
     '''
     Final product of NN-PSF project.
@@ -99,6 +101,12 @@ def NN_PSF_star_chooser(cutouts, xs, ys, model_dir_name=cwd+'/default_model/', m
 
         return cropped_img
 
+    # get cutouts, xs, ys,
+    cutout_file = img_dir + img_file.replace('.fits', '_111_cutouts_savedFits.pickle')
+    HSCgetStars_main(img_dir, img_file, cutout_file, 111, img_dir)
+    with open(cutout_file, 'rb') as f:
+        [std, seconds, peaks, xs, ys, cutouts, fwhm, input_file] = pickle.load(f)
+
     # load previously trained Neural Network 
     model_found = False 
     for file in os.listdir(model_dir_name):
@@ -133,10 +141,10 @@ def NN_PSF_star_chooser(cutouts, xs, ys, model_dir_name=cwd+'/default_model/', m
     for i in range(len(cutouts)): 
         if saved_stars < max_stars:
             good_probability = cn_prob[i]
-            center = crop_center(cutouts[i],5,5)
-            sum_c = center.sum()
-            SNR_proxy = math.sqrt(sum_c)
-            if SNR_proxy > SNR_proxy_cutoff and good_probability > conf_cutoff: 
+            #center = crop_center(cutouts[i],5,5)
+            #sum_c = center.sum()
+            #SNR_proxy = math.sqrt(sum_c)
+            if good_probability > conf_cutoff: # SNR_proxy > SNR_proxy_cutoff and 
                 cutouts_best.append(cutouts[i])      
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
