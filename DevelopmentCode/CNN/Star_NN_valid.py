@@ -118,12 +118,14 @@ def load_presaved_data(cutout_size, model_dir_name):
     '''
     #print(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle')
     #print(os.path.exists(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle'))
-    with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
+    with open(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
 
     with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
+    print('std',std)
+    print('mean',mean)
     #cutouts = regularize(cutouts, mean, std)
 
     return [cutouts, labels, xs, ys, fwhms, files]
