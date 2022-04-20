@@ -188,38 +188,37 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     files_counted = 0
     try:
         for filename in os.listdir(data_dir):
-            if filename.endswith('_cutoutData.pickle') and os.path.getsize(data_dir + filename) > 0:
-                if files_counted >= size_of_data:
-                    break
-                print(files_counted, 'good stars out of max number', size_of_data//2, 'processed')
-                print('file being processed: ', filename)
+            if files_counted <= size_of_data:
+                if filename.endswith('_cutoutData.pickle') and os.path.getsize(data_dir + filename) > 0:
+                    print(files_counted, 'good stars out of max number', size_of_data//2, 'processed')
+                    print('file being processed: ', filename)
 
-                with open(data_dir + filename, 'rb') as f:
-                    [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
-                    if cutout.shape == (cutout_size, cutout_size):
-                        if label == 1:
-                            good_x_lst.append(x)
-                            good_y_lst.append(y)
-                            good_fwhm_lst.append(fwhm)
-                            good_inputFile_lst.append(inputFile)
-                            good_cutouts.append(cutout)
-                            files_counted += 1
-                        elif label == 0:
-                            bad_x_lst.append(x)
-                            bad_y_lst.append(y)
-                            bad_fwhm_lst.append(fwhm)
-                            bad_inputFile_lst.append(inputFile)
-                            bad_cutouts.append(cutout)
+                    with open(data_dir + filename, 'rb') as f:
+                        [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
+                        if cutout.shape == (cutout_size, cutout_size):
+                            if label == 1:
+                                good_x_lst.append(x)
+                                good_y_lst.append(y)
+                                good_fwhm_lst.append(fwhm)
+                                good_inputFile_lst.append(inputFile)
+                                good_cutouts.append(cutout)
+                                files_counted += 1
+                            elif label == 0:
+                                bad_x_lst.append(x)
+                                bad_y_lst.append(y)
+                                bad_fwhm_lst.append(fwhm)
+                                bad_inputFile_lst.append(inputFile)
+                                bad_cutouts.append(cutout)
+                            else:
+                                print('ERROR: label is not 1 or 0, excluding cutout')
+                                err_log = open(model_dir_name + 'error_log.txt', 'a')
+                                err_log.write('Star_NN_dev.py' + filename + 'ERROR: label is not 1 or 0, excluding cutout. label=' + str(label))
+                                err_log.close() 
                         else:
-                            print('ERROR: label is not 1 or 0, excluding cutout')
+                            print('ERROR: wrong cutout shape, excluding cutout')
                             err_log = open(model_dir_name + 'error_log.txt', 'a')
-                            err_log.write('Star_NN_dev.py' + filename + 'ERROR: label is not 1 or 0, excluding cutout. label=' + str(label))
+                            err_log.write('Star_NN_dev.py' + filename + 'ERROR: wrong cutout shape. shape=' + str(cutout.shape))
                             err_log.close() 
-                    else:
-                        print('ERROR: wrong cutout shape, excluding cutout')
-                        err_log = open(model_dir_name + 'error_log.txt', 'a')
-                        err_log.write('Star_NN_dev.py' + filename + 'ERROR: wrong cutout shape. shape=' + str(cutout.shape))
-                        err_log.close() 
 
     except Exception as Argument:
         print('Star_NN_dev.py' + str(Argument))
@@ -406,7 +405,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     batch_size = 124 # up from 16
     dropout_rate = 0.2
     test_fraction = 0.05 
-    learning_rate = 0.01 # up from 0.001
+    learning_rate = 0.001 # up from 0.001
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)
