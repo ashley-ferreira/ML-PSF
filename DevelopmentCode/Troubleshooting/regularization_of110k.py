@@ -158,10 +158,12 @@ def load_presaved_data(cutout_size, model_dir_name):
     indiv_maxpix = []
     indiv_minpix = []
     indiv_files = []
+    x_lst = []
+    y_lst = []
 
     f = open(model_dir_name + 'indiv_reg_data.csv', 'w')
     writer = csv.writer(f)
-    writer.writerow(['std','mean','pix_max','pix_min','indiv_file'])
+    writer.writerow(['std','mean','pix_max','pix_min','file','x','y'])
     for i in range(len(cutouts)): #only one cutout?
         cutout = np.asarray(cutouts[i]).astype('float32')
         std = np.nanstd(cutout)
@@ -174,7 +176,9 @@ def load_presaved_data(cutout_size, model_dir_name):
         indiv_maxpix.append(pix_max)
         indiv_minpix.append(pix_min)
         indiv_files.append(indiv_file)
-        writer.writerow([std,mean,pix_max,pix_min,indiv_file])
+        x_lst.append(xs[i])
+        y_lst.append(ys[i])
+        writer.writerow([std,mean,pix_max,pix_min,indiv_file,xs[i],ys[i]])
 
     f.close()
 

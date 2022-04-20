@@ -285,7 +285,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     # combine arrays 
     cutouts = np.concatenate((good_cutouts, bad_cutouts))
     fwhms = np.concatenate((good_fwhm_arr, random_bad_fwhm_arr))
-    files = np.concatenate((good_inputFile_arr, random_bad_fwhm_arr))
+    files = np.concatenate((good_inputFile_arr, random_bad_inputFile_arr))
     xs = np.concatenate((good_x_arr, random_bad_x_arr))
     ys = np.concatenate((good_y_arr, random_bad_y_arr))
 
