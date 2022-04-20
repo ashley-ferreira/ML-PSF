@@ -156,10 +156,10 @@ def load_presaved_data(cutout_size, model_dir_name):
     indiv_maxpix = []
     indiv_minpix = []
     indiv_files = []
-    for i in range(len(cutouts)):
+    for i in range(len(cutouts)): #only one cutout?
         cutout = np.asarray(cutouts[i]).astype('float32')
-        std = np.nanstd(cutout[i])
-        mean = np.nanmean(cutout[i])
+        std = np.nanstd(cutout)
+        mean = np.nanmean(cutout)
         pix_max = cutout.max()
         pix_min = cutout.min()
         indiv_file = files[i]
