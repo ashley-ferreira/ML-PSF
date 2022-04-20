@@ -189,7 +189,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     max_num_good = size_of_data//2
     try:
         for filename in os.listdir(data_dir):
-            if files_counted <= max_num_good:
+            if files_counted < max_num_good:
                 if filename.endswith('_cutoutData.pickle') and os.path.getsize(data_dir + filename) > 0:
                     print(files_counted, 'good stars out of max number', max_num_good, 'processed')
                     print('file being processed: ', filename)
@@ -403,7 +403,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
     # section for setting up some flags and hyperparameters
-    batch_size = 124 # up from 16
+    batch_size = 1024 # up from 16
     dropout_rate = 0.2
     test_fraction = 0.05 
     learning_rate = 0.001 # up from 0.001
