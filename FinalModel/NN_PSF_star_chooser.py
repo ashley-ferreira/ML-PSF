@@ -162,3 +162,11 @@ def NN_PSF_star_chooser(img_dir, img_file, model_dir_name=cwd+'/default_model/',
     ys_best = np.array(ys_best)
 
     return cutouts_best, xs_best, ys_best
+
+'''
+    def downSample2d(arr,sf):
+    isf2 = 1.0/(sf*sf)
+    (A,B) = arr.shape
+    windows = view_as_windows(arr, (sf,sf), step = sf)
+    return windows.sum(3).sum(2)*isf2
+'''

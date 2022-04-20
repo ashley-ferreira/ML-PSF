@@ -118,13 +118,13 @@ def load_presaved_data(cutout_size, model_dir_name):
     '''
     #print(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle')
     #print(os.path.exists(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle'))
-    with open(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
+    with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
 
     with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
-    cutouts = regularize(cutouts, mean, std)
+    #cutouts = regularize(cutouts, mean, std)
 
     return [cutouts, labels, xs, ys, fwhms, files]
 
@@ -217,7 +217,7 @@ def validate_CNN(model_dir_name, data):
         if y_valid[i] == 1 and preds_valid[i][0] > 0.5:
             fwhms_test_misclass.append(fwhms[i])
             
-            (c1, c2) = zscale.get_limits(y_valid[i])
+            (c1, c2) = zscale.get_limits(X_valid[i])
             normer3 = interval.ManualInterval(c1,c2)
             pyl.title('labeled good star, predicted bad star at conf=' + str(preds_valid[i][1]))
             pyl.imshow(normer3(X_valid[i]))
@@ -227,8 +227,8 @@ def validate_CNN(model_dir_name, data):
         elif y_valid[i] == 0 and preds_valid[i][1] > 0.5:
             fwhms_test_misclass.append(fwhms[i])
             
-            (c1, c2) = zscale.get_limits(X_valid[i])
-            normer5 = interval.ManualInterval(c1,c2)
+            (c4, c5) = zscale.get_limits(X_valid[i])
+            normer5 = interval.ManualInterval(c4,c5)
             pyl.title('labeled bad star, predicted good star at conf=' + str(preds_valid[i][1])) 
             pyl.imshow(normer5(X_valid[i]))
             pyl.show()
