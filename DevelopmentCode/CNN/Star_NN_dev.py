@@ -219,7 +219,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                                     print('ERROR: label is not 1 or 0, excluding cutout')
                                     err_log = open(model_dir_name + 'error_log.txt', 'a')
                                     err_log.write('Star_NN_dev.py' + filename + 'ERROR: label is not 1 or 0, excluding cutout. label=' + str(label))
-                                    err_log.close() `
+                                    err_log.close()
                         else:
                             print('ERROR: wrong cutout shape, excluding cutout')
                             err_log = open(model_dir_name + 'error_log.txt', 'a')
