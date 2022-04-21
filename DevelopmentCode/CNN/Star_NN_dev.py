@@ -197,24 +197,29 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                     with open(data_dir + filename, 'rb') as f:
                         [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
                         if cutout.shape == (cutout_size, cutout_size):
-                            if label == 1:
-                                good_x_lst.append(x)
-                                good_y_lst.append(y)
-                                good_fwhm_lst.append(fwhm)
-                                good_inputFile_lst.append(inputFile)
-                                good_cutouts.append(cutout)
-                                files_counted += 1
-                            elif label == 0:
-                                bad_x_lst.append(x)
-                                bad_y_lst.append(y)
-                                bad_fwhm_lst.append(fwhm)
-                                bad_inputFile_lst.append(inputFile)
-                                bad_cutouts.append(cutout)
+                            if cutout.min() < -2000 or cutout.max() > 130000:
+                                pass
                             else:
-                                print('ERROR: label is not 1 or 0, excluding cutout')
-                                err_log = open(model_dir_name + 'error_log.txt', 'a')
-                                err_log.write('Star_NN_dev.py' + filename + 'ERROR: label is not 1 or 0, excluding cutout. label=' + str(label))
-                                err_log.close() 
+                                if cutout.min() < -200 or cutout.max() > 65536:
+                                    label = 0
+                                if label == 1:
+                                    good_x_lst.append(x)
+                                    good_y_lst.append(y)
+                                    good_fwhm_lst.append(fwhm)
+                                    good_inputFile_lst.append(inputFile)
+                                    good_cutouts.append(cutout)
+                                    files_counted += 1
+                                elif label == 0:
+                                    bad_x_lst.append(x)
+                                    bad_y_lst.append(y)
+                                    bad_fwhm_lst.append(fwhm)
+                                    bad_inputFile_lst.append(inputFile)
+                                    bad_cutouts.append(cutout)
+                                else:
+                                    print('ERROR: label is not 1 or 0, excluding cutout')
+                                    err_log = open(model_dir_name + 'error_log.txt', 'a')
+                                    err_log.write('Star_NN_dev.py' + filename + 'ERROR: label is not 1 or 0, excluding cutout. label=' + str(label))
+                                    err_log.close() `
                         else:
                             print('ERROR: wrong cutout shape, excluding cutout')
                             err_log = open(model_dir_name + 'error_log.txt', 'a')
