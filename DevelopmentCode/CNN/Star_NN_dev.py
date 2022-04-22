@@ -346,12 +346,10 @@ def load_presaved_data(cutout_size, model_dir_name):
     with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
 
-    print(len(cutouts))
-    print(cutouts.shape)
     # temporary add for old 110k data:
+    '''
     for i in range(len(cutouts)):
         cutout = np.asarray(cutouts[i]).astype('float32')
-        print(cutout.shape)
         if cutout.min() < -2000 or cutout.max() > 130000:
             cutouts = np.delete(cutouts,i)
             labels = np.delete(labels,i)
@@ -362,6 +360,7 @@ def load_presaved_data(cutout_size, model_dir_name):
         else:
             if cutouts.min() < -200 or cutout.max() > 65536:
                 labels[i] = 0
+    '''
 
     cutouts = np.asarray(cutouts).astype('float32')
     std = np.nanstd(cutouts)
