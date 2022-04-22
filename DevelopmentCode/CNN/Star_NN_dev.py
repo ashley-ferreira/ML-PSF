@@ -350,8 +350,9 @@ def load_presaved_data(cutout_size, model_dir_name):
     print(cutouts.shape)
     # temporary add for old 110k data:
     for i in range(len(cutouts)):
-
-        if cutouts[i].min() < -2000 or cutouts[i].max() > 130000:
+        cutout = np.asarray(cutouts[i]).astype('float32')
+        print(cutout.shape)
+        if cutout.min() < -2000 or cutout.max() > 130000:
             cutouts = np.delete(cutouts,i)
             labels = np.delete(labels,i)
             xs = np.delete(xs,i)
@@ -359,7 +360,7 @@ def load_presaved_data(cutout_size, model_dir_name):
             fwhms = np.delete(fwhms,i)
             files = np.delete(files,i)
         else:
-            if cutouts[i].min() < -200 or cutouts[i].max() > 65536:
+            if cutouts.min() < -200 or cutout.max() > 65536:
                 labels[i] = 0
 
     cutouts = np.asarray(cutouts).astype('float32')
