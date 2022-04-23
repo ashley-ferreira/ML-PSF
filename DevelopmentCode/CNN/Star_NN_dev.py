@@ -216,7 +216,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                                 # short term sol, long term sol is already decide
                                 # random incidies
                                 elif label == 0:
-                                    if i % 3 == 0:
+                                    if i % 5 == 0:
                                         bad_x_lst.append(x)
                                         bad_y_lst.append(y)
                                         bad_fwhm_lst.append(fwhm)
