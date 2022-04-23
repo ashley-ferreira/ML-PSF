@@ -185,18 +185,22 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     bad_y_lst = []
     bad_inputFile_lst = []
 
-    files_counted = 0
+    good_counted = 0
+    bad_counted = 0
     max_num_good = size_of_data//2
+    i=0
     try:
         for filename in os.listdir(data_dir):
-            if files_counted < max_num_good:
+            if good_counted < max_num_good:
                 if filename.endswith('_cutoutData.pickle') and os.path.getsize(data_dir + filename) > 0:
-                    print(files_counted, 'good stars out of max number', max_num_good, 'processed')
+                    print(good_counted, 'good stars out of max number', max_num_good, 'processed')
+                    print(bad_counted, 'bad stars out of max number', max_num_good, 'processed')
                     print('file being processed: ', filename)
 
                     with open(data_dir + filename, 'rb') as f:
                         [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
                         if cutout.shape == (cutout_size, cutout_size):
+                            i += 1
                             if cutout.min() < -2000 or cutout.max() > 130000:
                                 pass
                             else:
@@ -208,13 +212,16 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                                     good_fwhm_lst.append(fwhm)
                                     good_inputFile_lst.append(inputFile)
                                     good_cutouts.append(cutout)
-                                    files_counted += 1
-                                elif label == 0:
+                                    good_counted += 1
+                                # short term sol, long term sol is already decide
+                                # random incidies
+                                elif label == 0 and i % 3 == 0:
                                     bad_x_lst.append(x)
                                     bad_y_lst.append(y)
                                     bad_fwhm_lst.append(fwhm)
                                     bad_inputFile_lst.append(inputFile)
                                     bad_cutouts.append(cutout)
+                                    bad_counted += 1
                                 else:
                                     print('ERROR: label is not 1 or 0, excluding cutout')
                                     err_log = open(model_dir_name + 'error_log.txt', 'a')
