@@ -215,13 +215,14 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                                     good_counted += 1
                                 # short term sol, long term sol is already decide
                                 # random incidies
-                                elif label == 0 and i % 3 == 0:
-                                    bad_x_lst.append(x)
-                                    bad_y_lst.append(y)
-                                    bad_fwhm_lst.append(fwhm)
-                                    bad_inputFile_lst.append(inputFile)
-                                    bad_cutouts.append(cutout)
-                                    bad_counted += 1
+                                elif label == 0:
+                                    if i % 3 == 0:
+                                        bad_x_lst.append(x)
+                                        bad_y_lst.append(y)
+                                        bad_fwhm_lst.append(fwhm)
+                                        bad_inputFile_lst.append(inputFile)
+                                        bad_cutouts.append(cutout)
+                                        bad_counted += 1
                                 else:
                                     print('ERROR: label is not 1 or 0, excluding cutout')
                                     err_log = open(model_dir_name + 'error_log.txt', 'a')
