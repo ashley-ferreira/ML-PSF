@@ -432,7 +432,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
     # section for setting up some flags and hyperparameters
-    batch_size = 64 # up from 16 --> 1024
+    batch_size = 32 # up from 16 --> 1024
     dropout_rate = 0.2
     test_fraction = 0.05 
     learning_rate = 0.001 # up from 0.001
