@@ -216,7 +216,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                                 # short term sol, long term sol is already decide
                                 # random incidies
                                 elif label == 0:
-                                    if i % 5 == 0:
+                                    if i % 3 == 0:
                                         bad_x_lst.append(x)
                                         bad_y_lst.append(y)
                                         bad_fwhm_lst.append(fwhm)
@@ -432,7 +432,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
     # section for setting up some flags and hyperparameters
-    batch_size = 1024 # up from 16
+    batch_size = 64 # up from 16 --> 1024
     dropout_rate = 0.2
     test_fraction = 0.05 
     learning_rate = 0.001 # up from 0.001
