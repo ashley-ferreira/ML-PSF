@@ -41,6 +41,8 @@ from sklearn.utils.multiclass import unique_labels
 from convnet_model import convnet_model
 from convnet_model_complex import convnet_model_complex
 
+import matplotlib.pyplot as plt
+
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
 
@@ -49,7 +51,7 @@ np.random.seed(432)
 pwd = '/arc/projects/uvickbos/ML-PSF/'
 model_dir_name = pwd+'Saved_Model/2022-04-23-13:53:44/'
 test_fraction = 0.05
-conf_levels = [0.5, 0.75, 0.9, 0.95, 0.99]
+conf_levels = [0.75, 0.9, 0.95, 0.99]
 
 
 def load_presaved_data(cutout_size, model_dir_name):
@@ -265,6 +267,20 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
                     bad_stars_correct +=1
                 elif y_test[i] == 1:
                     good_stars_incorrect +=1
+                    fp.append()
+
+            if len(fn) == 25:
+                fig, axs = plt.subplots(5,5,figsize=(10, 12))
+                axs = axs.ravel()
+                plt.title('label=1, prediction=0', x=-1.7, y=6.5) 
+                (z1, z2) = zscale.get_limits(fn[i])
+                normer = interval.ManualInterval(z1,z2)
+                for i in range(len(fn))
+                    axs[i].imshow(normer(fn[i]))
+                    axs[i].set_xticks([])
+                    axs[i].set_yticks([])
+                plt.show()
+                fn = []
         
         cm = np.array([[bad_stars_correct, bad_stars_incorrect], [good_stars_incorrect, good_stars_correct]])
         #preds_test_cm = np.array(preds_test_cm)
@@ -282,6 +298,9 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
         pyl.show()
         pyl.close()
         pyl.clf()
+
+
+        
 
         #y_test_binary = np.argmax(y_test_binary, axis = 1) 
         #preds_test_binary = np.argmax(preds_test, axis = 1)
