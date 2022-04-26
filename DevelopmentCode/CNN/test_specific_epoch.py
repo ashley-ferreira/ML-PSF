@@ -189,6 +189,9 @@ def train_CNN(data):
         ys_train, ys_test = xs[train_index], xs[test_index]
         files_train, files_test = files[train_index], files[test_index]
         fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
+
+    unique_labs = len(np.unique(y_train)) # should be 2
+    y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
    
     X_train = np.asarray(X_train).astype('float32')
     y_train_binary = np.asarray(y_train_binary).astype('float32')
