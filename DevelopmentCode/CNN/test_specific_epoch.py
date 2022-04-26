@@ -275,10 +275,10 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
                 fig, axs = plt.subplots(5,5,figsize=(10, 12))
                 axs = axs.ravel()
                 plt.title('label=1, prediction=0', x=-1.7, y=6.5) 
-                (z1, z2) = zscale.get_limits(fn[i])
-                normer = interval.ManualInterval(z1,z2)
-                for i in range(len(fn)):
+                for i in range(25):
                     print(i, len(fn))
+                    (z1, z2) = zscale.get_limits(fn[i])
+                    normer = interval.ManualInterval(z1,z2)
                     axs[i].imshow(normer(fn[i])) # how can this be out of range?
                     axs[i].set_xticks([])
                     axs[i].set_yticks([])
