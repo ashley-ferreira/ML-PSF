@@ -245,6 +245,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     recall = []
     precision = []
     fp_rate = []
+    fp = []
     for c in conf_levels:
         good_stars_correct = 0
         good_stars_incorrect = 0
@@ -267,7 +268,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
                     bad_stars_correct +=1
                 elif y_test[i] == 1:
                     good_stars_incorrect +=1
-                    fp.append()
+                    fp.append(X_test[i])
 
             if len(fn) == 25:
                 fig, axs = plt.subplots(5,5,figsize=(10, 12))
