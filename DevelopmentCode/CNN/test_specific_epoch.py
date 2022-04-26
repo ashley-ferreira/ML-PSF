@@ -284,7 +284,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
 
         for (i, j), z in np.ndenumerate(cm):
             pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-        pyl.title('Confusion matrix (testing data), good star confidence level = ',c)
+        pyl.title('Confusion matrix (testing data), good star confidence level = '+str(c))
         pyl.colorbar()
         pyl.xlabel('Predicted labels')
         pyl.ylabel('True labels')
