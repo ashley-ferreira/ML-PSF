@@ -25,6 +25,7 @@ from sklearn.utils import class_weight
 from sklearn.utils.multiclass import unique_labels
 
 from convnet_model import convnet_model
+from convnet_model_complex import convnet_model_complex
 
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
@@ -193,14 +194,13 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
         for filename in os.listdir(data_dir):
             if good_counted < max_num_good:
                 if filename.endswith('_cutoutData.pickle') and os.path.getsize(data_dir + filename) > 0:
-                    print(good_counted, 'good stars out of max number', max_num_good, 'processed')
-                    print(bad_counted, 'bad stars out of max number', max_num_good, 'processed')
+                    print(good_counted, 'good stars out of max number needed', max_num_good, 'processed')
+                    print(bad_counted, 'bad stars out of max number number needed', max_num_good, 'processed')
                     print('file being processed: ', filename)
 
                     with open(data_dir + filename, 'rb') as f:
                         [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
                         if cutout.shape == (cutout_size, cutout_size):
-                            i += 1
                             if cutout.min() < -2000 or cutout.max() > 130000:
                                 pass
                             else:
@@ -216,7 +216,8 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                                 # short term sol, long term sol is already decide
                                 # random incidies
                                 elif label == 0:
-                                    if i % 3 == 0:
+                                    i += 1
+                                    if i % 5 == 0:
                                         bad_x_lst.append(x)
                                         bad_y_lst.append(y)
                                         bad_fwhm_lst.append(fwhm)
@@ -454,7 +455,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
     # train the model
-    cn_model = convnet_model(X_train.shape[1:], unique_labs=unique_labs, dropout_rate=dropout_rate)
+    cn_model = convnet_model_complex(X_train.shape[1:], unique_labs=unique_labs, dropout_rate=dropout_rate)
     cn_model.summary()
 
     opt = Adam(learning_rate=learning_rate) 

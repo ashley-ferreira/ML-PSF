@@ -126,7 +126,7 @@ def load_presaved_data(cutout_size, model_dir_name):
 
     print('std',std)
     print('mean',mean)
-    #cutouts = regularize(cutouts, mean, std)
+    cutouts = regularize(cutouts, mean, std)
 
     return [cutouts, labels, xs, ys, fwhms, files]
 
@@ -166,6 +166,7 @@ def validate_CNN(model_dir_name, data):
     for file in os.listdir(model_dir_name):
         if file.startswith('model_'):
             cn_model = keras.models.load_model(model_dir_name + file)
+            print('using model:', file)
             model_found = True
             break
     if model_found == False: 
