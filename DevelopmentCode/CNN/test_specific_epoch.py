@@ -275,7 +275,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
             if len(tp) == 25:
                 tp = np.array(tp)
                 print(tp.shape)
-                fn = np.squeeze(tp, axis=3)
+                tp = np.squeeze(tp, axis=3)
                 fig, axs = plt.subplots(5,5,figsize=(10, 12))
                 axs = axs.ravel()
                 plt.title('label=1, prediction=1', x=-1.7, y=6.5) 
