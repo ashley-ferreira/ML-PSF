@@ -198,7 +198,8 @@ def train_CNN(data):
     X_train = np.asarray(X_train).astype('float32')
     y_train_binary = np.asarray(y_train_binary).astype('float32')
 
-    cn_model = keras.models.load_model(pwd+ 'Saved_Model/2022-04-23-13:53:44/'+'10epochs_basic_model/model_350')
+    cn_model = keras.models.load_model(pwd+ 'Saved_Model/2022-04-23-13:53:44/'+'models_each_10epochs/' + "model_80")
+    #'10epochs_basic_model/model_350')
     # 'models_each_10epochs/' + "model_60")
     #2022-04-23-13:53:44
     return cn_model, X_train, y_train, X_test, y_test
@@ -288,6 +289,24 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
                     axs[i].set_yticks([])
                 plt.show()
                 tp = []
+
+            # do you need to squeeze cutouts?
+            if len(fn) == 25:
+                fn = np.array(fn)
+                print(tp.shape)
+                fn = np.squeeze(fn, axis=3)
+                fig, axs = plt.subplots(5,5,figsize=(10, 12))
+                axs = axs.ravel()
+                plt.title('label=1, prediction=0', x=-1.7, y=6.5) 
+                for i in range(25):
+                    print(i, len(fn))
+                    (z1, z2) = zscale.get_limits(fn[i])
+                    normer = interval.ManualInterval(z1,z2)
+                    axs[i].imshow(normer(fn[i])) # how can this be out of range?
+                    axs[i].set_xticks([])
+                    axs[i].set_yticks([])
+                plt.show()
+                fn = []
         
         cm = np.array([[bad_stars_correct, bad_stars_incorrect], [good_stars_incorrect, good_stars_correct]])
         #preds_test_cm = np.array(preds_test_cm)
