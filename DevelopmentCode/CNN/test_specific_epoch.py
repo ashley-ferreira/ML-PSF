@@ -245,7 +245,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     recall = []
     precision = []
     fp_rate = []
-    fp = []
+    fn = []
     for c in conf_levels:
         good_stars_correct = 0
         good_stars_incorrect = 0
