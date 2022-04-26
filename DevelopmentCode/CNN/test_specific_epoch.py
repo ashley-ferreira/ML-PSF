@@ -245,6 +245,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     precision = []
     fp_rate = []
     fn = []
+    tp = []
     for c in conf_levels:
         good_stars_correct = 0
         good_stars_incorrect = 0
@@ -259,6 +260,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
                 good_stars_above_c +=1 
                 if y_test[i] == 1:
                     good_stars_correct +=1 
+                    tp.append(X_test[i])
                 elif y_test[i] == 0:
                     bad_stars_incorrect +=1
             else:
@@ -270,22 +272,22 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
                     fn.append(X_test[i])
 
             # do you need to squeeze cutouts?
-            if len(fn) == 25:
-                fn = np.array(fn)
-                print(fn.shape)
-                fn = np.squeeze(fn, axis=3)
+            if len(tp) == 25:
+                tp = np.array(tp)
+                print(tp.shape)
+                fn = np.squeeze(tp, axis=3)
                 fig, axs = plt.subplots(5,5,figsize=(10, 12))
                 axs = axs.ravel()
-                plt.title('label=1, prediction=0', x=-1.7, y=6.5) 
+                plt.title('label=1, prediction=1', x=-1.7, y=6.5) 
                 for i in range(25):
-                    print(i, len(fn))
-                    (z1, z2) = zscale.get_limits(fn[i])
+                    print(i, len(tp))
+                    (z1, z2) = zscale.get_limits(tp[i])
                     normer = interval.ManualInterval(z1,z2)
-                    axs[i].imshow(normer(fn[i])) # how can this be out of range?
+                    axs[i].imshow(normer(tp[i])) # how can this be out of range?
                     axs[i].set_xticks([])
                     axs[i].set_yticks([])
                 plt.show()
-                fn = []
+                tp = []
         
         cm = np.array([[bad_stars_correct, bad_stars_incorrect], [good_stars_incorrect, good_stars_correct]])
         #preds_test_cm = np.array(preds_test_cm)
