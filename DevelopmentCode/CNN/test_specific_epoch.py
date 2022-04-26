@@ -48,7 +48,7 @@ zscale = ZScaleInterval()
 np.random.seed(432)
 
 pwd = '/arc/projects/uvickbos/ML-PSF/'
-model_dir_name = '2022-04-23-13:53:44/'
+model_dir_name = pwd+'Saved_Model/2022-04-23-13:53:44/'
 test_fraction = 0.05
 
 
