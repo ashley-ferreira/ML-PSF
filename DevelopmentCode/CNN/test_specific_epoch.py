@@ -178,7 +178,7 @@ def train_CNN(data):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
     ### now divide the cutouts array into training and testing datasets.
-    skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)
+    skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
     print(skf)
     skf.split(cutouts, labels)
 
@@ -253,26 +253,18 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
 
         #preds_test_cm = []
         for i in range(len(preds_test)):
-            if preds_test[i][0] > c:
+            if preds_test[i][1] > c:
                 good_stars_above_c +=1 
                 if y_test[i] == 1:
                     good_stars_correct +=1 
                 elif y_test[i] == 0:
-                    good_stars_incorrect +=1
+                    bad_stars_incorrect +=1
             else:
                 bad_stars_above_c +=1
                 if y_test[i] == 0:
                     bad_stars_correct +=1
                 elif y_test[i] == 1:
-                    bad_stars_incorrect +=1
-                    
-        #print('good', good_stars_correct, good_stars_incorrect, good_stars_above_c)
-        #print('bad', bad_stars_correct, bad_stars_incorrect, bad_stars_above_c)
-        good_star_acc.append(good_stars_correct/good_stars_above_c)
-        bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
-        recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) 
-        fp_rate.append(good_stars_incorrect/(good_stars_incorrect+bad_stars_correct)) 
-        precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
+                    good_stars_incorrect +=1
         
         cm = np.array([[bad_stars_correct, bad_stars_incorrect], [good_stars_incorrect, good_stars_correct]])
         #preds_test_cm = np.array(preds_test_cm)
@@ -293,6 +285,56 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
 
         #y_test_binary = np.argmax(y_test_binary, axis = 1) 
         #preds_test_binary = np.argmax(preds_test, axis = 1)
+
+
+            # accuracy vs confidence plot
+    confidence_step = 0.001 # likely automatic way to do this but i didn't easily find
+    confidence_queries = np.arange(confidence_step, 1, confidence_step) 
+    good_star_acc = []
+    bad_star_acc = []
+    recall = []
+    precision = []
+    fp_rate = []
+
+    for c in confidence_queries:
+        good_stars_correct = 0
+        good_stars_incorrect = 0
+        good_stars_above_c = 0
+        bad_stars_correct = 0
+        bad_stars_incorrect = 0
+        bad_stars_above_c = 0
+
+        for i in range(len(preds_valid)):
+            if preds_valid[i][1] > c:
+                good_stars_above_c +=1 
+                if y_valid[i] == 1:
+                    good_stars_correct +=1 
+                elif y_valid[i] == 0:
+                    good_stars_incorrect +=1
+            else:
+                bad_stars_above_c +=1
+                if y_valid[i] == 0:
+                    bad_stars_correct +=1
+                elif y_valid[i] == 1:
+                    bad_stars_incorrect +=1
+                    
+        #print('good', good_stars_correct, good_stars_incorrect, good_stars_above_c)
+        #print('bad', bad_stars_correct, bad_stars_incorrect, bad_stars_above_c)
+        good_star_acc.append(good_stars_correct/good_stars_above_c)
+        bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
+        recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) 
+        fp_rate.append(good_stars_incorrect/(good_stars_incorrect+bad_stars_correct)) 
+        precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
+
+    pyl.title('Accuracy Curve')
+    pyl.plot(confidence_queries, good_star_acc, label='good star classificantion')
+    pyl.plot(confidence_queries, bad_star_acc, label='bad star clasification')
+    pyl.legend()
+    pyl.xlabel('Confidence cutoff for good star classification')
+    pyl.ylabel('Accuracy')
+    pyl.show()
+    pyl.close()
+    pyl.clf()
 
 def main():
     cn_model, X_train, y_train, X_test, y_test = train_CNN(load_presaved_data(111, model_dir_name))
