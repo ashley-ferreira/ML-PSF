@@ -227,16 +227,16 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     X_test = np.asarray(X_test).astype('float32')
     unique_labs = len(np.unique(y_test)) # should be 2
     y_test_binary = keras.utils.np_utils.to_categorical(y_test, unique_labs)
+    print(y_test_binary)
     y_test_binary = np.asarray(y_test_binary).astype('float32')
     preds_test = cn_model.predict(X_test, verbose=1)
-    preds_train = cn_model.predict(X_train, verbose=1)
+    print(preds_test)
 
     # evanluate test set (50% confidence threshold)
     results = cn_model.evaluate(X_test, y_test_binary)
     print("test loss, test acc:", results)
 
-    y_test_binary = np.argmax(y_test_binary, axis = 1) 
-    preds_test_binary = np.argmax(preds_test, axis = 1)
+
 
     good_star_acc = []
     bad_star_acc = []
@@ -252,8 +252,8 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
         bad_stars_above_c = 0
 
         #preds_test_cm = []
-        for i in range(len(preds_test_binary)):
-            if preds_test_binary[i][1] > c:
+        for i in range(len(preds_test)):
+            if preds_test[i][1] > c:
                 good_stars_above_c +=1 
                 if y_test[i] == 1:
                     good_stars_correct +=1 
@@ -292,6 +292,9 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
         fig2.savefig(model_dir_name +'plots/'+'NN_confusion_matrix.png')
         pyl.close()
         pyl.clf()
+
+        #y_test_binary = np.argmax(y_test_binary, axis = 1) 
+        #preds_test_binary = np.argmax(preds_test, axis = 1)
 
 def main():
     cn_model, X_train, y_train, X_test, y_test = train_CNN(load_presaved_data(111, model_dir_name))
