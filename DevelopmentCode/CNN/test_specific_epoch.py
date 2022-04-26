@@ -227,7 +227,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     '''
 
     # get the model output classifications for the train and test sets
-    X_test = np.asarray(X_test).astype('float32')
+    X_test = np.asarray(X_test)#.astype('float32')
     unique_labs = len(np.unique(y_test)) # should be 2
     y_test_binary = keras.utils.np_utils.to_categorical(y_test, unique_labs)
     print(y_test_binary)
@@ -238,8 +238,6 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     # evanluate test set (50% confidence threshold)
     results = cn_model.evaluate(X_test, y_test_binary)
     print("test loss, test acc:", results)
-
-
 
     good_star_acc = []
     bad_star_acc = []
@@ -271,7 +269,11 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
                     good_stars_incorrect +=1
                     fn.append(X_test[i])
 
+            # do you need to squeeze cutouts?
             if len(fn) == 25:
+                fn = np.array(fn)
+                print(fn.shape)
+                fn = np.squeeze(fn, axis=3)
                 fig, axs = plt.subplots(5,5,figsize=(10, 12))
                 axs = axs.ravel()
                 plt.title('label=1, prediction=0', x=-1.7, y=6.5) 
