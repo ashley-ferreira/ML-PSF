@@ -25,7 +25,6 @@ import pickle
 import heapq
 
 import tensorflow as tf
-from tensorflow.keras.optimizers import Adam
 
 import keras
 from keras.models import Sequential
@@ -50,6 +49,7 @@ np.random.seed(432)
 pwd = '/arc/projects/uvickbos/ML-PSF/'
 model_dir_name = pwd+'Saved_Model/2022-04-23-13:53:44/'
 test_fraction = 0.05
+conf_levels = [0.5, 0.75, 0.9, 0.95, 0.99]
 
 
 def load_presaved_data(cutout_size, model_dir_name):
@@ -235,25 +235,68 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     results = cn_model.evaluate(X_test, y_test_binary)
     print("test loss, test acc:", results)
 
-    # plot confusion matrix (50% confidence threshold)
-    fig2 = pyl.figure()
     y_test_binary = np.argmax(y_test_binary, axis = 1) 
     preds_test_binary = np.argmax(preds_test, axis = 1)
-    cm = confusion_matrix(y_test_binary, preds_test_binary)
-    pyl.matshow(cm)
 
-    for (i, j), z in np.ndenumerate(cm):
-        pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-    pyl.title('Confusion matrix (testing data)')
-    pyl.colorbar()
-    pyl.xlabel('Predicted labels')
-    pyl.ylabel('True labels')
-    pyl.show()
-    fig2.savefig(model_dir_name +'plots/'+'NN_confusion_matrix.png')
-    pyl.close()
-    pyl.clf()
+    good_star_acc = []
+    bad_star_acc = []
+    recall = []
+    precision = []
+    fp_rate = []
+    for c in conf_levels:
+        good_stars_correct = 0
+        good_stars_incorrect = 0
+        good_stars_above_c = 0
+        bad_stars_correct = 0
+        bad_stars_incorrect = 0
+        bad_stars_above_c = 0
 
+        #preds_test_cm = []
+        for i in range(len(preds_test_binary)):
+            if preds_test_binary[i][1] > c:
+                good_stars_above_c +=1 
+                if y_test[i] == 1:
+                    good_stars_correct +=1 
+                elif y_test[i] == 0:
+                    good_stars_incorrect +=1
+            else:
+                bad_stars_above_c +=1
+                if y_test[i] == 0:
+                    bad_stars_correct +=1
+                elif y_test[i] == 1:
+                    bad_stars_incorrect +=1
+                    
+        #print('good', good_stars_correct, good_stars_incorrect, good_stars_above_c)
+        #print('bad', bad_stars_correct, bad_stars_incorrect, bad_stars_above_c)
+        good_star_acc.append(good_stars_correct/good_stars_above_c)
+        bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
+        recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) 
+        fp_rate.append(good_stars_incorrect/(good_stars_incorrect+bad_stars_correct)) 
+        precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
+        
+        cm = np.array([[bad_stars_correct, bad_stars_incorrect], [good_stars_incorrect, good_stars_correct]])
+        #preds_test_cm = np.array(preds_test_cm)
 
-cn_model, X_train, y_train, X_test, y_test = train_CNN(load_presaved_data(111, model_dir_name))
+        # plot confusion matrix (50% confidence threshold)
+        fig2 = pyl.figure()
+        #cm = confusion_matrix(y_test_binary, preds_test_binary)
+        pyl.matshow(cm)
 
-test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test)
+        for (i, j), z in np.ndenumerate(cm):
+            pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
+        pyl.title('Confusion matrix (testing data), good star confidence level = ',c)
+        pyl.colorbar()
+        pyl.xlabel('Predicted labels')
+        pyl.ylabel('True labels')
+        pyl.show()
+        fig2.savefig(model_dir_name +'plots/'+'NN_confusion_matrix.png')
+        pyl.close()
+        pyl.clf()
+
+def main():
+    cn_model, X_train, y_train, X_test, y_test = train_CNN(load_presaved_data(111, model_dir_name))
+
+    test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test)
+
+if __name__ == '__main__':
+    main()
