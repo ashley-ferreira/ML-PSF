@@ -293,7 +293,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
             # do you need to squeeze cutouts?
             if len(fn) == 25:
                 fn = np.array(fn)
-                print(tp.shape)
+                print(fn.shape)
                 fn = np.squeeze(fn, axis=3)
                 fig, axs = plt.subplots(5,5,figsize=(10, 12))
                 axs = axs.ravel()
