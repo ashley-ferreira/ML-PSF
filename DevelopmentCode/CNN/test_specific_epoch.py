@@ -13,12 +13,43 @@ import matplotlib as mpl
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
 
-from optparse import OptionParser
-parser = OptionParser()
+import os
+from os import path
+import time
+from datetime import date 
+from datetime import datetime
+import sys
+import numpy as np
+import matplotlib.pyplot as pyl
+import pickle
+import heapq
+
+import tensorflow as tf
+from tensorflow.keras.optimizers import Adam
+
+import keras
+from keras.models import Sequential
+from keras.layers import Dense, BatchNormalization, Flatten, Conv2D, MaxPool2D
+from keras.layers.core import Dropout
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+
+from sklearn.metrics import confusion_matrix
+from sklearn.utils.multiclass import unique_labels
+from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.utils import class_weight
+from sklearn.utils.multiclass import unique_labels
+
+from convnet_model import convnet_model
+from convnet_model_complex import convnet_model_complex
+
+from astropy.visualization import interval, ZScaleInterval
+zscale = ZScaleInterval()
 
 np.random.seed(432)
 
 pwd = '/arc/projects/uvickbos/ML-PSF/'
+model_dir_name = '2022-04-23-13:53:44/'
+test_fraction = 0.05
 
 
 def load_presaved_data(cutout_size, model_dir_name):
@@ -104,6 +135,68 @@ def regularize(cutouts, mean, std):
 
     return regularized_cutout
 
+def train_CNN(data):
+    '''
+    Sets up and trains Convolutional Neural Network (CNN).
+    Plots accuracy and loss over each training epoch.
+
+    Parameters:    
+
+        model_dir_name (str): directory to store model
+        
+        num_epochs (int): number of epochs to train for
+
+        data (lst), which consists of:
+
+            cutouts (arr): 3D array conisting of 2D image data for each cutout
+
+            labels (arr): 1D array containing 0 or 1 label for bad or good star respectively
+
+            xs (arr): 1D array containing central x position of cutout 
+
+            ys (arr): 1D array containing central y position of cutout 
+
+            fwhms (arr): 1D array containing fwhm values for each cutout 
+            
+            files (arr): 1D array containing file names for each cutout
+
+    Return: 
+
+        cn_model (keras model): trained neural network
+
+        X_train (arr): X values (images) for training
+        
+        y_train (arr): real y values (labels) for training
+        
+        X_test (arr): X values (images) for testing 
+        
+        y_test (arr): real y values (labels) for testing 
+
+    '''
+
+    # unpack presaved data
+    cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
+
+    ### now divide the cutouts array into training and testing datasets.
+    skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)
+    print(skf)
+    skf.split(cutouts, labels)
+
+    for train_index, test_index in skf.split(cutouts, labels):
+        X_train, X_test = cutouts[train_index], cutouts[test_index]
+        y_train, y_test = labels[train_index], labels[test_index]
+        xs_train, xs_test = xs[train_index], xs[test_index]
+        ys_train, ys_test = xs[train_index], xs[test_index]
+        files_train, files_test = files[train_index], files[test_index]
+        fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
+   
+    X_train = np.asarray(X_train).astype('float32')
+    y_train_binary = np.asarray(y_train_binary).astype('float32')
+
+    cn_model = keras.models.load_model(pwd+ 'Saved_Model/2022-04-23-13:53:44/'+ 'models_each_10epochs/' + "model_350")
+    
+    return cn_model, X_train, y_train, X_test, y_test
+
 def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     ''' 
     Tests previously trained Convolutional Neural Network (CNN).
@@ -126,6 +219,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
         None
 
     '''
+
     # get the model output classifications for the train and test sets
     X_test = np.asarray(X_test).astype('float32')
     unique_labs = len(np.unique(y_test)) # should be 2
@@ -157,4 +251,6 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     pyl.clf()
 
 
-cn_model = keras.models.load_model(pwd+ 'Saved_Model/2022-04-23-13:53:44/'+ 'models_each_10epochs/' + "model_350")
+cn_model, X_train, y_train, X_test, y_test = train_CNN(load_presaved_data(111, model_dir_name))
+
+test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test)
