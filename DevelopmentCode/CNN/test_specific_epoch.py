@@ -275,7 +275,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
                 plt.title('label=1, prediction=0', x=-1.7, y=6.5) 
                 (z1, z2) = zscale.get_limits(fn[i])
                 normer = interval.ManualInterval(z1,z2)
-                for i in range(len(fn))
+                for i in range(len(fn)):
                     axs[i].imshow(normer(fn[i]))
                     axs[i].set_xticks([])
                     axs[i].set_yticks([])
