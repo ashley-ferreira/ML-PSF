@@ -196,7 +196,7 @@ def train_CNN(data):
     X_train = np.asarray(X_train).astype('float32')
     y_train_binary = np.asarray(y_train_binary).astype('float32')
 
-    cn_model = keras.models.load_model(pwd+ 'Saved_Model/2022-04-23-13:53:44/'+ 'models_each_10epochs/' + "model_350")
+    cn_model = keras.models.load_model(pwd+ 'Saved_Model/2022-04-23-13:53:44/'+ 'models_each_10epochs/' + "model_300")
     
     return cn_model, X_train, y_train, X_test, y_test
 
@@ -288,13 +288,9 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
 
 
             # accuracy vs confidence plot
-    confidence_step = 0.001 # likely automatic way to do this but i didn't easily find
-    confidence_queries = np.arange(confidence_step, 1, confidence_step) 
-    good_star_acc = []
-    bad_star_acc = []
-    recall = []
-    precision = []
-    fp_rate = []
+    confidence_step = 0.01 # likely automatic way to do this but i didn't easily find
+    confidence_queries = np.arange(0.5, 1, confidence_step) 
+    tp, tn, fp, fn = [], [], [], []
 
     for c in confidence_queries:
         good_stars_correct = 0
@@ -304,34 +300,33 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
         bad_stars_incorrect = 0
         bad_stars_above_c = 0
 
-        for i in range(len(preds_valid)):
-            if preds_valid[i][1] > c:
+        for i in range(len(preds_test)):
+            if preds_test[i][1] > c:
                 good_stars_above_c +=1 
-                if y_valid[i] == 1:
+                if y_test[i] == 1:
                     good_stars_correct +=1 
-                elif y_valid[i] == 0:
-                    good_stars_incorrect +=1
+                elif y_test[i] == 0:
+                    bad_stars_incorrect +=1
             else:
                 bad_stars_above_c +=1
-                if y_valid[i] == 0:
+                if y_test[i] == 0:
                     bad_stars_correct +=1
-                elif y_valid[i] == 1:
-                    bad_stars_incorrect +=1
+                elif y_test[i] == 1:
+                    good_stars_incorrect +=1
                     
-        #print('good', good_stars_correct, good_stars_incorrect, good_stars_above_c)
-        #print('bad', bad_stars_correct, bad_stars_incorrect, bad_stars_above_c)
-        good_star_acc.append(good_stars_correct/good_stars_above_c)
-        bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
-        recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) 
-        fp_rate.append(good_stars_incorrect/(good_stars_incorrect+bad_stars_correct)) 
-        precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
-
-    pyl.title('Accuracy Curve')
-    pyl.plot(confidence_queries, good_star_acc, label='good star classificantion')
-    pyl.plot(confidence_queries, bad_star_acc, label='bad star clasification')
+        tp.append(good_stars_correct)
+        tn.append(bad_stars_correct)
+        fp.append(bad_stars_incorrect)
+        fn.append(good_stars_incorrect)
+                
+    pyl.title('Confusion Matrix Curves')
+    pyl.plot(confidence_queries, tp, label='label=1, prediction=1')
+    pyl.plot(confidence_queries, tn, label='label=0, prediction=0')
+    pyl.plot(confidence_queries, fp, label='label=0, prediction=1')
+    pyl.plot(confidence_queries, fn, label='label=1, prediction=0')
     pyl.legend()
-    pyl.xlabel('Confidence cutoff for good star classification')
-    pyl.ylabel('Accuracy')
+    pyl.xlabel('Confidence cutoff for good star classification (p-value)')
+    pyl.ylabel('Number of Stars')
     pyl.show()
     pyl.close()
     pyl.clf()
