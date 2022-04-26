@@ -253,7 +253,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
 
         #preds_test_cm = []
         for i in range(len(preds_test)):
-            if preds_test[i][1] > c:
+            if preds_test[i][0] > c:
                 good_stars_above_c +=1 
                 if y_test[i] == 1:
                     good_stars_correct +=1 
@@ -278,7 +278,6 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
         #preds_test_cm = np.array(preds_test_cm)
 
         # plot confusion matrix (50% confidence threshold)
-        fig2 = pyl.figure()
         #cm = confusion_matrix(y_test_binary, preds_test_binary)
         pyl.matshow(cm)
 
@@ -289,7 +288,6 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
         pyl.xlabel('Predicted labels')
         pyl.ylabel('True labels')
         pyl.show()
-        fig2.savefig(model_dir_name +'plots/'+'NN_confusion_matrix.png')
         pyl.close()
         pyl.clf()
 
