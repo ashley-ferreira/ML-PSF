@@ -25,7 +25,7 @@ def convnet_model_complex(input_shape, unique_labs=2, dropout_rate=0.2):
     model = Sequential()
 
     #hidden layer 1
-    model.add(Conv2D(filters=32, input_shape=input_shape, activation='relu', padding='same', kernel_size=(3,3)))
+    model.add(Conv2D(filters=16, input_shape=input_shape, activation='relu', padding='same', kernel_size=(3,3)))
     model.add(Dropout(dropout_rate))
     model.add(MaxPool2D(pool_size=(2, 2), padding='valid'))
 
@@ -43,7 +43,7 @@ def convnet_model_complex(input_shape, unique_labs=2, dropout_rate=0.2):
 
     model.add(Flatten())
     #model.add(Dense(64, activation='sigmoid'))
-    model.add(Dense(64, activation='sigmoid'))
+    model.add(Dense(32, activation='sigmoid'))
     model.add(Dense(unique_labs, activation='softmax')) 
     #model.add(Activation("softmax"))
 
