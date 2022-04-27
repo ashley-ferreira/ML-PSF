@@ -42,7 +42,7 @@ def convnet_model_complex(input_shape, unique_labs=2, dropout_rate=0.2):
     model.add(MaxPool2D(pool_size=(2, 2), padding='valid'))
 
     model.add(Flatten())
-    model.add(Dense(64, activation='sigmoid'))
+    #model.add(Dense(64, activation='sigmoid'))
     model.add(Dense(64, activation='sigmoid'))
     model.add(Dense(unique_labs, activation='softmax')) 
     #model.add(Activation("softmax"))
