@@ -436,7 +436,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     batch_size = 256 # up from 16 --> 1024 --> 32
     dropout_rate = 0.2
     test_fraction = 0.05 
-    learning_rate = 0.0005 # down from 0.001
+    learning_rate = 0.001#05 # down from 0.001
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
