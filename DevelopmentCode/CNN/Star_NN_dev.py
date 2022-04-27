@@ -433,7 +433,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
     # section for setting up some flags and hyperparameters
-    batch_size = 32 # up from 16 --> 1024
+    batch_size = 256 # up from 16 --> 1024 --> 32
     dropout_rate = 0.2
     test_fraction = 0.05 
     learning_rate = 0.001 # up from 0.001
@@ -465,9 +465,13 @@ def train_CNN(model_dir_name, num_epochs, data):
     X_train = np.asarray(X_train).astype('float32')
     y_train_binary = np.asarray(y_train_binary).astype('float32')
 
+    # REDUNDANT
+    y_test_binary = keras.utils.np_utils.to_categorical(y_test, unique_labs)
+    y_test_binary = np.asarray(y_test_binary).astype('float32')
+
     # add saver for every 10 epochs
     saver = CustomSaver()
-    classifier = cn_model.fit(X_train, y_train_binary, epochs=num_epochs, batch_size=batch_size, callbacks=[saver])
+    classifier = cn_model.fit(X_train, y_train_binary, epochs=num_epochs, batch_size=batch_size, callbacks=[saver], validation_data=(X_test, ys_test_binary))
 
     end = time.time()
     print('Process completed in', round(end-start, 2), ' seconds')
