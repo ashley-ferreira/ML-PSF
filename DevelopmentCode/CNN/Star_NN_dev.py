@@ -436,7 +436,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     batch_size = 256 # up from 16 --> 1024 --> 32
     dropout_rate = 0.2
     test_fraction = 0.05 
-    learning_rate = 0.001 # up from 0.001
+    learning_rate = 0.0005 # down from 0.001
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
@@ -484,14 +484,14 @@ def train_CNN(model_dir_name, num_epochs, data):
 
     ax1 = pyl.subplot(121)
     ax1.plot(classifier.history['accuracy'], color='darkslategray', linewidth=2)
-    #ax1.plot(classifier.history['val_accuracy'], color='blue', linewidth=2)
+    ax1.plot(classifier.history['val_accuracy'], color='blue', linewidth=2)
     ax1.set_title('Model Accuracy')
     ax1.set_ylabel('Accuracy')
     ax1.set_xlabel('Epoch')
 
     ax2 = pyl.subplot(122)
     ax2.plot(classifier.history['loss'], color='crimson', linewidth=2)
-    #ax2.plot(classifier.history['val_loss'], color='blue', linewidth=2)
+    ax2.plot(classifier.history['val_loss'], color='blue', linewidth=2)
     ax2.set_title('Model Loss')
     ax2.set_ylabel('Loss')
     ax2.set_xlabel('Epoch')
