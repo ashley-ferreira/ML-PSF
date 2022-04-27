@@ -427,13 +427,13 @@ def train_CNN(model_dir_name, num_epochs, data):
         '''
         def on_epoch_end(self, epoch, logs={}):
             if epoch % 10 == 0 and epoch != 0:
-                self.model.save(model_dir_name + 'models_each_10epochs_troubleshooting/' + "model_{}".format(epoch))
+                self.model.save(model_dir_name + 'models_each_10epochs_original/' + "model_{}".format(epoch))
 
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
     # section for setting up some flags and hyperparameters
-    batch_size = 256 # up from 16 --> 1024 --> 32
+    batch_size = 32 # up from 16 --> 1024 --> 32 --> 256
     dropout_rate = 0.2
     test_fraction = 0.05 
     learning_rate = 0.001#05 # down from 0.001
@@ -498,7 +498,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     ax2.set_ylabel('Loss')
     ax2.set_xlabel('Epoch')
 
-    fig1.savefig(model_dir_name +'/plots/'+'NN_training_history.png')
+    fig1.savefig(model_dir_name +'/plots/'+'NN_training_history_model_traintime=' + str(end) + '.png')
 
     pyl.show()
     pyl.close()
@@ -554,7 +554,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     pyl.xlabel('Predicted labels')
     pyl.ylabel('True labels')
     pyl.show()
-    fig2.savefig(model_dir_name +'plots/'+'NN_confusion_matrix.png')
+    fig2.savefig(model_dir_name +'plots/'+'NN_confusion_matrix.png') # add model secific time here
     pyl.close()
     pyl.clf()
 
