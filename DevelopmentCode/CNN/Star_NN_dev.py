@@ -471,7 +471,7 @@ def train_CNN(model_dir_name, num_epochs, data):
 
     # add saver for every 10 epochs
     saver = CustomSaver()
-    classifier = cn_model.fit(X_train, y_train_binary, epochs=num_epochs, batch_size=batch_size, callbacks=[saver], validation_data=(X_test, ys_test_binary))
+    classifier = cn_model.fit(X_train, y_train_binary, epochs=num_epochs, batch_size=batch_size, callbacks=[saver], validation_data=(X_test, y_test_binary))
 
     end = time.time()
     print('Process completed in', round(end-start, 2), ' seconds')
