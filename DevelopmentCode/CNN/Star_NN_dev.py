@@ -427,7 +427,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         '''
         def on_epoch_end(self, epoch, logs={}):
             if epoch % 10 == 0 and epoch != 0:
-                self.model.save(model_dir_name + 'models_each_10epochs_alt/' + "model_{}".format(epoch))
+                self.model.save(model_dir_name + 'models_each_10epochs_troubleshooting/' + "model_{}".format(epoch))
 
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
@@ -455,7 +455,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
     # train the model
-    cn_model = convnet_model_complex(X_train.shape[1:], unique_labs=unique_labs, dropout_rate=dropout_rate)
+    cn_model = convnet_model(X_train.shape[1:], unique_labs=unique_labs, dropout_rate=dropout_rate)
     cn_model.summary()
 
     opt = Adam(learning_rate=learning_rate) 
@@ -483,15 +483,17 @@ def train_CNN(model_dir_name, num_epochs, data):
     fig1 = pyl.figure(figsize=(10,3))
 
     ax1 = pyl.subplot(121)
-    ax1.plot(classifier.history['accuracy'], color='darkslategray', linewidth=2)
-    ax1.plot(classifier.history['val_accuracy'], color='blue', linewidth=2)
+    ax1.plot(classifier.history['accuracy'], color='darkslategray', linewidth=2, label='training')
+    ax1.plot(classifier.history['val_accuracy'], color='azure', linewidth=2, label='testing')
+    ax1.legend()
     ax1.set_title('Model Accuracy')
     ax1.set_ylabel('Accuracy')
     ax1.set_xlabel('Epoch')
 
     ax2 = pyl.subplot(122)
-    ax2.plot(classifier.history['loss'], color='crimson', linewidth=2)
-    ax2.plot(classifier.history['val_loss'], color='blue', linewidth=2)
+    ax2.plot(classifier.history['loss'], color='crimson', linewidth=2, label='training')
+    ax2.plot(classifier.history['val_loss'], color='azure', linewidth=2, label='testing')
+    ax2.legend()
     ax2.set_title('Model Loss')
     ax2.set_ylabel('Loss')
     ax2.set_xlabel('Epoch')
