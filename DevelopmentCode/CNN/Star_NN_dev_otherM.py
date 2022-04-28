@@ -352,6 +352,7 @@ def load_presaved_data(cutout_size, model_dir_name):
             files (arr): 1D array containing file names for each cutout
 
     '''
+    print('Begin data loading...')
     with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
     print('Data all loaded')
