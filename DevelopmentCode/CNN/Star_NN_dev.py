@@ -426,8 +426,8 @@ def train_CNN(model_dir_name, num_epochs, data):
         https://stackoverflow.com/questions/54323960/save-keras-model-at-specific-epochs
         '''
         def on_epoch_end(self, epoch, logs={}):
-            if epoch % 1 == 0 and epoch != 0:
-                self.model.save(model_dir_name + 'models_each_epoch_lr0.0005/' + "model_{}".format(epoch))
+            if epoch % 10 == 0 and epoch != 0:
+                self.model.save(model_dir_name + 'models_each_10epochs_3/' + "model_{}".format(epoch))
 
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
