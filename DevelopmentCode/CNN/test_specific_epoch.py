@@ -198,7 +198,7 @@ def train_CNN(data):
     X_train = np.asarray(X_train).astype('float32')
     y_train_binary = np.asarray(y_train_binary).astype('float32')
 
-    cn_model = keras.models.load_model(pwd+ 'Saved_Model/2022-04-23-13:53:44/'+'models_lr=0.001/' + "model_0")
+    cn_model = keras.models.load_model(pwd+ 'Saved_Model/2022-04-23-13:53:44/'+'models_lr=0.0001/' + "model_5")
     
     #'10epochs_basic_model/model_350')
     # 'models_each_10epochs/' + "model_60")
@@ -272,7 +272,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
                 elif y_test[i] == 1:
                     good_stars_incorrect +=1
                     fn.append(X_test[i])
-            
+            '''
             # do you need to squeeze cutouts?
             if len(tp) == 25:
                 tp = np.array(tp)
@@ -309,7 +309,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
                     axs[i].set_yticks([])
                 plt.show()
                 fn = []
-            
+            '''
         cm = np.array([[bad_stars_correct, bad_stars_incorrect], [good_stars_incorrect, good_stars_correct]])
         #preds_test_cm = np.array(preds_test_cm)
 

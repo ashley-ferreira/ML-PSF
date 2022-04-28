@@ -26,6 +26,7 @@ from sklearn.utils.multiclass import unique_labels
 
 from convnet_model import convnet_model
 from convnet_model_complex import convnet_model_complex
+from convnet_model_apr28 import convnet_model_apr28
 
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
@@ -427,7 +428,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         '''
         def on_epoch_end(self, epoch, logs={}):
             #if epoch % 1 == 0 and epoch != 0:
-            self.model.save(model_dir_name + 'models_lr=0.00001/' + "model_{}".format(epoch+1))
+            self.model.save(model_dir_name + 'models_apr28model/' + "model_{}".format(epoch+1))
 
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
@@ -435,7 +436,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     # section for setting up some flags and hyperparameters
     batch_size = 1024*2 # up from 16 --> 1024 --> 32 --> 256
     dropout_rate = 0.2
-    test_fraction = 0.05 # try 50 
+    test_fraction = 0.2 # from 0.05
     learning_rate = 0.00001 # down from 0.001 --> 0.0005 --> 0.00001
 
     ### now divide the cutouts array into training and testing datasets.
@@ -455,7 +456,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
     # train the model
-    cn_model = convnet_model_complex(X_train.shape[1:], unique_labs=unique_labs, dropout_rate=dropout_rate)
+    cn_model = convnet_model_apr28(X_train.shape[1:], unique_labs=unique_labs, dropout_rate=dropout_rate)
     cn_model.summary()
 
     opt = Adam(learning_rate=learning_rate) 
