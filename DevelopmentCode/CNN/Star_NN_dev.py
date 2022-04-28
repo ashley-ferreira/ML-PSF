@@ -435,7 +435,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     # section for setting up some flags and hyperparameters
     batch_size = 256 # up from 16 --> 1024 --> 32 --> 256
     dropout_rate = 0.2
-    test_fraction = 0.05 
+    test_fraction = 0.5 
     learning_rate = 0.001 # down from 0.001 --> 0.0005 --> 0.00001
 
     ### now divide the cutouts array into training and testing datasets.
