@@ -198,7 +198,7 @@ def train_CNN(data):
     X_train = np.asarray(X_train).astype('float32')
     y_train_binary = np.asarray(y_train_binary).astype('float32')
 
-    cn_model = keras.models.load_model(pwd+ 'Saved_Model/2022-04-23-13:53:44/'+'models_lr=0.001/' + "model_1")
+    cn_model = keras.models.load_model(pwd+ 'Saved_Model/2022-04-23-13:53:44/'+'models_lr=0.001/' + "model_0")
     
     #'10epochs_basic_model/model_350')
     # 'models_each_10epochs/' + "model_60")
