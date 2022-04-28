@@ -484,7 +484,7 @@ def train_CNN(model_dir_name, num_epochs, data):
 
     ax1 = pyl.subplot(121)
     ax1.plot(classifier.history['accuracy'], color='darkslategray', linewidth=2, label='training')
-    ax1.plot(classifier.history['val_accuracy'], # azure linewidth=2, label='testing')
+    ax1.plot(classifier.history['val_accuracy'], linewidth=2, label='testing') # azure linewidth=2, label='testing')
     ax1.legend()
     ax1.set_title('Model Accuracy')
     ax1.set_ylabel('Accuracy')
