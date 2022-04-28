@@ -26,7 +26,6 @@ from sklearn.utils.multiclass import unique_labels
 
 from convnet_model import convnet_model
 from convnet_model_complex import convnet_model_complex
-from convnet_model_apr28 import convnet_model_apr28
 
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
