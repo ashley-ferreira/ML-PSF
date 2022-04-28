@@ -164,14 +164,14 @@ def validate_CNN(model_dir_name, data):
     # load model                         
     model_found = False 
     for file in os.listdir(model_dir_name+'models_each_epoch_lr0.0005/'):
-        if file.startswith('model_1'):
-            cn_model = keras.models.load_model(model_dir_name + 'models_each_epoch_lr0.0005/' + "model_1")#'10epochs_basic_model/model_350')#file)
-            print('using model:', file)
-            model_found = True
-            break
-    if model_found == False: 
-        print('ERROR: no model file in', model_dir_name)
-        sys.exit()
+        #if file.startswith('model_1'):
+        cn_model = keras.models.load_model(model_dir_name + 'models_each_epoch_lr0.0005/' + "model_1")#'10epochs_basic_model/model_350')#file)
+        print('using model:', file)
+        model_found = True
+        #    break
+    #if model_found == False: 
+    #    print('ERROR: no model file in', model_dir_name)
+    #    sys.exit()
 
     X_valid = cutouts
     y_valid = labels
