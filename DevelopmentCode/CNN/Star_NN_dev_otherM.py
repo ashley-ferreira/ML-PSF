@@ -354,7 +354,7 @@ def load_presaved_data(cutout_size, model_dir_name):
     '''
     with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
-
+    print('Data all loaded')
     # temporary add for old 110k data:
     '''
     for i in range(len(cutouts)):
@@ -375,7 +375,7 @@ def load_presaved_data(cutout_size, model_dir_name):
     std = np.nanstd(cutouts)
     mean = np.nanmean(cutouts)
     cutouts = regularize(cutouts, mean, std)
-
+    print('Data all regulatized')
     with open(model_dir_name + 'regularization_data.pickle', 'wb+') as han:
         pickle.dump([std, mean], han)
 
@@ -450,7 +450,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         ys_train, ys_test = xs[train_index], xs[test_index]
         files_train, files_test = files[train_index], files[test_index]
         fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
-    
+    print('Data split into training and testing')
     unique_labs = len(np.unique(y_train)) # should be 2
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
@@ -468,6 +468,8 @@ def train_CNN(model_dir_name, num_epochs, data):
     # REDUNDANT
     y_test_binary = keras.utils.np_utils.to_categorical(y_test, unique_labs)
     y_test_binary = np.asarray(y_test_binary).astype('float32')
+
+    print('Model initialized and prepped')
 
     # add saver for every 10 epochs
     saver = CustomSaver()
