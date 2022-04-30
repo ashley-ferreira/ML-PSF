@@ -26,6 +26,7 @@ from sklearn.utils.multiclass import unique_labels
 
 from convnet_model import convnet_model
 from convnet_model_complex import convnet_model_complex
+from convnet_model_basic import convnet_model_basic
 
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
@@ -434,10 +435,10 @@ def train_CNN(model_dir_name, num_epochs, data):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
     # section for setting up some flags and hyperparameters
-    batch_size = 256*2 # up from 16 --> 1024 --> 32 --> 256
+    batch_size = 256 # up from 16 --> 1024 --> 32 --> 256
     dropout_rate = 0.2
     test_fraction = 0.2 # from 0.05
-    learning_rate = 0.000005#01 # down from 0.001 --> 0.0005 --> 0.00001
+    learning_rate = 0.001#01 # down from 0.001 --> 0.0005 --> 0.00001
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
@@ -456,7 +457,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
     # train the model
-    cn_model = convnet_model(X_train.shape[1:], unique_labs=unique_labs, dropout_rate=dropout_rate)
+    cn_model = convnet_model_basic(X_train.shape[1:], unique_labs=unique_labs, dropout_rate=dropout_rate)
     cn_model.summary()
 
     opt = Adam(learning_rate=learning_rate) 
