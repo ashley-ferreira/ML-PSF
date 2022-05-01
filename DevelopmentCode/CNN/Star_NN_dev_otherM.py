@@ -429,7 +429,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         '''
         def on_epoch_end(self, epoch, logs={}):
             #if epoch % 1 == 0 and epoch != 0:
-            self.model.save(model_dir_name + 'models_normal32/' + "model_{}".format(epoch+1))
+            self.model.save(model_dir_name + 'models_normal32_lr=0.0001/' + "model_{}".format(epoch+1))
 
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
@@ -438,7 +438,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     batch_size = 32 # up from 16 --> 1024 --> 32 --> 256
     dropout_rate = 0.2
     test_fraction = 0.2 # from 0.05
-    learning_rate = 0.001#01 # down from 0.001 --> 0.0005 --> 0.00001
+    learning_rate = 0.0001#01 # down from 0.001 --> 0.0005 --> 0.00001
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
