@@ -422,14 +422,17 @@ def train_CNN(model_dir_name, num_epochs, data):
         y_test (arr): real y values (labels) for testing 
 
     '''
+    sub_mod_dir = model_dir_name + 'models_basic32_lr=0.0001/'
+    if not(os.path.exists(sub_mod_dir)):
+        os.mkdir(sub_mod_dir)
     class CustomSaver(keras.callbacks.Callback):
         '''
         taken from:
         https://stackoverflow.com/questions/54323960/save-keras-model-at-specific-epochs
         '''
         def on_epoch_end(self, epoch, logs={}):
-            #if epoch % 1 == 0 and epoch != 0:
-            self.model.save(model_dir_name + 'models_basic32_lr=0.0001/' + "model_{}".format(epoch+1))
+            if (epoch+1) % 10 == 0:
+                self.model.save(sub_mod_dir + "model_{}".format(epoch+1))
 
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
