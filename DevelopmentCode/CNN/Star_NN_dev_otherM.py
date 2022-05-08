@@ -422,7 +422,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         y_test (arr): real y values (labels) for testing 
 
     '''
-    sub_mod_dir = model_dir_name + 'models_basic256_lr=0.001_drop=0.4_split=0.4/'
+    sub_mod_dir = model_dir_name + 'models_basic256_lr=0.001_drop=0.2_split=0.2/'
     if not(os.path.exists(sub_mod_dir)):
         os.mkdir(sub_mod_dir)
     class CustomSaver(keras.callbacks.Callback):
@@ -439,8 +439,8 @@ def train_CNN(model_dir_name, num_epochs, data):
 
     # section for setting up some flags and hyperparameters
     batch_size = 256 # up from 16 --> 1024 --> 32 --> 256
-    dropout_rate = 0.4
-    test_fraction = 0.4 # from 0.05
+    dropout_rate = 0.2
+    test_fraction = 0.2 # from 0.05
     learning_rate = 0.001#01 # down from 0.001 --> 0.0005 --> 0.00001
 
     ### now divide the cutouts array into training and testing datasets.
