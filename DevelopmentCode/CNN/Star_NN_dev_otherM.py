@@ -27,6 +27,7 @@ from sklearn.utils.multiclass import unique_labels
 from convnet_model import convnet_model
 from convnet_model_complex import convnet_model_complex
 from convnet_model_basic import convnet_model_basic
+from convnet_model_lesslayers import convnet_model_lesslayers
 
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
@@ -422,7 +423,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         y_test (arr): real y values (labels) for testing 
 
     '''
-    sub_mod_dir = model_dir_name + 'models_basic256_lr=0.001_drop=0.2_split=0.2/'
+    sub_mod_dir = model_dir_name + 'models_lesslay8_256_lr=0.001_drop=0.2_split=0.2/'
     if not(os.path.exists(sub_mod_dir)):
         os.mkdir(sub_mod_dir)
     class CustomSaver(keras.callbacks.Callback):
@@ -460,7 +461,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
     # train the model
-    cn_model = convnet_model_basic(X_train.shape[1:], unique_labs=unique_labs, dropout_rate=dropout_rate)
+    cn_model = convnet_model_lesslayers(X_train.shape[1:], unique_labs=unique_labs, dropout_rate=dropout_rate)
     cn_model.summary()
 
     opt = Adam(learning_rate=learning_rate) 
