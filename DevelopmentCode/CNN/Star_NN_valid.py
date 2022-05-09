@@ -289,6 +289,7 @@ def validate_CNN(model_dir_name, data):
     pyl.plot(confidence_queries, good_star_acc, label='good star classificantion')
     pyl.plot(confidence_queries, bad_star_acc, label='bad star clasification')
     pyl.legend()
+    pyl.grid()
     pyl.xlabel('Confidence cutoff for good star classification')
     pyl.ylabel('Accuracy')
     pyl.show()
