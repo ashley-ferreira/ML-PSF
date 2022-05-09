@@ -219,24 +219,24 @@ def validate_CNN(model_dir_name, data):
     for i in range(len(preds_valid)):
         if y_valid[i] == 1 and preds_valid[i][0] > 0.5:
             fwhms_test_misclass.append(fwhms[i])
-            
+            '''
             (c1, c2) = zscale.get_limits(X_valid[i])
             normer3 = interval.ManualInterval(c1,c2)
             pyl.title('labeled good star, predicted bad star at conf=' + str(preds_valid[i][1]))
             pyl.imshow(normer3(X_valid[i]))
             pyl.show()
             pyl.close()
-            
+            '''
         elif y_valid[i] == 0 and preds_valid[i][1] > 0.5:
             fwhms_test_misclass.append(fwhms[i])
-            
+            '''
             (c4, c5) = zscale.get_limits(X_valid[i])
             normer5 = interval.ManualInterval(c4,c5)
             pyl.title('labeled bad star, predicted good star at conf=' + str(preds_valid[i][1])) 
             pyl.imshow(normer5(X_valid[i]))
             pyl.show()
             pyl.close()
-            
+            '''
     pyl.hist(fwhms, label = 'FWHM of full validation set', bins='auto', alpha=0.5) 
     pyl.hist(fwhms_test_misclass, label = 'FWHM of misclassed validation set', bins='auto', alpha=0.5, color='pink') 
     pyl.xlabel('FWHM')
