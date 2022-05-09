@@ -165,7 +165,7 @@ def validate_CNN(model_dir_name, data):
     model_found = False 
     #for file in os.listdir(model_dir_name+'models_each_epoch_lr0.0005/'):
         #if file.startswith('model_1'):
-    cn_model = keras.models.load_model(model_dir_name + 'models_lr=0.00001/' + "model_10")#'10epochs_basic_model/model_350')#file)
+    cn_model = keras.models.load_model(model_dir_name + 'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/' + "model_100")#'10epochs_basic_model/model_350')#file)
     #print('using model:', file)
     model_found = True
         #    break
