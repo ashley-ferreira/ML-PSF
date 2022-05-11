@@ -296,7 +296,7 @@ def main():
             num_str = int_to_str(r)
             file_in = 'CORR-0' + str(i) + '-' + num_str + '.fits'
 
-    NN_PSF_generate(get_user_input(), file_in)
+            NN_PSF_generate(get_user_input(), file_in)
     
 if __name__ == '__main__':
     main()
