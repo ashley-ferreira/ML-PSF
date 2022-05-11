@@ -217,6 +217,14 @@ def validate_CNN(model_dir_name, data):
     # plot of FWHMs
     fwhms_test_misclass = []
     for i in range(len(preds_valid)):
+        if preds_valid[i][1] == 1.0:
+            (c1, c2) = zscale.get_limits(X_valid[i])
+            normer3 = interval.ManualInterval(c1,c2)
+            pyl.title('conf=' + str(preds_valid[i][1]))
+            pyl.imshow(normer3(X_valid[i]))
+            pyl.show()
+            pyl.close()
+
         if y_valid[i] == 1 and preds_valid[i][0] > 0.5:
             fwhms_test_misclass.append(fwhms[i])
             '''
