@@ -283,7 +283,7 @@ def compare_NN_goodPSF(inputs):
     with fits.open(file_dir+input_file) as han:
         img_data = han[1].data.astype('float64')
         img_header = han[0].header
-
+    '''
     # load goodPSF
     goodPSF = file_dir+'psfStars/'+input_file.replace('.fits','._goodPSF.fits')
     with fits.open(goodPSF) as han:
@@ -319,7 +319,7 @@ def compare_NN_goodPSF(inputs):
     plt.subplots_adjust(wspace=0, hspace=0)
     plt.show()
 
-
+    
     xs_best = np.array(xs_best)
     ys_best = np.array(ys_best)
 
@@ -351,7 +351,7 @@ def compare_NN_goodPSF(inputs):
     title2 = 'ZScaled ' + input_file.replace('.fits','.goodPSF.fits')
     axes[1].set_title(title2,fontsize=12)
     plt.show()
-
+    '''
 def main():
     compare_NN_goodPSF(get_user_input())
     
