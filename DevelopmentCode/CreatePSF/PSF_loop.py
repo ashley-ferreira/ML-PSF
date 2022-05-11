@@ -262,7 +262,7 @@ def NN_PSF_generate(inputs, input_file):
             #SNR_proxy = math.sqrt(abs(sum_c))
             #print(good_probability)#, SNR_proxy)
             if good_probability > conf_cutoff:  #SNR_proxy > SNR_proxy_cutoff and      
-                print('USED', cutouts[i].max, cutouts[i].min)
+                print('USED', cutouts[i].max(), cutouts[i].min())
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
                 plotted_stars += 1 
