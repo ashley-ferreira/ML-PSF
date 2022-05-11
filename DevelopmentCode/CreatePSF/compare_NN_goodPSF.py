@@ -357,8 +357,9 @@ def compare_NN_goodPSF(inputs):
     axes[1].imshow(normer(restored_goodPSF.lookupTable))
     title2 = 'ZScaled ' + input_file.replace('.fits','.goodPSF.fits')
     axes[1].set_title(title2,fontsize=12)
-    plt.show()
     '''
+    plt.show()
+    
 def main():
     compare_NN_goodPSF(get_user_input())
     
