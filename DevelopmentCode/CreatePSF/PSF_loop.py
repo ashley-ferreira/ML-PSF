@@ -16,7 +16,7 @@ zscale = ZScaleInterval()
 
 pwd = '/arc/projects/uvickbos/ML-PSF/'
 
-model_dir = pwd + 'Saved_Model/' + '2022-04-23-13:53:44/models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
+model_dir = pwd + 'Saved_Model/' + '2022-04-23-13:53:44/models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/model_100'
 
 cutout_size = 111
 
