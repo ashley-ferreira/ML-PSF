@@ -198,6 +198,17 @@ def compare_NN_goodPSF(inputs):
         print(outFile_wMetadata)
         #print(outFile_simple)
 
+    cutouts_cleaned = []
+    for cutout in cutouts: # does this need to be forced?
+        if cutout.min() < -2000 or cutout.max() > 130000:
+            pass
+        else:
+            if cutout.min() < -200 or cutout.max() > 65536:
+                #label = 0
+                pass
+
+    cutouts_cleaned = np.array(cutouts_cleaned)
+
     # load previously trained Neural Network 
     model_found = False 
     for file in os.listdir(model_dir_name):
@@ -220,7 +231,7 @@ def compare_NN_goodPSF(inputs):
         [std, mean] = pickle.load(han)
 
     # use std and mean to regularize cutout
-    cutouts = regularize(cutouts, mean, std)
+    cutouts = regularize(cutouts_cleaned, mean, std)
 
     xs_best = []
     ys_best = []
