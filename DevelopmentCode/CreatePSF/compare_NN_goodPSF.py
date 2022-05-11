@@ -200,7 +200,10 @@ def compare_NN_goodPSF(inputs):
 
     cutouts_cleaned = []
     for cutout in cutouts: # does this need to be forced?
-        if cutout.min() < -2000 or cutout.max() > 130000:
+        inf_or_nan = np.isfinite(cutout)
+        if inf_or_nan.any():
+            pass
+        elif cutout.min() < -2000 or cutout.max() > 130000:
             pass
         else:
             if cutout.min() < -200 or cutout.max() > 65536:
