@@ -281,12 +281,11 @@ def NN_PSF_generate(inputs, input_file):
     NN_top25_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
     
-    figure, axes = plt.figure()
     (z1, z2) = zscale.get_limits(NN_top25_PSF.lookupTable)
     normer = interval.ManualInterval(z1,z2)
-    axes.imshow(normer(NN_top25_PSF.lookupTable))
+    plt.imshow(normer(NN_top25_PSF.lookupTable))
     title1 = 'ZScaled ' + input_file.replace('.fits','.NN_PSF.fits') 
-    axes.set_title(title1,fontsize=12)
+    plt.title(title1,fontsize=12)
     plt.show()
 
 
