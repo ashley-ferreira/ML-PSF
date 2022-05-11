@@ -54,7 +54,7 @@ parser.add_option('-f', '--file_dir', dest='file_dir',
     default=pwd+'home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/'+night_dir+'/HSC-R2/corr/', 
     type='str', help='directory which contains data, default=%default.')
 
-default_data_dir = pwd+'/NN_data_' + str(cutout_size) + '_never_trained/'
+default_data_dir = pwd+'/NN_data_' + str(cutout_size) + '/'#_never_trained/'
 parser.add_option('-d', '--data_dir', dest='data_dir', 
     default=default_data_dir, type='str', 
     help='directory where cutouts are saved, default=%default.')
