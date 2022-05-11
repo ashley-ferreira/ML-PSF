@@ -290,13 +290,15 @@ def NN_PSF_generate(inputs, input_file):
 
 
 def main():
-    for i in range(219610, 219622, 2): # just rough idea for now?
-        randos = np.random.choice(range(103), 5, replace=False)
-        for r in randos:
-            num_str = int_to_str(r)
-            file_in = 'CORR-0' + str(i) + '-' + num_str + '.fits'
-
-            NN_PSF_generate(get_user_input(), file_in)
+    #for i in range(219610, 219622, 2): # just rough idea for now?
+    #    randos = np.random.choice(range(103), 5, replace=False)
+    #    for r in randos:
+    #        num_str = int_to_str(r)
+    #        file_in = 'CORR-0' + str(i) + '-' + num_str + '.fits'
+    #
+    #        NN_PSF_generate(get_user_input(), file_in)
+    file_in = 'CORR-0219612-077.fits'
+    NN_PSF_generate(get_user_input(), file_in)
     
 if __name__ == '__main__':
     main()
