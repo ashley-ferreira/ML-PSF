@@ -238,6 +238,7 @@ def NN_PSF_generate(inputs, input_file):
 
     cn_prob, xs, ys, cutouts = zip(*sorted(zip(cn_prob, xs, ys, cutouts), reverse = True))
 
+    plotted_stars = 0
     for i in range(len(cutouts)): 
         if plotted_stars < 25:
             good_probability = cn_prob[i]
