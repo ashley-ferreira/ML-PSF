@@ -252,6 +252,7 @@ def NN_PSF_generate(inputs, input_file):
                 ys_best.append(ys[i])
                 plotted_stars += 1 
 
+    print(plotted_stars, 'used total')
     if plotted_stars < min_num_stars: 
         print('You requested a minimum of', min_num_stars)
         print('However there are only', plotted_stars, 'with confidence >', \
