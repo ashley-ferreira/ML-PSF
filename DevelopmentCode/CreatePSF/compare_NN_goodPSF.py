@@ -203,6 +203,8 @@ def compare_NN_goodPSF(inputs):
     for file in os.listdir(model_dir_name):
         # TEMP
         print(file)
+        model = keras.models.load_model(model_dir_name + file)
+    '''
         if file.startswith('model_traintime=*'):
             model = keras.models.load_model(model_dir_name + file)
             model_found = True
@@ -210,6 +212,7 @@ def compare_NN_goodPSF(inputs):
     if model_found == False: 
         print('ERROR: no model file in', model_dir_name)
         sys.exit()
+    '''
 
     # load training set std and mean
     with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
