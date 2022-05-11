@@ -207,7 +207,11 @@ def NN_PSF_generate(inputs, input_file):
 
     cutouts_cleaned = []
     for cutout in cutouts: # does this need to be forced?
-        if cutout.min() < -2000 or cutout.max() > 130000:
+        inf_or_nan = np.isfinite(cutout)
+        if any(inf_or_nan):
+            pass
+
+        elif cutout.min() < -2000 or cutout.max() > 130000:
             pass
         else:
             if cutout.min() < -200 or cutout.max() > 65536:
@@ -261,7 +265,8 @@ def NN_PSF_generate(inputs, input_file):
             #sum_c = center.sum()
             #SNR_proxy = math.sqrt(abs(sum_c))
             #print(good_probability)#, SNR_proxy)
-            if good_probability > conf_cutoff:  #SNR_proxy > SNR_proxy_cutoff and      
+            if good_probability > conf_cutoff:  #SNR_proxy > SNR_proxy_cutoff and  
+                print(good_probability)    
                 print('USED', cutouts[i].max(), cutouts[i].min())
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
