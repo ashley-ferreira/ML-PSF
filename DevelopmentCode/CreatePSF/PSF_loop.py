@@ -208,7 +208,7 @@ def NN_PSF_generate(inputs, input_file):
     cutouts_cleaned = []
     for cutout in cutouts: # does this need to be forced?
         inf_or_nan = np.isfinite(cutout)
-        if inf_or_nan.any():
+        if False in inf_or_nan:
             pass
 
         elif cutout.min() < -2000 or cutout.max() > 130000:
