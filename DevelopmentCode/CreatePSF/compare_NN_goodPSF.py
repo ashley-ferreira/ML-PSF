@@ -29,7 +29,7 @@ parser.add_option('-c', '--cutout_size', dest='cutout_size', \
         default=cutout_size, type='int', \
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
 
-night_dir = '03068'
+night_dir = '03074'
 parser.add_option('-n', '--night_dir', dest='night_dir', 
         default=night_dir, type='str', \
         help='image file directory, default=%default.')
