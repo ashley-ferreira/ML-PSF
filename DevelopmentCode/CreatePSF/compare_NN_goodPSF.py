@@ -201,6 +201,8 @@ def compare_NN_goodPSF(inputs):
     # load previously trained Neural Network 
     model_found = False 
     for file in os.listdir(model_dir_name):
+        # TEMP
+        print(file)
         if file.startswith('model_traintime=*'):
             model = keras.models.load_model(model_dir_name + file)
             model_found = True
