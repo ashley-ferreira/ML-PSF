@@ -324,7 +324,7 @@ def compare_NN_goodPSF(inputs):
         axs[i].set_yticks([])
     plt.subplots_adjust(wspace=0, hspace=0)
     plt.show()
-
+    '''
     
     xs_best = np.array(xs_best)
     ys_best = np.array(ys_best)
@@ -341,7 +341,7 @@ def compare_NN_goodPSF(inputs):
     NN_top25_PSF = psf.modelPSF(np.arange(61),np.arange(61), alpha=goodMeds[2],beta=goodMeds[3],repFact=10)
     NN_top25_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
-    '''
+    
     figure, axes = plt.subplots(nrows=1, ncols=2, figsize = (10,8))
     
     (z1, z2) = zscale.get_limits(NN_top25_PSF.lookupTable)
