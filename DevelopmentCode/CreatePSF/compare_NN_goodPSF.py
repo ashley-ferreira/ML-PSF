@@ -341,14 +341,15 @@ def compare_NN_goodPSF(inputs):
     NN_top25_PSF = psf.modelPSF(np.arange(61),np.arange(61), alpha=goodMeds[2],beta=goodMeds[3],repFact=10)
     NN_top25_PSF.genLookupTable(img_data, goodFits[:,4], goodFits[:,5], verbose=False)
 
-
+    '''
     figure, axes = plt.subplots(nrows=1, ncols=2, figsize = (10,8))
+    '''
     (z1, z2) = zscale.get_limits(NN_top25_PSF.lookupTable)
     normer = interval.ManualInterval(z1,z2)
     axes[0].imshow(normer(NN_top25_PSF.lookupTable))
     title1 = 'ZScaled ' + input_file.replace('.fits','.NN_PSF.fits') 
     axes[0].set_title(title1,fontsize=12)
-
+    '''
 
     restored_goodPSF = psf.modelPSF(restore=goodPSF)
     (z1, z2) = zscale.get_limits(restored_goodPSF.lookupTable)
@@ -357,7 +358,7 @@ def compare_NN_goodPSF(inputs):
     title2 = 'ZScaled ' + input_file.replace('.fits','.goodPSF.fits')
     axes[1].set_title(title2,fontsize=12)
     plt.show()
-    '''
+    
 def main():
     compare_NN_goodPSF(get_user_input())
     
