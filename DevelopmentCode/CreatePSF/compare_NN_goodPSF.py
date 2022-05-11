@@ -238,7 +238,7 @@ def compare_NN_goodPSF(inputs):
     plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6.5) 
     plotted_stars = 0
     for i in range(len(cutouts)): 
-        if plotted_stars < 25:
+        if plotted_stars < min_num_stars:
             good_probability = cn_prob[i]
             center = crop_center(cutouts[i],5,5)
             sum_c = center.sum()
