@@ -206,6 +206,8 @@ def compare_NN_goodPSF(inputs):
             if cutout.min() < -200 or cutout.max() > 65536:
                 #label = 0
                 pass
+            else:
+                cutouts_cleaned.append(cutout)
 
     cutouts_cleaned = np.array(cutouts_cleaned)
 
