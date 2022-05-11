@@ -204,6 +204,21 @@ def NN_PSF_generate(inputs, input_file):
         print('could not find cutout file, tried:')
         print(outFile_wMetadata)
 
+
+    cutouts_cleaned = []
+    for cutout in cutouts: # does this need to be forced?
+        if cutout.min() < -2000 or cutout.max() > 130000:
+            pass
+        else:
+            if cutout.min() < -200 or cutout.max() > 65536:
+                #label = 0
+                pass
+            else:
+                cutouts_cleaned.append(cutout)
+
+    cutouts_cleaned = np.array(cutouts_cleaned)
+
+
     # load previously trained Neural Network 
     model = keras.models.load_model(model_dir_name)
     '''
@@ -225,7 +240,7 @@ def NN_PSF_generate(inputs, input_file):
         [std, mean] = pickle.load(han)
 
     # use std and mean to regularize cutout
-    cutouts = regularize(cutouts, mean, std)
+    cutouts = regularize(cutouts_cleaned, mean, std)
 
     xs_best = []
     ys_best = []

@@ -203,7 +203,7 @@ def compare_NN_goodPSF(inputs):
         if cutout.min() < -2000 or cutout.max() > 130000:
             pass
         else:
-            if cutout.min() < -200 or cutout.max() > 65536/2:
+            if cutout.min() < -200 or cutout.max() > 65536:
                 #label = 0
                 pass
             else:
