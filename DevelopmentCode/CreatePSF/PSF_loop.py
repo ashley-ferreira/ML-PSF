@@ -265,7 +265,10 @@ def NN_PSF_generate(inputs, input_file):
             #sum_c = center.sum()
             #SNR_proxy = math.sqrt(abs(sum_c))
             #print(good_probability)#, SNR_proxy)
-            if good_probability > conf_cutoff:  #SNR_proxy > SNR_proxy_cutoff and  
+            inf_or_nan = np.isfinite(cutout[i])
+            if False in inf_or_nan:
+                pass
+            elif good_probability > conf_cutoff:  #SNR_proxy > SNR_proxy_cutoff and  
                 print(good_probability)    
                 print('USED', cutouts[i].max(), cutouts[i].min())
                 xs_best.append(xs[i])
