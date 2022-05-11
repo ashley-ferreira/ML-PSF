@@ -265,7 +265,7 @@ def NN_PSF_generate(inputs, input_file):
             #sum_c = center.sum()
             #SNR_proxy = math.sqrt(abs(sum_c))
             #print(good_probability)#, SNR_proxy)
-            inf_or_nan = np.isfinite(cutout[i])
+            inf_or_nan = np.isfinite(cutouts[i])
             if False in inf_or_nan:
                 pass
             elif good_probability > conf_cutoff:  #SNR_proxy > SNR_proxy_cutoff and  
