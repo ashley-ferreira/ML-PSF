@@ -130,7 +130,7 @@ def get_user_input():
     #file_dir = options.pwd + 'HSC_May25-lsst/rerun/processCcdOutputs/' + options.night_dir + '/HSC-R2/corr/'
     file_dir = options.file_dir
 
-    return file_dir, options.data_dir, model_dir_name, NN_cutoff_vals, options.cutout_size
+    return file_dir, options.data_dir, model_dir_name, NN_cutoff_vals, cutout_size
 
 
 def int_to_str(i):
