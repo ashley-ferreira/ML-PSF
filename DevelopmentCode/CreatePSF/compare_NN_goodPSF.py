@@ -203,7 +203,8 @@ def compare_NN_goodPSF(inputs):
     for file in os.listdir(model_dir_name):
         # TEMP
         print(file)
-        model = keras.models.load_model(model_dir_name + file)
+        if file.startswith('model_'):
+            model = keras.models.load_model(model_dir_name + file)
     '''
         if file.startswith('model_traintime=*'):
             model = keras.models.load_model(model_dir_name + file)
