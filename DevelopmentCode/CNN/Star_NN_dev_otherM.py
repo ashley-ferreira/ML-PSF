@@ -148,9 +148,8 @@ def regularize(cutouts, mean, std):
     cutouts /= std
     w_bad = np.where(np.isnan(cutouts))
     cutouts[w_bad] = 0.0
-    regularized_cutout = cutouts
 
-    return regularized_cutout
+    return cutouts
 
 
 def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method, validation_fraction):
@@ -264,6 +263,16 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     bad_fwhm_arr = np.array(bad_fwhm_lst)
     bad_inputFile_arr = np.array(bad_inputFile_lst)
 
+    # now we can delete old lists
+    del good_fwhm_lst
+    del good_x_lst
+    del good_y_lst
+    del good_inputFile_lst
+    del bad_fwhm_lst
+    del bad_x_lst
+    del bad_y_lst
+    del bad_inputFile_lst
+
     good_cutouts = np.array(good_cutouts)
     good_cutouts = np.expand_dims(good_cutouts, axis=3)
 
@@ -271,11 +280,14 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     label_good = np.ones(num_good_cutouts)
     bad_cutouts = np.array(bad_cutouts, dtype=object) 
 
+    # more bad cutouts than good cutouts
     if balanced_data_method == 'even':
         number_of_rows = bad_cutouts.shape[0]
         random_indices = np.random.choice(number_of_rows, size=num_good_cutouts, replace=False)
         random_bad_cutouts = bad_cutouts[random_indices, :]
-        bad_cutouts = np.expand_dims(random_bad_cutouts, axis=3)
+        random_bad_cutouts = np.expand_dims(random_bad_cutouts, axis=3)
+
+        del bad_cutouts
         
         random_bad_x_arr = bad_x_arr[random_indices]
         random_bad_y_arr = bad_y_arr[random_indices]
@@ -284,6 +296,8 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
 
         # add label 0
         label_bad = np.zeros(num_good_cutouts)
+
+        print('# good stars and # bad stars are now balanced')
 
     elif balanced_data_method == 'weight':
         #class_weights = class_weight.compute_class_weight('balanced', np.unique(y_train), y_train)
@@ -298,27 +312,59 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
         print('Weight for class 0: {:.2f}'.format(weight_for_0))
         print('Weight for class 1: {:.2f}'.format(weight_for_1))
 
-    # combine arrays 
-    cutouts = np.concatenate((good_cutouts, bad_cutouts))
+
+    # combine arrays and delete old bits
+    cutouts = np.concatenate((good_cutouts, random_bad_cutouts))
+    del good_cutouts
+    del random_bad_cutouts
+
     fwhms = np.concatenate((good_fwhm_arr, random_bad_fwhm_arr))
+    del good_fwhm_arr
+    del random_bad_fwhm_arr
+
     files = np.concatenate((good_inputFile_arr, random_bad_inputFile_arr))
+    del good_inputFile_arr
+    del random_bad_inputFile_arr
+
     xs = np.concatenate((good_x_arr, random_bad_x_arr))
+    del good_x_arr
+    del random_bad_x_arr
+
     ys = np.concatenate((good_y_arr, random_bad_y_arr))
+    del good_y_arr
+    del random_bad_y_arr
 
     # make label array for all
     labels = np.concatenate((label_good, label_bad))
+    del label_good
+    del label_bad
     print(str(len(cutouts)) + ' files used')
+
+    print('good and bad star arrays have been combined')
 
     skf_v = StratifiedShuffleSplit(n_splits=1, test_size=validation_fraction)
     skf_v.split(cutouts, labels)
 
     for used_index, withheld_index in skf_v.split(cutouts, labels): 
-        used_cutouts, withheld_cutouts = cutouts[used_index], cutouts[withheld_index]
+        used_cutouts, withheld_cutouts = cutouts[used_index], cutouts[withheld_index] 
+        del cutouts 
+
         used_labels, withheld_labels = labels[used_index], labels[withheld_index]
+        del labels
+
         used_xs, withheld_xs = xs[used_index], xs[withheld_index]
+        del xs  
+
         used_ys, withheld_ys = ys[used_index], ys[withheld_index]
+        del ys 
+
         used_files, withheld_files = files[used_index], files[withheld_index]
+        del files 
+
         used_fwhms, withheld_fwhms = fwhms[used_index], fwhms[withheld_index]
+        del fwhm
+
+    print('good and bad stars have been randomly split into the train and validate sets')
 
     with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
         pickle.dump([used_cutouts, used_labels, used_xs, used_ys, used_fwhms, used_files], han)
