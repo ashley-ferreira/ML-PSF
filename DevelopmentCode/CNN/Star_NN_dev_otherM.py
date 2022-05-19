@@ -218,7 +218,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                                 # random incidies
                                 elif label == 0:
                                     i += 1
-                                    if i % 5 == 0:
+                                    if i % 6 == 0:
                                         bad_x_lst.append(x)
                                         bad_y_lst.append(y)
                                         bad_fwhm_lst.append(fwhm)
@@ -249,36 +249,38 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
         err_log.close()    
 
     # make sure there are more good stars then bad ones
-    if len(good_cutouts)>len(bad_cutouts):
+    num_good_cutouts = len(good_cutouts)
+    num_bad_cutouts = len(bad_cutouts)
+    if num_good_cutouts > num_bad_cutouts:
         print('ERROR: MORE GOOD STARS THAN BAD STARS')
 
-    # keep all good cutouts
-    num_good_cutouts = len(good_cutouts)
-    good_x_arr = np.array(good_x_lst)
-    good_y_arr = np.array(good_y_lst)
-    good_fwhm_arr = np.array(good_fwhm_lst)
-    good_inputFile_arr = np.array(good_inputFile_lst)
-    bad_x_arr = np.array(bad_x_lst)
-    bad_y_arr = np.array(bad_y_lst)
-    bad_fwhm_arr = np.array(bad_fwhm_lst)
-    bad_inputFile_arr = np.array(bad_inputFile_lst)
+    # convert cutout lists to arrays
+    good_cutouts = np.array(good_cutouts) 
+    bad_cutouts = np.array(bad_cutouts)#, dtype=object) 
 
-    # now we can delete old lists
-    del good_fwhm_lst
-    del good_x_lst
-    del good_y_lst
-    del good_inputFile_lst
-    del bad_fwhm_lst
-    del bad_x_lst
-    del bad_y_lst
-    del bad_inputFile_lst
-
-    good_cutouts = np.array(good_cutouts)
+    # expand dims of good cutouts (done later for bad cutouts)
     good_cutouts = np.expand_dims(good_cutouts, axis=3)
 
-    # add label 1
+    # add label 1 to good cutouts 
     label_good = np.ones(num_good_cutouts)
-    bad_cutouts = np.array(bad_cutouts, dtype=object) 
+
+    # convert lists to arrays and delete lists
+    good_x_arr = np.array(good_x_lst)
+    del good_x_lst
+    good_y_arr = np.array(good_y_lst)
+    del good_y_lst
+    good_fwhm_arr = np.array(good_fwhm_lst)
+    del good_fwhm_lst
+    good_inputFile_arr = np.array(good_inputFile_lst)
+    del good_inputFile_lst
+    bad_x_arr = np.array(bad_x_lst)
+    del bad_x_lst
+    bad_y_arr = np.array(bad_y_lst)
+    del bad_y_lst
+    bad_fwhm_arr = np.array(bad_fwhm_lst)
+    del bad_fwhm_lst
+    bad_inputFile_arr = np.array(bad_inputFile_lst)
+    del bad_inputFile_lst    
 
     # more bad cutouts than good cutouts
     if balanced_data_method == 'even':
