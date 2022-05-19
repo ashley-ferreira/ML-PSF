@@ -248,11 +248,16 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
         # closing the file
         err_log.close()    
 
+    
+    print('all cutouts loaded')
+
     # make sure there are more good stars then bad ones
     num_good_cutouts = len(good_cutouts)
     num_bad_cutouts = len(bad_cutouts)
     if num_good_cutouts > num_bad_cutouts:
         print('ERROR: MORE GOOD STARS THAN BAD STARS')
+
+    print('converting data to arrays...')
 
     # convert cutout lists to arrays
     good_cutouts = np.array(good_cutouts) 
@@ -281,6 +286,9 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     del bad_fwhm_lst
     bad_inputFile_arr = np.array(bad_inputFile_lst)
     del bad_inputFile_lst    
+
+    print('data successfully converted to arrays')
+
 
     # more bad cutouts than good cutouts
     if balanced_data_method == 'even':
