@@ -29,7 +29,7 @@ parser.add_option('-c', '--cutout_size', dest='cutout_size', \
         default=cutout_size, type='int', \
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
 
-night_dir = '03068'
+night_dir = '03074'
 parser.add_option('-n', '--night_dir', dest='night_dir', 
         default=night_dir, type='str', \
         help='image file directory, default=%default.')
@@ -54,7 +54,7 @@ parser.add_option('-f', '--file_dir', dest='file_dir',
     default=pwd+'home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/'+night_dir+'/HSC-R2/corr/', 
     type='str', help='directory which contains data, default=%default.')
 
-default_data_dir = pwd+'/NN_data_' + str(cutout_size) + '_diffnight/'
+default_data_dir = pwd+'/NN_data_' + str(cutout_size) + '/'#_diffnight/'
 parser.add_option('-d', '--data_dir', dest='data_dir', 
     default=default_data_dir, type='str', 
     help='directory where cutouts are saved, default=%default.')
@@ -289,7 +289,7 @@ def compare_NN_goodPSF(inputs):
     with fits.open(file_dir+input_file) as han:
         img_data = han[1].data.astype('float64')
         img_header = han[0].header
-    
+    '''
     # load goodPSF
     goodPSF = file_dir+'psfStars/'+input_file.replace('.fits','._goodPSF.fits')
     with fits.open(goodPSF) as han:
@@ -324,7 +324,7 @@ def compare_NN_goodPSF(inputs):
         axs[i].set_yticks([])
     plt.subplots_adjust(wspace=0, hspace=0)
     plt.show()
-    
+    '''
     
     xs_best = np.array(xs_best)
     ys_best = np.array(ys_best)
@@ -350,14 +350,14 @@ def compare_NN_goodPSF(inputs):
     title1 = 'ZScaled ' + input_file.replace('.fits','.NN_PSF.fits') 
     axes[0].set_title(title1,fontsize=12)
     
-    
+    '''
     restored_goodPSF = psf.modelPSF(restore=goodPSF)
     (z1, z2) = zscale.get_limits(restored_goodPSF.lookupTable)
     normer = interval.ManualInterval(z1,z2)
     axes[1].imshow(normer(restored_goodPSF.lookupTable))
     title2 = 'ZScaled ' + input_file.replace('.fits','.goodPSF.fits')
     axes[1].set_title(title2,fontsize=12)
-
+    '''
     plt.show()
     
 def main():
