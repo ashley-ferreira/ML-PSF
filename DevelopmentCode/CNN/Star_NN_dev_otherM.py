@@ -377,10 +377,10 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     print('good and bad stars have been randomly split into the train and validate sets')
 
     with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
-        pickle.dump([used_cutouts, used_labels, used_xs, used_ys, used_fwhms, used_files], han)
+        pickle.dump([used_cutouts, used_labels, used_xs, used_ys, used_fwhms, used_files], han, protocol=4)
 
     with open(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle', 'wb+') as han:
-        pickle.dump([withheld_cutouts, withheld_labels, withheld_xs, withheld_ys, withheld_fwhms, withheld_files], han)
+        pickle.dump([withheld_cutouts, withheld_labels, withheld_xs, withheld_ys, withheld_fwhms, withheld_files], han, protocol=4)
 
 
 def load_presaved_data(cutout_size, model_dir_name):
