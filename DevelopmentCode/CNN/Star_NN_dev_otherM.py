@@ -201,7 +201,11 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
 
                     with open(data_dir + filename, 'rb') as f:
                         [n, cutout, label, y, x, fwhm, inputFile] = pickle.load(f)
-                        if cutout.shape == (cutout_size, cutout_size) and np.isfinite(cutout):
+                        inf_or_nan = np.isfinite(cutout)
+                        if False in inf_or_nan:
+                            pass
+                        
+                        elif cutout.shape == (cutout_size, cutout_size):# and np.isfinite(cutout):
                             if cutout.min() < -2000 or cutout.max() > 130000:
                                 pass
                             else:
