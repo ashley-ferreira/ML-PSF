@@ -210,6 +210,8 @@ def compare_NN_goodPSF(inputs):
             if cutout.min() < -200 or cutout.max() > 65536:
                 #label = 0
                 pass
+
+            
             else:
                 cutouts_cleaned.append(cutout)
 
@@ -218,7 +220,7 @@ def compare_NN_goodPSF(inputs):
     # load previously trained Neural Network 
     model_found = False 
     for file in os.listdir(model_dir_name):
-        # TEMP
+        # TEMP 
         print(file)
         if file.startswith('model_'):
             model = keras.models.load_model(model_dir_name + file)
