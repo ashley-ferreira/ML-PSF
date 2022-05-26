@@ -21,6 +21,7 @@ def identity_block(self, x, filter):
     x = Add()([x, x_skip])
     x = Activation('relu')(x)
     return x
+    
 def convolutional_block(self, x, filter):
     # copy tensor to variable called x_skip
     x_skip = x
@@ -38,9 +39,7 @@ def convolutional_block(self, x, filter):
     x = Activation('relu')(x)
     return x
 
-    #how to add thest to self?
-
-def convnet_model_resnet(input_shape, num_dense_nodes = 2, unique_labels=2, dropout_rate=0.2, activation='sigmoid'):
+def convnet_model_resnet(input_shape, num_dense_nodes=2, unique_labels=2, dropout_rate=0.2, activation='sigmoid'):
 
     # init function
     #self.input_shape = input_shape
