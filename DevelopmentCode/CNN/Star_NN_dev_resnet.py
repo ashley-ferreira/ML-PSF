@@ -114,7 +114,7 @@ def get_user_input():
     plots_dir = model_dir_name + 'plots/'
     if not(os.path.exists(plots_dir)):
         os.mkdir(plots_dir)
-    submodels_dir = model_dir_name + 'models_each_10epochs/'
+    submodels_dir = model_dir_name + 'models_each_10epochs_RESNET/'
     if not(os.path.exists(submodels_dir)):
         os.mkdir(submodels_dir)
     
