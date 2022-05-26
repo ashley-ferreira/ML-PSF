@@ -1,8 +1,8 @@
 from keras.models import Model, load_model, Sequential
 from keras.layers import Input, Dense, Activation, Add, ZeroPadding2D, BatchNormalization, Flatten, Conv2D, MaxPool2D, Concatenate
-from keras.layers.core import Dropout
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.optimizers import Adam
+#from keras.layers.core import Dropout
+#from keras.callbacks import EarlyStopping, ModelCheckpoint
+#from keras.optimizers import Adam
 
 #class ResNet(nn.Module):
 #    def __init__(self, block, layers, image_channels, num_classes):
@@ -40,7 +40,7 @@ def convolutional_block(self, x, filter):
 
     #how to add thest to self?
 
-def convnet_model_resnet(input_shape, num_dense_nodes = 2, unique_labels=2, dropout_rate=0.2):
+def convnet_model_resnet(input_shape, num_dense_nodes = 2, unique_labels=2, dropout_rate=0.2, activation='sigmoid'):
 
     # init function
     #self.input_shape = input_shape
@@ -74,7 +74,7 @@ def convnet_model_resnet(input_shape, num_dense_nodes = 2, unique_labels=2, drop
     #x = AveragePooling2D((2,2), padding = 'same')(x)
     x = MaxPool2D(pool_size=(2,2), padding = 'same')(x)
     x = Flatten()(x)
-    x = Dense(num_dense_nodes, activation = self.activation)(x)
+    x = Dense(num_dense_nodes, activation = activation)(x)
     #x = Dense(self.num_dense_nodes, activation = self.activation)(x)
     output = Dense(unique_labels, activation = 'softmax')(x)
 
