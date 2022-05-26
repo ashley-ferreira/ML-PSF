@@ -518,7 +518,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
     # train the model
-    cn_model = convnet_model_resnet(X_train.shape[1:], unique_labs=unique_labs, dropout_rate=dropout_rate)
+    cn_model = convnet_model_resnet(X_train.shape[1:], unique_labels=unique_labs, dropout_rate=dropout_rate)
     cn_model.summary()
 
     opt = Adam(learning_rate=learning_rate) 
