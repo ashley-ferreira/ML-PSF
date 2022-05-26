@@ -47,7 +47,7 @@ def convnet_model_resnet(input_shape, num_dense_nodes = 2, unique_labels=2, drop
     #self.identity_block(x, filter_size)
     #self.convolutional_block(x, filter_size)
 
-    model = Sequential()
+    x = Sequential()
 
     # Step 2 (Initial Conv layer along with maxPool)
     x = Conv2D(filters=16, kernel_size=(3, 3), input_shape=input_shape, padding='same')(x)
