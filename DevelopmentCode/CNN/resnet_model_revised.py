@@ -37,7 +37,7 @@ def convolutional_block(x, filter):
     return x
 
 def convnet_model_resnet(input_shape, 
-                         num_dense_nodes=64, unique_labels=2, 
+                         num_dense_nodes=2, unique_labels=2, 
                          activation='sigmoid', dropout_rate=0.2):
     # note: dropout rate not used
     # where is filter size from?
