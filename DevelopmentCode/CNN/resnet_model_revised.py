@@ -40,6 +40,7 @@ def convnet_model_resnet(input_shape,
                          num_dense_nodes=64, unique_labels=2, 
                          activation='sigmoid', dropout_rate=0.2):
     # note: dropout rate not used
+    # where is filter size from?
     
     #input tensors
     input_tensor = Input(shape=input_shape, name='input')
@@ -64,6 +65,7 @@ def convnet_model_resnet(input_shape,
             x = convolutional_block(x, filter_size)
             for j in range(block_layers[i] - 1):
                 x = identity_block(x, filter_size)
+
     # Step 4 End Dense Network
     #x = AveragePooling2D((2,2), padding = 'same')(x)
     x = MaxPool2D(pool_size=(2,2), padding = 'same')(x)
@@ -74,22 +76,22 @@ def convnet_model_resnet(input_shape,
     model = Model(inputs = input_tensor, outputs = x, name = 'resnet')
     return model
 
-    
-#optimizer and other parameters
-learning_rate = 0.0007
-beta_1 = 0.9
-beta_2 = 0.999
-epsilon = 1e-8
-optimizer = Adam(lr=learning_rate, beta_1 = beta_1, beta_2 = beta_2, epsilon = epsilon)
-loss_func='categorical_crossentropy'
-metrics = ['accuracy']
-input_shape = INSERTYOURSHAPEHERE
+# TRY THESE:    
+# optimizer and other parameters
+#learning_rate = 0.0007
+#beta_1 = 0.9
+#beta_2 = 0.999
+#epsilon = 1e-8
+#optimizer = Adam(lr=learning_rate, beta_1 = beta_1, beta_2 = beta_2, epsilon = epsilon)
+#loss_func='categorical_crossentropy'
+#metrics = ['accuracy']
+#input_shape = INSERTYOURSHAPEHERE
 #for training
-checkpointer = ModelCheckpoint('keras_resnet.h5', verbose=1) # or verbose=0
-callbacks=[checkpointer]
-#compile the model
-model  = convnet_model_resnet(input_shape)
-model.compile(optimizer=loss_func, optimizer=optimizer, metrics=metrics)
+#checkpointer = ModelCheckpoint('keras_resnet.h5', verbose=1) # or verbose=0
+#callbacks=[checkpointer]
+# compile the model
+#model  = convnet_model_resnet(input_shape)
+#model.compile(optimizer=loss_func, optimizer=optimizer, metrics=metrics)
 
 
 
