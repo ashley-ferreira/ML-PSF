@@ -73,7 +73,7 @@ def convnet_model_resnet(input_shape,
     x = Dense(num_dense_nodes, activation = activation)(x)
     #x = Dense(num_dense_nodes, activation = activation)(x)
     output = Dense(unique_labels, activation = 'softmax')(x)
-    model = Model(inputs = input_tensor, outputs = x, name = 'resnet')
+    model = Model(inputs = input_tensor, outputs = output, name = 'resnet')
     return model
 
 # TRY THESE:    
