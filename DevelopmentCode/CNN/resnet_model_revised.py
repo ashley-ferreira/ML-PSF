@@ -4,7 +4,7 @@ from keras.layers import Input, Dense, Activation, Add, ZeroPadding2D, BatchNorm
 #from keras.callbacks import EarlyStopping, ModelCheckpoint
 #from keras.optimizers import Adam
 
-def identity_block(self, x, filter):
+def identity_block(x, filter):
     # copy tensor to variable called x_skip
     x_skip = x
     # Layer 1
@@ -19,7 +19,7 @@ def identity_block(self, x, filter):
     x = Activation('relu')(x)
     return x
     
-def convolutional_block(self, x, filter):
+def convolutional_block(x, filter):
     # copy tensor to variable called x_skip
     x_skip = x
     # Layer 1
