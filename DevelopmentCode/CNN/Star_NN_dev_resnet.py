@@ -114,7 +114,7 @@ def get_user_input():
     plots_dir = model_dir_name + 'plots/'
     if not(os.path.exists(plots_dir)):
         os.mkdir(plots_dir)
-    submodels_dir = model_dir_name + 'models_each_10epochs_RESNET64/'
+    submodels_dir = model_dir_name + 'models_each_10epochs_RESNET16/'
     if not(os.path.exists(submodels_dir)):
         os.mkdir(submodels_dir)
     
@@ -480,7 +480,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         y_test (arr): real y values (labels) for testing 
 
     '''
-    sub_mod_dir = model_dir_name + 'models_each_10epochs_RESNET64/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
+    sub_mod_dir = model_dir_name + 'models_each_10epochs_RESNET16/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
     if not(os.path.exists(sub_mod_dir)):
         os.mkdir(sub_mod_dir)
     class CustomSaver(keras.callbacks.Callback):
