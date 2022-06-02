@@ -29,7 +29,7 @@ parser.add_option('-c', '--cutout_size', dest='cutout_size', \
         default=cutout_size, type='int', \
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
 
-night_dir = '03068'
+night_dir = '03074'#'03068'
 parser.add_option('-n', '--night_dir', dest='night_dir', 
         default=night_dir, type='str', \
         help='image file directory, default=%default.')
@@ -54,7 +54,7 @@ parser.add_option('-f', '--file_dir', dest='file_dir',
     default=pwd+'home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/'+night_dir+'/HSC-R2/corr/', 
     type='str', help='directory which contains data, default=%default.')
 
-default_data_dir = pwd+'/NN_data_' + str(cutout_size) + '_diffnight/'
+default_data_dir = pwd+'/NN_data_' + str(cutout_size) + '/'#_diffnight/'
 parser.add_option('-d', '--data_dir', dest='data_dir', 
     default=default_data_dir, type='str', 
     help='directory where cutouts are saved, default=%default.')
