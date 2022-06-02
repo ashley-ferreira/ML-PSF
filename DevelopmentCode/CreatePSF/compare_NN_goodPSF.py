@@ -225,7 +225,7 @@ def compare_NN_goodPSF(inputs):
     for file in os.listdir(model_dir_name):
         # TEMP 
         print(file)
-        if file.startswith('model_40'): 
+        if file.startswith('models_BASICmodel_150'): 
             model = keras.models.load_model(model_dir_name + file)
             break 
     '''
@@ -322,6 +322,7 @@ def compare_NN_goodPSF(inputs):
         x_int = int(goodPSF_x[i])
         cutout_goodPSF = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
    
+        # this isnt actually needed?
         cutout_goodPSF = regularize(cutout_goodPSF, mean, std)
 
         (z1, z2) = zscale.get_limits(cutout_goodPSF)
