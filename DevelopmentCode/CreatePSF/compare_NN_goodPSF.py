@@ -202,12 +202,15 @@ def compare_NN_goodPSF(inputs):
     for cutout in cutouts: # does this need to be forced?
         inf_or_nan = np.isfinite(cutout)
         if False in inf_or_nan:#not(inf_or_nan.any()): # if any is false then go for this
+            print("non finite values in array")
             pass
             # dont need both of these and maybe not either if you have above
         elif cutout.min() < -2000 or cutout.max() > 130000:
+            print("very big or small pix vals")
             pass
         else:
             if cutout.min() < -200 or cutout.max() > 65536:
+                print("big or small pix value")
                 #label = 0
                 pass
 
