@@ -226,7 +226,7 @@ def compare_NN_goodPSF(inputs):
     for file in os.listdir(model_dir_name):
         # TEMP 
         print(file)
-        if file.startswith('models_BASICmodel_150'): 
+        if file.startswith('models_BASICmodel_50'): 
             model = keras.models.load_model(model_dir_name + file)
             break 
     '''
@@ -269,7 +269,7 @@ def compare_NN_goodPSF(inputs):
             sum_c = center.sum()
             SNR_proxy = math.sqrt(abs(sum_c))
             print(good_probability, SNR_proxy)
-            if SNR_proxy > SNR_proxy_cutoff and good_probability > conf_cutoff:       
+            if good_probability > conf_cutoff: #SNR_proxy > SNR_proxy_cutoff and       
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
                 print(good_probability)
