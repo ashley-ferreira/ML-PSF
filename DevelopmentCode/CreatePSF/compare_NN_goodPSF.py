@@ -209,15 +209,16 @@ def compare_NN_goodPSF(inputs):
             print("very big or small pix vals")
             pass
         else:
-            if cutout.min() < -200 or cutout.max() > 65536:
-                print("big or small pix value")
-                #label = 0
-                pass
+            cutouts_cleaned.append(cutout)
+
+        #elif:
+        #    if cutout.min() < -200 or cutout.max() > 65536:
+        #        print("big or small pix value")
+        #        #label = 0
+        #        pass
 
             
-            else:
-                cutouts_cleaned.append(cutout)
-
+        
     cutouts_cleaned = np.array(cutouts_cleaned)
 
     # load previously trained Neural Network 
