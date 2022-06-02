@@ -222,8 +222,9 @@ def compare_NN_goodPSF(inputs):
     for file in os.listdir(model_dir_name):
         # TEMP 
         print(file)
-        if file.startswith('model_40'):
+        if file.startswith('model_40'): 
             model = keras.models.load_model(model_dir_name + file)
+            break 
     '''
         if file.startswith('model_traintime=*'):
             model = keras.models.load_model(model_dir_name + file)
@@ -235,7 +236,8 @@ def compare_NN_goodPSF(inputs):
     '''
 
     # load training set std and mean
-    with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
+    # TEMP UP ONE FOLDER
+    with open(model_dir_name + '../regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
     # use std and mean to regularize cutout
