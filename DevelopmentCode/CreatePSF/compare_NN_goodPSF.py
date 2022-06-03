@@ -226,7 +226,7 @@ def compare_NN_goodPSF(inputs):
     for file in os.listdir(model_dir_name):
         # TEMP 
         print(file)
-        if file.startswith('models_BASICmodel_50'): 
+        if file.startswith('model_100'): 
             model = keras.models.load_model(model_dir_name + file)
             break 
     '''
