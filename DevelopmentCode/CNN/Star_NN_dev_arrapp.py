@@ -173,16 +173,16 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
 
     '''
 
-    good_cutouts = [] # label 1
-    bad_cutouts = [] # label 0
-    good_fwhm_lst = []
-    good_x_lst = []
-    good_y_lst = []
-    good_inputFile_lst = []
-    bad_fwhm_lst = []
-    bad_x_lst = []
-    bad_y_lst = []
-    bad_inputFile_lst = []
+    good_cutouts = np.array([])
+    bad_cutouts = np.array([]) # label 0
+    good_fwhm_lst = np.array([])
+    good_x_lst = np.array([])
+    good_y_lst = np.array([])
+    good_inputFile_lst = np.array([])
+    bad_fwhm_lst = np.array([])
+    bad_x_lst = np.array([])
+    bad_y_lst = np.array([])
+    bad_inputFile_lst = np.array([])
 
     good_counted = 0
     bad_counted = 0
@@ -263,6 +263,12 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     # print to see which line has real issue
     # append values directly to an array?
 
+    # convert cutout lists to arrays
+    good_cutouts = np.asarray(good_cutouts) 
+    print('good cutouts converted')
+    bad_cutouts = np.asarray(bad_cutouts)#, dtype=object) 
+    print('bad cutouts converted')
+
     # convert lists to arrays and delete lists
     good_x_arr = np.asarray(good_x_lst)
     del good_x_lst
@@ -284,13 +290,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     del good_inputFile_lst
     bad_inputFile_arr = np.array(bad_inputFile_lst)
     del bad_inputFile_lst
-    print('filenames converted')   
-
-    # convert cutout lists to arrays
-    good_cutouts = np.asarray(good_cutouts) 
-    print('good cutouts converted')
-    bad_cutouts = np.asarray(bad_cutouts)#, dtype=object) 
-    print('bad cutouts converted') 
+    print('filenames converted')    
 
     print('all data successfully converted to arrays')
 
