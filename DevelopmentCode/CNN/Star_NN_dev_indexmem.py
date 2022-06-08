@@ -294,11 +294,13 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     print('good cutouts converted')
 
     np.save(outfile, bad_cutouts)
+    del bad_cutouts
     outfile.seek(0)
     bad_cutouts = np.load(outfile)
 
     bad_cutouts = np.asarray(bad_cutouts)#, dtype=np.float16)#, dtype=object) .astype(np.float16)
-    #make into arrays directly earlier and combine here? save good cutouts
+    # make into arrays directly earlier and combine here? save good cutouts
+    # can also initialize zeros and fill in
     print('bad cutouts converted') 
 
     print('all data successfully converted to arrays')
