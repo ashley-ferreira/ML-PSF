@@ -32,6 +32,9 @@ zscale = ZScaleInterval()
 from optparse import OptionParser
 parser = OptionParser()
 
+from tempfile import TemporaryFile
+outfile = TemporaryFile()
+
 ## initializing random seeds for reproducability
 # tf.random.set_seed(1234)
 # keras.utils.set_random_seed(1234)
@@ -274,22 +277,28 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     del bad_y_lst
     print('x and y values converted')
 
-    good_fwhm_arr = np.array(good_fwhm_lst)
+    good_fwhm_arr = np.asarray(good_fwhm_lst)
     del good_fwhm_lst
-    bad_fwhm_arr = np.array(bad_fwhm_lst)
+    bad_fwhm_arr = np.asarray(bad_fwhm_lst)
     del bad_fwhm_lst
     print('FWHMs converted')
 
-    good_inputFile_arr = np.array(good_inputFile_lst)
+    good_inputFile_arr = np.asarray(good_inputFile_lst)
     del good_inputFile_lst
-    bad_inputFile_arr = np.array(bad_inputFile_lst)
+    bad_inputFile_arr = np.asarray(bad_inputFile_lst)
     del bad_inputFile_lst
     print('filenames converted')   
 
     # convert cutout lists to arrays
     good_cutouts = np.asarray(good_cutouts) 
     print('good cutouts converted')
-    bad_cutouts = np.asarray(bad_cutouts)#, dtype=object) 
+
+    np.save(outfile, bad_cutouts)
+    outfile.seek(0)
+    bad_cutouts = np.load(outfile)
+
+    bad_cutouts = np.asarray(bad_cutouts)#, dtype=np.float16)#, dtype=object) .astype(np.float16)
+    #make into arrays directly earlier and combine here? save good cutouts
     print('bad cutouts converted') 
 
     print('all data successfully converted to arrays')
