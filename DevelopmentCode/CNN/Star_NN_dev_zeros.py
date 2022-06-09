@@ -187,6 +187,9 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     bad_y_lst = []
     bad_inputFile_lst = []
 
+    N_bad = 970000 # then delete extra zero ones
+    bad_arr = np.zeros((N_bad, 111, 111, 1), dtype='float') # correct shape? dont expand dims later
+    # specific float kind?
     good_counted = 0
     bad_counted = 0
     max_num_good = size_of_data//2
@@ -225,7 +228,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                                     bad_y_lst.append(y)
                                     bad_fwhm_lst.append(fwhm)
                                     bad_inputFile_lst.append(inputFile)
-                                    bad_cutouts.append(cutout)
+                                    bad_arr[i,:,:,1] = np.copy(cutout)
                                     bad_counted += 1
                                 else:
                                     print('ERROR: label is not 1 or 0, excluding cutout')
@@ -303,9 +306,11 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     # later on once its more balanced
     # you can take out zeros of array in future?
 
-    bad_cutouts = np.asarray(bad_cutouts)#, dtype=np.float16)#, dtype=object) .astype(np.float16)
+    #bad_cutouts = np.asarray(bad_cutouts)#, dtype=np.float16)#, dtype=object) .astype(np.float16)
     # make into arrays directly earlier and combine here? save good cutouts
     # can also initialize zeros and fill in
+
+    # REMOVE ZEROS HERE
     print('bad cutouts converted') 
 
     print('all data successfully converted to arrays')
@@ -321,10 +326,11 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
 
     # more bad cutouts than good cutouts
     if balanced_data_method == 'even':
+        # more mem efficient way of below?
         number_of_rows = bad_cutouts.shape[0]
         random_indices = np.random.choice(number_of_rows, size=num_good_cutouts, replace=False)
         random_bad_cutouts = bad_cutouts[random_indices, :]
-        random_bad_cutouts = np.expand_dims(random_bad_cutouts, axis=3)
+        #random_bad_cutouts = np.expand_dims(random_bad_cutouts, axis=3)
 
         del bad_cutouts
         
