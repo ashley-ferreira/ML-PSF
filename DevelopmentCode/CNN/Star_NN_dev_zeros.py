@@ -187,7 +187,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     bad_y_lst = []
     bad_inputFile_lst = []
 
-    N_bad = 970000 # then delete extra zero ones, can make this number proportional to good star number
+    N_bad = 967002 #970000 # then delete extra zero ones, can make this number proportional to good star number
     bad_arr = np.zeros((N_bad, 111, 111, 1), dtype='float') # correct shape? dont expand dims later
     # specific float kind?
     good_counted = 0
@@ -310,8 +310,8 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     # make into arrays directly earlier and combine here? save good cutouts
     # can also initialize zeros and fill in
 
-    # REMOVE ZEROS HERE
-    np.delete(bad_arr, range(bad_counted,N_bad))
+    # REMOVE ZEROS HERE (THIS CREATES COPY)
+    #np.delete(bad_arr, range(bad_counted,N_bad))
     print('bad cutouts converted') 
 
     print('all data successfully converted to arrays')
