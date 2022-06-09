@@ -187,7 +187,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     bad_y_lst = []
     bad_inputFile_lst = []
 
-    N_bad = 3290#967002 #970000 # then delete extra zero ones, can make this number proportional to good star number
+    N_bad = 967002 #970000 # then delete extra zero ones, can make this number proportional to good star number
     bad_arr = np.zeros((N_bad, 111, 111), dtype='float') # correct shape? dont expand dims later
     print(bad_arr.shape)
     # specific float kind?
