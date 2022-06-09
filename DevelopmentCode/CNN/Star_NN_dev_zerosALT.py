@@ -333,6 +333,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
         random_indices = np.random.choice(number_of_rows, size=num_good_cutouts, replace=False)
         random_bad_cutouts = bad_cutouts[random_indices, :]
         del bad_cutouts
+        # can expand dim at read in too
         random_bad_cutouts = np.expand_dims(random_bad_cutouts, axis=3)
         
         random_bad_x_arr = bad_x_arr[random_indices]
