@@ -187,7 +187,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     bad_y_lst = []
     bad_inputFile_lst = []
 
-    N_bad = 967002 #970000 # then delete extra zero ones, can make this number proportional to good star number
+    N_bad = 3290#967002 #970000 # then delete extra zero ones, can make this number proportional to good star number
     bad_arr = np.zeros((N_bad, 111, 111), dtype='float') # correct shape? dont expand dims later
     print(bad_arr.shape)
     # specific float kind?
@@ -259,7 +259,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
 
     # make sure there are more good stars then bad ones
     num_good_cutouts = len(good_cutouts)
-    num_bad_cutouts = len(bad_cutouts)
+    num_bad_cutouts = len(bad_arr)
     if num_good_cutouts > num_bad_cutouts:
         print('ERROR: MORE GOOD STARS THAN BAD STARS')
 
@@ -336,6 +336,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
         # can expand dim at read in too
         random_bad_cutouts = np.expand_dims(random_bad_cutouts, axis=3)
         
+        # better way to have foresign on that number?
         random_bad_x_arr = bad_x_arr[random_indices]
         random_bad_y_arr = bad_y_arr[random_indices]
         random_bad_fwhm_arr = bad_fwhm_arr[random_indices]
