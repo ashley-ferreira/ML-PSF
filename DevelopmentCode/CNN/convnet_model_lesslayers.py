@@ -2,7 +2,7 @@ from keras.models import Sequential
 from keras.layers import Dense, BatchNormalization, Flatten, Conv2D, MaxPool2D
 from keras.layers.core import Dropout
 
-def convnet_model_lesslayers(input_shape, unique_labs=2, dropout_rate=0.2):
+def convnet_model_lesslayers(input_shape, unique_labels=2, dropout_rate=0.2):
     '''
     Defines the 2D Convolutional Neural Network (CNN)
 
@@ -38,7 +38,7 @@ def convnet_model_lesslayers(input_shape, unique_labs=2, dropout_rate=0.2):
 
     model.add(Flatten())
     model.add(Dense(16, activation='sigmoid'))
-    model.add(Dense(unique_labs, activation='softmax')) 
+    model.add(Dense(unique_labels, activation='softmax')) 
     #model.add(Activation("softmax"))
 
     return model
