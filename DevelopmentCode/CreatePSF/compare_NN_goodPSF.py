@@ -227,6 +227,7 @@ def compare_NN_goodPSF(inputs):
         # TEMP 
         print(file)
         if file.startswith('model_20'): 
+            print(file)
             model = keras.models.load_model(model_dir_name + file)
             break 
     '''
