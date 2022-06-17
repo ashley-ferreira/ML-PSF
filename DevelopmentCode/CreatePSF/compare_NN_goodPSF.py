@@ -209,7 +209,7 @@ def compare_NN_goodPSF(inputs):
             print("very big or small pix vals")
             #pass
         #elif cutout.min() < -200 or cutout.max() > 65536:
-        elif cutout.min() < -200 or cutout.max() > 65536/5:
+        elif cutout.min() < -200 or cutout.max() > 65536/3:
             print("big or small pix value")
             #label = 0 # add this in somehow, take it out
             #pass
