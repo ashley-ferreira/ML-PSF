@@ -24,8 +24,8 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils import class_weight
 from sklearn.utils.multiclass import unique_labels
 
-#from resnet_model_revised import convnet_model_resnet
-from convnet_model_lesslayers import convnet_model_lesslayers
+from resnet_model_v2 import convnet_model_resnet
+#from convnet_model_lesslayers import convnet_model_lesslayers
 
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
@@ -118,7 +118,7 @@ def get_user_input():
     plots_dir = model_dir_name + 'plots/'
     if not(os.path.exists(plots_dir)):
         os.mkdir(plots_dir)
-    submodels_dir = model_dir_name + 'models_each_10epochs_BASIC/'
+    submodels_dir = model_dir_name + 'models_each_10epochs_RESNET32/'
     if not(os.path.exists(submodels_dir)):
         os.mkdir(submodels_dir)
     
@@ -518,7 +518,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         y_test (arr): real y values (labels) for testing 
 
     '''
-    sub_mod_dir = model_dir_name + 'models_each_10epochs_BASIC/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
+    sub_mod_dir = model_dir_name + 'models_each_10epochs_RESNET32/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
     if not(os.path.exists(sub_mod_dir)):
         os.mkdir(sub_mod_dir)
     class CustomSaver(keras.callbacks.Callback):
@@ -556,7 +556,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
     # train the model
-    cn_model = convnet_model_lesslayers(X_train.shape[1:], unique_labels=unique_labs, dropout_rate=dropout_rate)
+    cn_model = convnet_model_resnet(X_train.shape[1:], unique_labels=unique_labs, dropout_rate=dropout_rate)
     cn_model.summary()
 
     opt = Adam(learning_rate=learning_rate) 
