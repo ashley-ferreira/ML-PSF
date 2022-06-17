@@ -226,7 +226,7 @@ def compare_NN_goodPSF(inputs):
     for file in os.listdir(model_dir_name):
         # TEMP 
         print(file)
-        if file.startswith('model_80'): 
+        if file.startswith('model_20'): 
             print(file)
             model = keras.models.load_model(model_dir_name + file)
             break 
@@ -280,7 +280,7 @@ def compare_NN_goodPSF(inputs):
                 axs[plotted_stars].set_xticks([])
                 axs[plotted_stars].set_yticks([])
                 axs[plotted_stars].text(0.1, -1, 'conf:' + str(good_probability))
-                axs[plotted_stars].text(0.1, -15, 'SNR :' + str(SNR_proxy)[:7])
+                axs[plotted_stars].text(0.1, -15, 'min, max:' + str(min(cutouts[i])) + str(max(cutouts[i]))[:7])
 
                 plotted_stars += 1 
 
