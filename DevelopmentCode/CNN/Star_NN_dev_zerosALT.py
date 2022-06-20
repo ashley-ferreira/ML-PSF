@@ -214,7 +214,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                             if cutout.min() < -2000 or cutout.max() > 130000:
                                 pass
                             else:
-                                if cutout.min() < -200 or cutout.max() > 65536/3:
+                                if cutout.min() < -200 or cutout.max() > 65536:
                                     label = 0
                                 if label == 1:
                                     good_x_lst.append(x)
