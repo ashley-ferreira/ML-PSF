@@ -118,7 +118,7 @@ def get_user_input():
     plots_dir = model_dir_name + 'plots/'
     if not(os.path.exists(plots_dir)):
         os.mkdir(plots_dir)
-    submodels_dir = model_dir_name + 'models_each_10epochs_RESNET32_tighercut/'
+    submodels_dir = model_dir_name + 'models_each_10epochs_RESNET32_lr=0.0001/'
     if not(os.path.exists(submodels_dir)):
         os.mkdir(submodels_dir)
     
@@ -518,7 +518,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         y_test (arr): real y values (labels) for testing 
 
     '''
-    sub_mod_dir = model_dir_name + 'models_each_10epochs_RESNET32_tighercut/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
+    sub_mod_dir = model_dir_name + 'models_each_10epochs_RESNET32_lr=0.0001/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
     if not(os.path.exists(sub_mod_dir)):
         os.mkdir(sub_mod_dir)
     class CustomSaver(keras.callbacks.Callback):
@@ -537,7 +537,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     batch_size = 256 # up from 16 --> 1024 --> 32 --> 256
     dropout_rate = 0.2
     test_fraction = 0.2 # from 0.05
-    learning_rate = 0.001#01 # down from 0.001 --> 0.0005 --> 0.00001
+    learning_rate = 0.0001# from 0.001
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
