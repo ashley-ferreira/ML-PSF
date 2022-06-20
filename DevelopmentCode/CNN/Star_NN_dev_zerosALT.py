@@ -118,7 +118,7 @@ def get_user_input():
     plots_dir = model_dir_name + 'plots/'
     if not(os.path.exists(plots_dir)):
         os.mkdir(plots_dir)
-    submodels_dir = model_dir_name + 'models_each_10epochs_RESNET32/'
+    submodels_dir = model_dir_name + 'models_each_10epochs_RESNET32_tighercut/'
     if not(os.path.exists(submodels_dir)):
         os.mkdir(submodels_dir)
     
@@ -214,7 +214,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                             if cutout.min() < -2000 or cutout.max() > 130000:
                                 pass
                             else:
-                                if cutout.min() < -200 or cutout.max() > 65536:
+                                if cutout.min() < -200 or cutout.max() > 65536/3:
                                     label = 0
                                 if label == 1:
                                     good_x_lst.append(x)
@@ -518,7 +518,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         y_test (arr): real y values (labels) for testing 
 
     '''
-    sub_mod_dir = model_dir_name + 'models_each_10epochs_RESNET32/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
+    sub_mod_dir = model_dir_name + 'models_each_10epochs_RESNET32_tighercut/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
     if not(os.path.exists(sub_mod_dir)):
         os.mkdir(sub_mod_dir)
     class CustomSaver(keras.callbacks.Callback):
