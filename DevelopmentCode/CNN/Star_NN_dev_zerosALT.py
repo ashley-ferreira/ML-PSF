@@ -188,6 +188,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     bad_y_lst = []
     bad_inputFile_lst = []
 
+    # TEMP STOPPNG AT THIS N_bad
     N_bad = 967002 #970000 # then delete extra zero ones, can make this number proportional to good star number
     bad_arr = np.zeros((N_bad, 111, 111), dtype='float') # correct shape? dont expand dims later
     print(bad_arr.shape)
@@ -198,7 +199,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     i=0
     try:
         for filename in os.listdir(data_dir):
-            if good_counted < max_num_good:
+            if good_counted < max_num_good and bad_counted <= N_bad:
                 if filename.endswith('_cutoutData.pickle') and os.path.getsize(data_dir + filename) > 0:
                     print(good_counted, 'good stars out of max number needed', max_num_good, 'processed')
                     print(bad_counted, 'bad stars out of max number number needed', max_num_good, 'processed')
@@ -213,11 +214,9 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                         elif cutout.shape == (cutout_size, cutout_size):# and np.isfinite(cutout):
                             if cutout.min() < -2000 or cutout.max() > 130000:
                                 pass
-                            else:
-                                if cutout.min() < -200 or cutout.max() > 65536:
+                            else: # want to make good ones better (smaller N?)
+                                if cutout.min() < -200/2 or cutout.max() > 65536/4:
                                     label = 0
-                                elif cutout.min() < -200/2 or cutout.max() > 65536/4:
-                                    pass # temp
                                 if label == 1:
                                     good_x_lst.append(x)
                                     good_y_lst.append(y)
