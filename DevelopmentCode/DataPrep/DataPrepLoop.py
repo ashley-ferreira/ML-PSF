@@ -30,7 +30,7 @@ parser.add_option('-s', '--start_indx', dest='start_indx',
 parser.add_option('-e', '--end_indx', dest='end_indx', 
     default='219620', type='int', help='index of image to end on, default=%default.')
 
-default_training_dir = '/arc/projects/uvickbos/ML-PSF/NN_data_' + str(fixed_cutout_len) + '/'
+default_training_dir = '/arc/projects/uvickbos/ML-PSF/NN_data_' + str(fixed_cutout_len) + '_diffnight/'
 parser.add_option('-t', '--training_dir', dest='training_dir', 
     default=default_training_dir, type='str', 
     help='directory to save cutouts to for training, default=%default.')
