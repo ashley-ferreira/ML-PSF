@@ -579,9 +579,7 @@ def main():
     if data_load == 'scratch':
         save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method, validation_fraction)
 
-    cn_model, X_train, y_train, X_test, y_test = train_CNN(model_dir_name, num_epochs, load_presaved_data(cutout_size, model_dir_name))
-
-    test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test)
+    cn_model, X_train, y_train, X_test, y_test = cluster_stars(model_dir_name, num_epochs, load_presaved_data(cutout_size, model_dir_name))
     
 if __name__ == '__main__':
     main()
