@@ -513,7 +513,7 @@ def cluster_stars(model_dir_name, num_epochs, data):
     # section for setting up some flags and hyperparameters
     batch_size = 256 # up from 16 --> 1024 --> 32 --> 256
     dropout_rate = 0.2
-    test_fraction = 0.2 # from 0.05
+    test_fraction = 0.01 # from 0.05
     learning_rate = 0.0001# from 0.001
 
     ### now divide the cutouts array into training and testing datasets.
@@ -571,7 +571,7 @@ def cluster_stars(model_dir_name, num_epochs, data):
     x = pca.transform(features)
     print(f"Components after PCA: {pca.n_components}")
     # n_clusters can be more than unique labels
-    kmeans = KMeans(n_clusters=lenunique_labels,n_jobs=-1, random_state=22)
+    kmeans = KMeans(n_clusters=unique_labels,n_jobs=-1, random_state=22)
     kmeans.fit(x)
     # plot star choice on test (also compare to labels)
     # plot k means positioning on train 
