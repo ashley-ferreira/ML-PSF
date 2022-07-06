@@ -573,10 +573,12 @@ def cluster_stars(model_dir_name, num_epochs, data):
     # n_clusters can be more than unique labels
     kmeans = KMeans(n_clusters=unique_labels,n_jobs=-1, random_state=22)
     kmeans.fit(x)
+    y_kmeans = kmeans.predict(x)
     # plot star choice on test (also compare to labels)
     # plot k means positioning on train 
-    pyl.scatter(x[0 , 0] , x[0 , 1] , label = 'label=0')
-    pyl.scatter(x[1 , 0] , x[1 , 1] , label = 'label=1')
+    #pyl.scatter(x[0 , 0] , x[0 , 1] , label = 'label=0')
+    #pyl.scatter(x[1 , 0] , x[1 , 1] , label = 'label=1')
+    pyl.scatter(x[: , 0] , x[: , 1], alpha=0.3, c=y_kmeans)
     pyl.legend()
     pyl.show()
 
