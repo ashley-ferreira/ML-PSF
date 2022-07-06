@@ -546,7 +546,10 @@ def cluster_stars(model_dir_name, num_epochs, data):
     # use pre-trained model as additional information to prep training?
     # pca + pretrained models at job
     # various ways to do this
-    x_prepped = preprocess_input(X_test)
+
+    X_t_0 = np.pad(X_test, ((57, 56),(56, 57)), 'constant')
+
+    x_prepped = preprocess_input(X_t_0)
     # load model
     model = VGG16()
     # remove the output layer
