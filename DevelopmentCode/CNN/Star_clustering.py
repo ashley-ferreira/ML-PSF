@@ -555,6 +555,7 @@ def cluster_stars(model_dir_name, num_epochs, data):
     print(X_test.shape)
 
     X_t_0 = X_test.resize((len(X_test),224,224,1))
+    X_t_0 = X_test
 
     print(X_t_0.shape)
 
