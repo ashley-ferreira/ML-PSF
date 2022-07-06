@@ -571,7 +571,7 @@ def cluster_stars(model_dir_name, num_epochs, data):
     x = pca.transform(features)
     print(f"Components after PCA: {pca.n_components}")
     # n_clusters can be more than unique labels
-    kmeans = KMeans(n_clusters=len(unique_labels),n_jobs=-1, random_state=22)
+    kmeans = KMeans(n_clusters=lenunique_labels,n_jobs=-1, random_state=22)
     kmeans.fit(x)
     # plot star choice on test (also compare to labels)
     # plot k means positioning on train 
