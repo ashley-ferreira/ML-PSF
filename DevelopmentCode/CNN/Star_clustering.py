@@ -547,7 +547,11 @@ def cluster_stars(model_dir_name, num_epochs, data):
     # pca + pretrained models at job
     # various ways to do this
 
-    X_t_0 = np.pad(X_test, ((57, 56),(56, 57)), 'constant')
+    #X_t_0 = np.pad(X_test, ((57, 56),(56, 57)), 'constant')
+    X_t_0 = np.zeros((len(X_test), 111, 111), dtype='float')
+    for i in range(len(X_test)):
+        x_cp = np.pad(X_test[i], ((57, 56),(56, 57)), 'constant')
+        X_t_0[i,:,:] = np.copy(x_cp)
 
     x_prepped = preprocess_input(X_t_0)
     # load model
