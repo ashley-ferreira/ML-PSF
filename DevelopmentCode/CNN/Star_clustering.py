@@ -563,11 +563,10 @@ def cluster_stars(model_dir_name, num_epochs, data):
     for i in range(len(X_t_0)): 
         (c1, c2) = zscale.get_limits(X_t_0[i])
         normer3 = interval.ManualInterval(c1,c2)
-        pyl.title('label=' + str(y_kmeans[i]))
+        pyl.title('label=' + str(y_test_binary[i]))
         pyl.imshow(normer3(X_t_0[i]))
         pyl.show()
         pyl.close()
-
 
     print(X_t_0.shape)
 
