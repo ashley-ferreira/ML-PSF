@@ -556,6 +556,8 @@ def cluster_stars(model_dir_name, num_epochs, data):
     
     
     X_og = np.copy(X_test)
+    '''
+    # incalid dimensions for image (needs to flatten?)
     # loop through x and plot
     for i in range(len(X_og)): 
         (c1, c2) = zscale.get_limits(X_og[i])
@@ -564,12 +566,15 @@ def cluster_stars(model_dir_name, num_epochs, data):
         pyl.imshow(normer3(X_og[i]))
         pyl.show()
         pyl.close()
+    '''
     
+    # want a zero fill to get to 224
     X_t_0 = np.copy(X_test)
     X_t_0.resize((len(X_t_0),224,224,3))
+    print(X_t_0[0])
 
     # loop through x and plot
-    for i in range(len(X_t_0)): 
+    for i in range(2):#len(X_t_0)): 
         (c1, c2) = zscale.get_limits(X_t_0[i])
         normer3 = interval.ManualInterval(c1,c2)
         pyl.title('label=' + str(y_test_binary[i]))
@@ -602,6 +607,8 @@ def cluster_stars(model_dir_name, num_epochs, data):
     pyl.scatter(x[: , 0] , x[: , 1], alpha=0.3, c=y_kmeans)
     pyl.legend()
     pyl.show()
+
+    X_og = np.squeeze(X_og, axis=3)
 
     # loop through x and plot
     for i in range(len(X_og)): 
