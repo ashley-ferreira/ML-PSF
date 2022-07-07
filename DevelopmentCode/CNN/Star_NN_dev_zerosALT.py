@@ -216,6 +216,8 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                                 pass
                             else: # want to make good ones better (smaller N?)
                                 if cutout.min() < -200 or cutout.max() > 65536/3:#/4: 200 was/2
+                                    # changes number of bads, make bigger array and takeouts zeros
+                                    # (potentially, but this runs for now)
                                     label = 0
                                 if label == 1:
                                     good_x_lst.append(x)
