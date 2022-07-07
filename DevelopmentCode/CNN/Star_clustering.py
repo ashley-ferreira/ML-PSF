@@ -555,8 +555,8 @@ def cluster_stars(model_dir_name, num_epochs, data):
     print(X_test.shape)
     
     
-    X_og = np.cp(X_test)
-    X_t_0 = np.cp(X_test)
+    X_og = np.copy(X_test)
+    X_t_0 = np.copy(X_test)
     X_t_0.resize((len(X_t_0),224,224,3))
 
     # loop through x and plot
