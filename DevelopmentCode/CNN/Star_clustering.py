@@ -553,9 +553,21 @@ def cluster_stars(model_dir_name, num_epochs, data):
     #    x_cp = np.pad(X_test[i], ((57, 56),(56, 57)), 'constant')
     #    X_t_0[i,:,:] = np.copy(x_cp)
     print(X_test.shape)
+    
+    
+    X_og = np.cp(X_test)
+    X_t_0 = np.cp(X_test)
+    X_t_0.resize((len(X_t_0),224,224,3))
 
-    X_t_0 = X_test.resize((len(X_test),224,224,3))
-    X_t_0 = X_test
+    # loop through x and plot
+    for i in range(len(X_t_0)): 
+        (c1, c2) = zscale.get_limits(X_t_0[i])
+        normer3 = interval.ManualInterval(c1,c2)
+        pyl.title('label=' + str(y_kmeans[i]))
+        pyl.imshow(normer3(X_t_0[i]))
+        pyl.show()
+        pyl.close()
+
 
     print(X_t_0.shape)
 
@@ -583,14 +595,15 @@ def cluster_stars(model_dir_name, num_epochs, data):
     pyl.show()
 
     # loop through x and plot
-    for i in range(len(X_test)): 
-        (c1, c2) = zscale.get_limits(X_test[i])
+    for i in range(len(X_og)): 
+        (c1, c2) = zscale.get_limits(X_og[i])
         normer3 = interval.ManualInterval(c1,c2)
         pyl.title('label=' + str(y_kmeans[i]))
-        pyl.imshow(normer3(X_test[i]))
+        pyl.imshow(normer3(X_og[i]))
         pyl.show()
         pyl.close()
 
+    
 
 def main():
 
