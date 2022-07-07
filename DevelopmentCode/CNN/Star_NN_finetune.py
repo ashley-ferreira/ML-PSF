@@ -165,8 +165,12 @@ def validate_CNN(model_dir_name, data):
     batch_size = 16 
 
     # unpack presaved data
-    cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
+    cutouts_temp, labels_temp, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
+    while input != 'stop':
+        # squeeze cp
+
+    # dumpt cutouts and labels
 
     # loop through images and save new version of labels and all
 
@@ -206,7 +210,7 @@ def validate_CNN(model_dir_name, data):
               loss=keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=[keras.metrics.BinaryAccuracy()])
 
-    model.fit(X_ft, y_ft, epochs=20, validation_spltt=0.2)
+    model.fit(X_ft, y_ft, epochs=5, validation_spltt=0.2)
 
     result = model.evaluate(X_valid, y_valid)
     print('result')
