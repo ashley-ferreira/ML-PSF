@@ -24,8 +24,8 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils import class_weight
 from sklearn.utils.multiclass import unique_labels
 
-from resnet_model_v2 import convnet_model_resnet
-#from convnet_model_lesslayers import convnet_model_lesslayers
+#from resnet_model_v2 import convnet_model_resnet
+from convnet_model_lesslayers import convnet_model_lesslayers
 
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
@@ -118,7 +118,7 @@ def get_user_input():
     plots_dir = model_dir_name + 'plots/'
     if not(os.path.exists(plots_dir)):
         os.mkdir(plots_dir)
-    submodels_dir = model_dir_name + 'models_each_10epochs_RESNET32_24/'
+    submodels_dir = model_dir_name + 'models_each_10epochs_basic2finetune/'
     if not(os.path.exists(submodels_dir)):
         os.mkdir(submodels_dir)
     
@@ -215,7 +215,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                             if cutout.min() < -2000 or cutout.max() > 130000:
                                 pass
                             else: # want to make good ones better (smaller N?)
-                                if cutout.min() < -200/2 or cutout.max() > 65536/4:
+                                if cutout.min() < -200 or cutout.max() > 65536/3:#/4: 200 was/2
                                     label = 0
                                 if label == 1:
                                     good_x_lst.append(x)
@@ -519,7 +519,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         y_test (arr): real y values (labels) for testing 
 
     '''
-    sub_mod_dir = model_dir_name + 'models_each_10epochs_RESNET32_24/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
+    sub_mod_dir = model_dir_name + 'models_each_10epochs_basic2finetune/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
     if not(os.path.exists(sub_mod_dir)):
         os.mkdir(sub_mod_dir)
     class CustomSaver(keras.callbacks.Callback):
@@ -538,7 +538,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     batch_size = 256 # up from 16 --> 1024 --> 32 --> 256
     dropout_rate = 0.2
     test_fraction = 0.2 # from 0.05
-    learning_rate = 0.0001# from 0.001
+    learning_rate = 0.0001# from 0.001 --> 0.0001
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
@@ -557,7 +557,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
     # train the model
-    cn_model = convnet_model_resnet(X_train.shape[1:], unique_labels=unique_labs, dropout_rate=dropout_rate)
+    cn_model = convnet_model_lesslayers(X_train.shape[1:], unique_labels=unique_labs, dropout_rate=dropout_rate)
     cn_model.summary()
 
     opt = Adam(learning_rate=learning_rate) 
