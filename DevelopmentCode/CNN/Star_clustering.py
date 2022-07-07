@@ -57,6 +57,8 @@ import pandas as pd
 import pickle
 ###########################
 
+from sklearn.metrics import accuracy_score
+
 ## initializing random seeds for reproducability
 # tf.random.set_seed(1234)
 # keras.utils.set_random_seed(1234)
@@ -513,7 +515,7 @@ def cluster_stars(model_dir_name, num_epochs, data):
     # section for setting up some flags and hyperparameters
     batch_size = 256 # up from 16 --> 1024 --> 32 --> 256
     dropout_rate = 0.2
-    test_fraction = 0.01 # from 0.05
+    test_fraction = 0.2 # from 0.05
     learning_rate = 0.0001# from 0.001
 
     ### now divide the cutouts array into training and testing datasets.
@@ -572,7 +574,7 @@ def cluster_stars(model_dir_name, num_epochs, data):
     X_t_0 = np.copy(X_test)
     X_t_0.resize((len(X_t_0),224,224,3))
     print(X_t_0[0])
-
+    '''
     # loop through x and plot
     for i in range(2):#len(X_t_0)): 
         (c1, c2) = zscale.get_limits(X_t_0[i])
@@ -581,7 +583,8 @@ def cluster_stars(model_dir_name, num_epochs, data):
         pyl.imshow(normer3(X_t_0[i]))
         pyl.show()
         pyl.close()
-
+    # filling with memory and not zero (clear from printed array too)
+    '''
 
     print(X_t_0.shape)
 
@@ -608,19 +611,20 @@ def cluster_stars(model_dir_name, num_epochs, data):
     pyl.legend()
     pyl.show()
 
-    X_og = np.squeeze(X_og, axis=3)
+    accuracy_score(y_test, y_kmeans)
 
+    X_og = np.squeeze(X_og, axis=3)
+    
     # loop through x and plot
     for i in range(len(X_og)): 
         (c1, c2) = zscale.get_limits(X_og[i])
         normer3 = interval.ManualInterval(c1,c2)
-        pyl.title('label=' + str(y_kmeans[i]))
+        pyl.title('kmeans y=' + str(y_kmeans[i]) + '  label=' + str(y_test[i]))
         pyl.imshow(normer3(X_og[i]))
         pyl.show()
         pyl.close()
 
     
-
 def main():
 
     balanced_data_method, data_load, size_of_data, num_epochs, \
