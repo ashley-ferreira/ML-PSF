@@ -148,35 +148,6 @@ def regularize(cutouts, mean, std):
 def load_presaved_data(cutout_size, model_dir_name):
     '''
     '''
-    stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = [], [], [], []
-    cutout_dir = '/arc/projects/uvickbos/ML-PSF/home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr/'
-    for c, f in zip(cutouts, files): 
-        print(f)
-        # read in saved cutout file created from HSCgetStars_main 
-        # go to right directory@   
-        with open(str(cutout_dir+f), 'rb') as han:
-            [stds, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
-
-        # MAKE LIST OF STDs and second peak, calc flocally or call?
-        ## select only those stars with really low STD
-        w = np.where(stds/np.std(stds)<0.001)
-        stds = stds[w]
-        seconds = seconds[w]
-        peaks = peaks[w]
-        xs = xs[w]
-        ys = ys[w]
-        cutouts = np.array(cutouts)[w]
-        s = np.std(stds)
-
-        ## find the best 25 stars (the closest to the origin in 
-        ## weighted STD and second highest pixel value)
-        dist = ((stds/s)**2 + (seconds/peaks)**2)**0.5
-
-        stds_lst.append(stds)
-        seconds_lst.append(seconds)
-        stds_n_lst.append(stds/s)
-        seconds_n_lst.append(peaks)
-
     print('Begin data loading...')
     with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
@@ -196,6 +167,34 @@ def load_presaved_data(cutout_size, model_dir_name):
             if cutouts.min() < -200 or cutout.max() > 65536:
                 labels[i] = 0
     '''
+    stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = [], [], [], []
+    cutout_dir = '/arc/projects/uvickbos/ML-PSF/home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr/'
+    for c, f in zip(cutouts, files): 
+        print(f)
+        # read in saved cutout file created from HSCgetStars_main 
+        # go to right directory@   
+        with open(str(cutout_dir+f), 'rb') as han:
+            [stds, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
+
+        # MAKE LIST OF STDs and second peak, calc flocally or call?
+        ## select only those stars with really low STD
+        w = np.where(stds/np.std(stds)<0.001)
+        stds = stds[w]
+        seconds = seconds[w]
+        peaks = peaks[w]
+        xs = xs[w]
+        ys = ys[w]
+        s = np.std(stds)
+
+        ## find the best 25 stars (the closest to the origin in 
+        ## weighted STD and second highest pixel value)
+        dist = ((stds/s)**2 + (seconds/peaks)**2)**0.5
+
+        stds_lst.append(stds)
+        seconds_lst.append(seconds)
+        stds_n_lst.append(stds/s)
+        seconds_n_lst.append(peaks)
+        
     cutouts = np.asarray(cutouts).astype('float32')
     std = np.nanstd(cutouts)
     mean = np.nanmean(cutouts)
