@@ -197,8 +197,11 @@ def load_presaved_data(cutout_size, model_dir_name):
         seconds_n_lst.append(peaks)
     '''
     # DOING VERY SIMPLIFIED STD BELOW
+    # usually done differently and on rem_cutout
     peaks, stds, seconds, ss = [], [], [], []
     for cutout in cutouts:
+        c_temp = np.copy(cutout)
+        c_temp = np.squeeze(c_temp, axis=3)
         (aa,bb) = cutout.shape
         peak = np.max(cutout)
         peaks.append(peak)
@@ -210,7 +213,6 @@ def load_presaved_data(cutout_size, model_dir_name):
         seconds_n_lst.append(second_highest/peak)
 
             
-
     # store everything in numpy array format
     std = np.array(stds)
     seconds = np.array(seconds)
