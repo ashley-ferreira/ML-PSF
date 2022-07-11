@@ -148,32 +148,13 @@ def regularize(cutouts, mean, std):
 def load_presaved_data(cutout_size, model_dir_name):
     '''
     '''
-    print('Begin data loading...')
-    with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
-        [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
-    print('Data all loaded')
-    # temporary add for old 110k data:
-    '''
-    for i in range(len(cutouts)):
-        cutout = np.asarray(cutouts[i]).astype('float32')
-        if cutout.min() < -2000 or cutout.max() > 130000:
-            cutouts = np.delete(cutouts,i)
-            labels = np.delete(labels,i)
-            xs = np.delete(xs,i)
-            ys = np.delete(ys,i) 
-            fwhms = np.delete(fwhms,i)
-            files = np.delete(files,i)
-        else:
-            if cutouts.min() < -200 or cutout.max() > 65536:
-                labels[i] = 0
-    '''
     stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = [], [], [], []
     cutout_dir = '/arc/projects/uvickbos/ML-PSF/home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr/'
-
     for c, f in zip(cutouts, files): 
+        print(f)
         # read in saved cutout file created from HSCgetStars_main 
         # go to right directory@   
-        with open(cutout_dir+f, 'rb') as han:
+        with open(str(cutout_dir+f), 'rb') as han:
             [stds, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
 
         # MAKE LIST OF STDs and second peak, calc flocally or call?
@@ -196,7 +177,25 @@ def load_presaved_data(cutout_size, model_dir_name):
         stds_n_lst.append(stds/s)
         seconds_n_lst.append(peaks)
 
-
+    print('Begin data loading...')
+    with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
+        [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
+    print('Data all loaded')
+    # temporary add for old 110k data:
+    '''
+    for i in range(len(cutouts)):
+        cutout = np.asarray(cutouts[i]).astype('float32')
+        if cutout.min() < -2000 or cutout.max() > 130000:
+            cutouts = np.delete(cutouts,i)
+            labels = np.delete(labels,i)
+            xs = np.delete(xs,i)
+            ys = np.delete(ys,i) 
+            fwhms = np.delete(fwhms,i)
+            files = np.delete(files,i)
+        else:
+            if cutouts.min() < -200 or cutout.max() > 65536:
+                labels[i] = 0
+    '''
     cutouts = np.asarray(cutouts).astype('float32')
     std = np.nanstd(cutouts)
     mean = np.nanmean(cutouts)
