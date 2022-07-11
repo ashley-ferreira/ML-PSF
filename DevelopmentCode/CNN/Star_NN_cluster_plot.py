@@ -149,8 +149,8 @@ def load_presaved_data(cutout_size, model_dir_name):
     '''
     '''
     print('Begin data loading...')
-    with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
-        [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
+    with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as used_c:
+        [cutouts, labels, xs, ys, fwhms, files] = pickle.load(used_c) 
     print('Data all loaded')
     # temporary add for old 110k data:
     '''
@@ -172,8 +172,8 @@ def load_presaved_data(cutout_size, model_dir_name):
     for c, f in zip(cutouts, files): 
         print(f)
         # read in saved cutout file created from HSCgetStars_main 
-        with open(str(cutout_dir+f), 'rb') as han:
-            [stds, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
+        with open(str(cutout_dir+f), 'rb') as old_c:
+            [stds, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(old_c)
 
         # MAKE LIST OF STDs and second peak, calc flocally or call?
         ## select only those stars with really low STD
