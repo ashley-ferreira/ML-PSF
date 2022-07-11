@@ -168,7 +168,7 @@ def load_presaved_data(cutout_size, model_dir_name):
                 labels[i] = 0
     '''
     stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = [], [], [], []
-    cutout_dir = '/arc/projects/uvickbos/ML-PSF/home_dir_transfer/HSC_May25-lsst/rerun/processCcdOutputs/03074/HSC-R2/corr/'
+    cutout_dir = '/arc/projects/uvickbos/ML-PSF/NN_data_111_diffnight/'
     for c, f in zip(cutouts, files): 
         print(f)
         # read in saved cutout file created from HSCgetStars_main 
