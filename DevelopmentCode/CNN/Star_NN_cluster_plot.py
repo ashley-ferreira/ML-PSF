@@ -183,8 +183,6 @@ def load_presaved_data(cutout_size, model_dir_name):
         stds = stds[w]
         seconds = seconds[w]
         peaks = peaks[w]
-        xs = xs[w]
-        ys = ys[w]
         s = np.std(stds)
 
         ## find the best 25 stars (the closest to the origin in 
