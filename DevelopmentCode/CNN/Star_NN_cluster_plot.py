@@ -172,7 +172,6 @@ def load_presaved_data(cutout_size, model_dir_name):
     for c, f in zip(cutouts, files): 
         print(f)
         # read in saved cutout file created from HSCgetStars_main 
-        # go to right directory@   
         with open(str(cutout_dir+f), 'rb') as han:
             [stds, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
 
@@ -194,7 +193,7 @@ def load_presaved_data(cutout_size, model_dir_name):
         seconds_lst.append(seconds)
         stds_n_lst.append(stds/s)
         seconds_n_lst.append(peaks)
-        
+
     cutouts = np.asarray(cutouts).astype('float32')
     std = np.nanstd(cutouts)
     mean = np.nanmean(cutouts)
