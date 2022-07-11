@@ -200,9 +200,9 @@ def load_presaved_data(cutout_size, model_dir_name):
     # usually done differently and on rem_cutout
     peaks, stds, seconds, ss = [], [], [], []
     print(cutouts.shape)
-    for cutout in cutouts:
-        c_temp = np.copy(cutout)
-        c_temp = np.squeeze(c_temp, axis=3)
+    c_temp = np.copy(cutouts)
+    c_temp = np.squeeze(c_temp, axis=3)
+    for cutout in c_temp:
         (aa,bb) = cutout.shape
         peak = np.max(cutout)
         peaks.append(peak)
@@ -240,7 +240,7 @@ def train_CNN(model_dir_name, num_epochs, data, info):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
     stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = info[0], info[1], info[2], info[3]
 
-    test_fraction = 0.999999
+    test_fraction = 0.999
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
