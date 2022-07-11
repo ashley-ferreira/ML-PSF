@@ -148,85 +148,17 @@ def regularize(cutouts, mean, std):
 def load_presaved_data(cutout_size, model_dir_name):
     '''
     '''
-    print('Begin data loading...')
-    with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as used_c:
-        [cutouts, labels, xs, ys, fwhms, files] = pickle.load(used_c) 
-    print('Data all loaded')
-    # temporary add for old 110k data:
-    '''
-    for i in range(len(cutouts)):
-        cutout = np.asarray(cutouts[i]).astype('float32')
-        if cutout.min() < -2000 or cutout.max() > 130000:
-            cutouts = np.delete(cutouts,i)
-            labels = np.delete(labels,i)
-            xs = np.delete(xs,i)
-            ys = np.delete(ys,i) 
-            fwhms = np.delete(fwhms,i)
-            files = np.delete(files,i)
-        else:
-            if cutouts.min() < -200 or cutout.max() > 65536:
-                labels[i] = 0
-    '''
-    stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = [], [], [], []
-    # need to recalculate this
-    '''
-    cutout_dir = '/arc/projects/uvickbos/ML-PSF/NN_data_111/'
-    for c, f in zip(cutouts, files): 
-        print(f)
-        # read in saved cutout file created from HSCgetStars_main 
-        c_f = str(cutout_dir+f.replace('.fits', '_111_cutouts_savedFits.pickle')) # need it to end like expected
-        
-        with open(c_f, 'rb') as old_c:
-            [stds, seconds, peaks, xs_old, ys_old, cutouts_old, fwhm_old, inputFile_old] = pickle.load(old_c)
+    all_cutouts, all_labels, all_peaks, all_s, all_seconds, all_std = [],[],[],[],[],[]
+    stds_n_lst, seconds_n_lst, fwhms, files = [], [], [], []
+    data_dir = '/arc/projects/uvickbos/ML-PSF/NN_data_111/'
+    try:
+        for filename in os.listdir(data_dir):
+            if filename.endswith('_111_cutouts_savedFits.pickle') and os.path.getsize(data_dir + filename) > 0:
+                with open(filename, 'rb') as han:
+                    [stds, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
+                        # calculate locally vs pull (information all over)
 
-        # MAKE LIST OF STDs and second peak, calc flocally or call?
-        ## select only those stars with really low STD
-        w = np.where(stds/np.std(stds)<0.001)
-        stds = stds[w]
-        seconds = seconds[w]
-        peaks = peaks[w]
-        s = np.std(stds)
-
-        ## find the best 25 stars (the closest to the origin in 
-        ## weighted STD and second highest pixel value)
-        dist = ((stds/s)**2 + (seconds/peaks)**2)**0.5
-
-        stds_lst.append(stds)
-        seconds_lst.append(seconds)
-        stds_n_lst.append(stds/s)
-        seconds_n_lst.append(peaks)
-    '''
-    # DOING VERY SIMPLIFIED STD BELOW
-    peaks, stds, seconds, ss = [], [], [], []
-    for cutout in cutouts:
-        (aa,bb) = cutout.shape
-        peak = np.max(cutout)
-        peaks.append(peak)
-        s = np.nanstd(cutout)
-        ss.append(s)
-        sorted = np.sort(cutout.reshape(aa*bb))
-        second_highest = sorted[-2]
-        seconds.append(second_highest)
-        seconds_n_lst.append(second_highest/peak)
-
-            
-
-    # store everything in numpy array format
-    std = np.array(stds)
-    seconds = np.array(seconds)
-    xs = np.array(xs)
-    ys = np.array(ys)
-    peaks = np.array(peaks)
-
-    cutouts = np.asarray(cutouts).astype('float32')
-    std = np.nanstd(cutouts)
-    mean = np.nanmean(cutouts)
-    cutouts = regularize(cutouts, mean, std)
-    print('Data all regulatized')
-    with open(model_dir_name + 'regularization_data.pickle', 'wb+') as han:
-        pickle.dump([std, mean], han)
-
-    return [cutouts, labels, xs, ys, fwhms, files], [ss, seconds, ss, seconds_n_lst]
+    return [all_cutouts, all_labels, xs, ys, fwhms, files], [all_std, all_seconds, stds_n_lst, seconds_n_lst]
 
 
 def train_CNN(model_dir_name, num_epochs, data, info):
@@ -237,7 +169,7 @@ def train_CNN(model_dir_name, num_epochs, data, info):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
     stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = info[0], info[1], info[2], info[3]
 
-    test_fraction = 0.999999
+    test_fraction = 0.999
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
