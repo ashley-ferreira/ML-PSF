@@ -215,7 +215,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                             if cutout.min() < -2000 or cutout.max() > 130000:
                                 pass
                             else: # want to make good ones better (smaller N?)
-                                if cutout.min() < -200 or cutout.max() > 65536/3:#/4: 200 was/2
+                                if cutout.min() < -200 or cutout.max() > 65536/2:#/4: 200 was/2
                                     # changes number of bads, make bigger array and takeouts zeros
                                     # (potentially, but this runs for now)
                                     label = 0
@@ -540,7 +540,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     batch_size = 256 # up from 16 --> 1024 --> 32 --> 256
     dropout_rate = 0.2
     test_fraction = 0.2 # from 0.05
-    learning_rate = 0.0001# from 0.001 --> 0.0001
+    learning_rate = 0.0001*2# from 0.001 --> 0.0001
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
