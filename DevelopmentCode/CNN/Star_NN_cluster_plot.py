@@ -232,7 +232,7 @@ def load_presaved_data(cutout_size, model_dir_name):
     return [cutouts, labels, xs, ys, fwhms, files, ss, seconds, ss, seconds_n_lst]
 
 
-def train_CNN(model_dir_name, num_epochs, data, info):
+def train_CNN(model_dir_name, num_epochs, data):
     '''
     '''
     
