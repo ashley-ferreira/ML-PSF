@@ -238,7 +238,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
-    stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = info[6], info[7], info[8], info[9]
+    stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = data[6], data[7], data[8], data[9]
 
     test_fraction = 0.999
 
