@@ -202,7 +202,7 @@ def validate_CNN(model_dir_name, data):
     pyl.matshow(cm, cmap=mpl.cm.tab20)#, vmin=-1000)
     for (i, j), z in np.ndenumerate(cm):
         pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-    pyl.title('Confusion Matrix (testing data)')
+    pyl.title('Confusion Matrix') #(testing data)
     #pyl.colorbar(cmap=mpl.cm.tab10)#cool)
     pyl.xlabel('Predicted labels')
     pyl.ylabel('True labels')
@@ -303,8 +303,8 @@ def validate_CNN(model_dir_name, data):
 
     pyl.title('Accuracy Curve & Confidence Histogram')
     #bins = np.linspace(0, 1, 100)
-    pyl.hist(test_good_p, label = 'normalized histogram of test set confidence', bins='auto', alpha=0.5, density=True)
-    pyl.plot(confidence_queries, good_star_acc, label='good source classificantion accuracy', alpha=0.5)
+    pyl.hist(test_good_p, label = 'normalized confidence histogram', bins='auto', alpha=0.5, normed=True)#density=True)
+    pyl.plot(confidence_queries, good_star_acc, label='good source classification accuracy', alpha=0.8)
     pyl.xlabel('Good Source Confidence')
     pyl.ylim(-0.05, 1.1)
     #pyl.ylabel('Count')
@@ -321,7 +321,7 @@ def validate_CNN(model_dir_name, data):
 
     pyl.title('ROC Curve')
     pyl.plot(xy, xy, '--', label='random chance refence line', alpha=0.5)
-    pyl.plot(fp_rate, recall, label='trained CNN', alpha=0.5) # fp too big
+    pyl.plot(fp_rate, recall, label='trained CNN', alpha=0.8) # fp too big
     pyl.plot(xy, perfect_ROC, '--', label='perfect classifier', color='purple', alpha=0.5)
     pyl.legend()
     pyl.xlabel('False Positive Rate')
@@ -336,7 +336,7 @@ def validate_CNN(model_dir_name, data):
 
     pyl.title('PR Curve')
     pyl.plot(xy, np.ones(len(xy))/2, '--', label='random chance refence line', alpha=0.5)
-    pyl.plot(recall, precision, label='trained CNN', alpha=0.5)
+    pyl.plot(recall, precision, label='trained CNN', alpha=0.8)
     pyl.plot(xy, perfect_PR, '--', label='perfect classifier', color='purple', alpha=0.5)
     pyl.legend()
     pyl.xlabel('Recall')
