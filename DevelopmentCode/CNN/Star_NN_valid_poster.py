@@ -199,11 +199,11 @@ def validate_CNN(model_dir_name, data):
     y_valid_binary = np.argmax(y_valid_binary, axis = 1)
     preds_valid_binary = np.argmax(preds_valid, axis = 1)
     cm = confusion_matrix(y_valid_binary, preds_valid_binary)
-    pyl.matshow(cm)#, cmap=mpl.cm.cool)
+    pyl.matshow(cm, cmap=mpl.cm.tab20, vmin=-1000)
     for (i, j), z in np.ndenumerate(cm):
         pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
     pyl.title('Confusion Matrix (testing data)')
-    #pyl.colorbar(cmap=mpl.cm.cool)
+    #pyl.colorbar(cmap=mpl.cm.tab10)#cool)
     pyl.xlabel('Predicted labels')
     pyl.ylabel('True labels')
     pyl.show()
