@@ -188,7 +188,7 @@ def validate_CNN(model_dir_name, data):
         test_good_p.append(p[1])
         
 
-    results = cn_model.evaluate(X_valid, y_valid_binary, batch_size=batch_size)
+    results = cn_model.evaluate(X_valid, y_valid_binary)#, batch_size=batch_size)
     print("validation loss, validation acc:", results)
 
     zscale = ZScaleInterval()
@@ -243,7 +243,7 @@ def validate_CNN(model_dir_name, data):
             pyl.close()
             '''
     pyl.hist(fwhms, label = 'full test set', bins='auto', alpha=0.5, density=True) 
-    pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.3, color='purple', density=True) 
+    pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.3, color='purple', normed=True)#density=True) 
     pyl.xlabel('FWHM')
     pyl.ylabel('Density')
     pyl.legend(loc='best')
@@ -302,11 +302,11 @@ def validate_CNN(model_dir_name, data):
         precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
 
     pyl.title('Accuracy Curve & Confidence Histogram')
-    bins = np.linspace(0, 1, 500)
-    pyl.hist(test_good_p, label = 'normalized histogram of test set confidence', bins=bins, alpha=0.5, density=True)
+    #bins = np.linspace(0, 1, 100)
+    pyl.hist(test_good_p, label = 'normalized histogram of test set confidence', bins='auto', alpha=0.5, density=True)
     pyl.plot(confidence_queries, good_star_acc, label='good source classificantion accuracy', alpha=0.5)
     pyl.xlabel('Good Source Confidence')
-    pyl.ylim(1.1, -0.1)
+    pyl.ylim(-0.05, 1.1)
     #pyl.ylabel('Count')
     pyl.legend(loc='best')
     pyl.show()
