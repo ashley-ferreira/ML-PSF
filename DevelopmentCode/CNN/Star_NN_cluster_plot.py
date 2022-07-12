@@ -293,7 +293,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     # add color bad for label 1 confidence val? <50 = 0
 
     ax2 = pyl.subplot(122)
-    cb = ax2.loglog(stds_n_lst, seconds_n_lst, 'o', c=good_conf, label='testing', alpha=0.1, cmap='bwr')
+    cb = ax2.loglog(stds_n_lst, seconds_n_lst, 'o', c=good_conf, alpha=0.1, cmap='bwr')
     ax2.legend()
     ax2.set_title('Model Predictions')
     ax2.set_ylabel('2nd Peaks')
