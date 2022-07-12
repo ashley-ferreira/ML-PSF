@@ -272,7 +272,13 @@ def train_CNN(model_dir_name, num_epochs, data):
 
     # make predictions for colours
     conf = cn_model.predict(X_train)
-    good_conf = conf[:][1]
+    good_conf = []
+    for c in conf:
+        print(c)
+        good_conf.append(c[1])
+
+    good_conf = np.array(good_conf)
+    print(good_conf.shape)
 
     # plot accuracy/loss versus epoch
     fig1 = pyl.figure(figsize=(10,3))
@@ -294,6 +300,8 @@ def train_CNN(model_dir_name, num_epochs, data):
 
     ax2 = pyl.subplot(122)
     cb = ax2.scatter(stds_n_lst, seconds_n_lst, 'o', c=good_conf, alpha=0.1, cmap='bwr')
+    ax2.set_yscale('log')
+    ax2.set_xscale('log')
     ax2.legend()
     ax2.set_title('Model Predictions')
     ax2.set_ylabel('2nd Peaks')
