@@ -243,7 +243,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     
     X_train = cutouts
     y_train = labels
-
+    stds_n_lst, seconds_n_lst
     
     unique_labs = len(np.unique(y_train)) # should be 2
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
@@ -259,7 +259,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     conf = cn_model.predict(X_train)
     good_conf = []
     for c in conf:
-        print(c)
+        print(c[1])
         good_conf.append(c[1])
 
     good_conf = np.array(good_conf)

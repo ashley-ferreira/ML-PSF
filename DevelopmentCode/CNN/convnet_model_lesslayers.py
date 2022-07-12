@@ -39,6 +39,5 @@ def convnet_model_lesslayers(input_shape, unique_labels=2, dropout_rate=0.2):
     model.add(Flatten())
     model.add(Dense(16, activation='sigmoid'))
     model.add(Dense(unique_labels, activation='softmax')) 
-    #model.add(Activation("softmax"))
 
     return model
