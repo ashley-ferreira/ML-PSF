@@ -229,7 +229,7 @@ def load_presaved_data(cutout_size, model_dir_name):
     with open(model_dir_name + 'regularization_data.pickle', 'wb+') as han:
         pickle.dump([std, mean], han)
 
-    return [cutouts, labels, xs, ys, fwhms, files], [ss, seconds, ss, seconds_n_lst]
+    return [cutouts, labels, xs, ys, fwhms, files, ss, seconds, ss, seconds_n_lst]
 
 
 def train_CNN(model_dir_name, num_epochs, data, info):
@@ -238,7 +238,7 @@ def train_CNN(model_dir_name, num_epochs, data, info):
     
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
-    stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = info[0], info[1], info[2], info[3]
+    stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = info[6], info[7], info[8], info[9]
 
     test_fraction = 0.999
 
