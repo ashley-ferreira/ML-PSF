@@ -243,7 +243,7 @@ def validate_CNN(model_dir_name, data):
             pyl.close()
             '''
     pyl.hist(fwhms, label = 'full test set', bins='auto', alpha=0.5, density=True) 
-    pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.5, color='purple', density=True) 
+    pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.3, color='purple', density=True) 
     pyl.xlabel('FWHM')
     pyl.ylabel('Density')
     pyl.legend(loc='best')
@@ -253,7 +253,7 @@ def validate_CNN(model_dir_name, data):
     pyl.clf()
 
     pyl.hist(fwhms, label = 'full test set', bins='auto', alpha=0.5) 
-    pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.5, color='purple') 
+    pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.3, color='purple') 
     pyl.xlabel('FWHM')
     pyl.ylabel('Count')
     pyl.legend(loc='best')
@@ -304,7 +304,7 @@ def validate_CNN(model_dir_name, data):
     pyl.title('Accuracy Curve & Confidence Histogram')
     bins = np.linspace(0, 1, 500)
     pyl.hist(test_good_p, label = 'normalized histogram of test set confidence', bins=bins, alpha=0.5, density=True)
-    pyl.plot(confidence_queries, good_star_acc, label='good source classificantion accuracy')
+    pyl.plot(confidence_queries, good_star_acc, label='good source classificantion accuracy', alpha=0.5)
     pyl.xlabel('Good Source Confidence')
     pyl.ylim(1.1, -0.1)
     #pyl.ylabel('Count')
@@ -320,9 +320,9 @@ def validate_CNN(model_dir_name, data):
     perfect_ROC[0] = 0
 
     pyl.title('ROC Curve')
-    pyl.plot(xy, xy, '--', label='random chance refence line')
-    pyl.plot(fp_rate, recall, label='trained CNN') # fp too big
-    pyl.plot(xy, perfect_ROC, '--', label='perfect classifier', color='purple')
+    pyl.plot(xy, xy, '--', label='random chance refence line', alpha=0.5)
+    pyl.plot(fp_rate, recall, label='trained CNN', alpha=0.5) # fp too big
+    pyl.plot(xy, perfect_ROC, '--', label='perfect classifier', color='purple', alpha=0.5)
     pyl.legend()
     pyl.xlabel('False Positive Rate')
     pyl.ylabel('True Positive Rate (Recall)')
@@ -335,9 +335,9 @@ def validate_CNN(model_dir_name, data):
     perfect_PR[len(xy)-1] = 0
 
     pyl.title('PR Curve')
-    pyl.plot(xy, np.ones(len(xy))/2, '--', label='random chance refence line')
-    pyl.plot(recall, precision, label='trained CNN')
-    pyl.plot(xy, perfect_PR, '--', label='perfect classifier', color='purple')
+    pyl.plot(xy, np.ones(len(xy))/2, '--', label='random chance refence line', alpha=0.5)
+    pyl.plot(recall, precision, label='trained CNN', alpha=0.5)
+    pyl.plot(xy, perfect_PR, '--', label='perfect classifier', color='purple', alpha=0.5)
     pyl.legend()
     pyl.xlabel('Recall')
     pyl.ylabel('Precision')
