@@ -240,31 +240,16 @@ def train_CNN(model_dir_name, num_epochs, data):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
     stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = data[6], data[7], data[8], data[9]
 
-    test_fraction = 0
+    
+    X_train = cutouts
+    y_train = labels
 
-    ### now divide the cutouts array into training and testing datasets.
-    skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
-    print(skf)
-    skf.split(cutouts, labels)
-
-    for train_index, test_index in skf.split(cutouts, labels):
-        X_train, X_test = cutouts[train_index], cutouts[test_index]
-        y_train, y_test = labels[train_index], labels[test_index]
-        xs_train, xs_test = xs[train_index], xs[test_index]
-        ys_train, ys_test = xs[train_index], xs[test_index]
-        files_train, files_test = files[train_index], files[test_index]
-        fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
-
-    print('Data split into training and testing')
+    
     unique_labs = len(np.unique(y_train)) # should be 2
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
     X_train = np.asarray(X_train).astype('float32')
     y_train_binary = np.asarray(y_train_binary).astype('float32')
-
-    # REDUNDANT
-    y_test_binary = keras.utils.np_utils.to_categorical(y_test, unique_labs)
-    y_test_binary = np.asarray(y_test_binary).astype('float32')
 
 
     model_dir_name_x = model_dir_name + '/models_each_10epochs_BASIC/model_60'
@@ -318,8 +303,6 @@ def train_CNN(model_dir_name, num_epochs, data):
     pyl.close()
     pyl.clf()
 
-    return cn_model, X_train, y_train, X_test, y_test
-
 def main():
 
     balanced_data_method, data_load, size_of_data, num_epochs, \
@@ -327,7 +310,7 @@ def main():
 
     data_dir = pwd + training_subdir
 
-    cn_model, X_train, y_train, X_test, y_test = train_CNN(model_dir_name, num_epochs, load_presaved_data(cutout_size, model_dir_name))
+    train_CNN(model_dir_name, num_epochs, load_presaved_data(cutout_size, model_dir_name))
     
 if __name__ == '__main__':
     main()
