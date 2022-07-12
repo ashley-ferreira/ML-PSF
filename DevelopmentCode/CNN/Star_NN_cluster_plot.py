@@ -240,7 +240,7 @@ def train_CNN(model_dir_name, num_epochs, data):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
     stds_lst, seconds_lst, stds_n_lst, seconds_n_lst = data[6], data[7], data[8], data[9]
 
-    test_fraction = 0.999
+    test_fraction = 0
 
     ### now divide the cutouts array into training and testing datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
