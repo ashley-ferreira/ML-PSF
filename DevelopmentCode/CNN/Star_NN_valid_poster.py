@@ -6,7 +6,7 @@ import pickle
 
 import tensorflow as tf
 import keras
-from sklearn.metrics import confusion_matrix, plot_confusion_matrix
+from sklearn.metrics import confusion_matrix#, plot_confusion_matrix
 from sklearn.utils.multiclass import unique_labels
 import matplotlib as mpl
 
@@ -193,18 +193,19 @@ def validate_CNN(model_dir_name, data):
 
     zscale = ZScaleInterval()
     X_valid = np.squeeze(X_valid, axis=3)
-
+    half = len(X_valid)/2
     # plot confusion matrix
     fig2 = pyl.figure()
     y_valid_binary = np.argmax(y_valid_binary, axis = 1)
     preds_valid_binary = np.argmax(preds_valid, axis = 1)
-    plot_confusion_matrix(preds_valid_binary, X_valid, y_valid_binary)  
-    '''
+    #plot_confusion_matrix(preds_valid_binary, X_valid, y_valid_binary)  
+    
     cm = confusion_matrix(y_valid_binary, preds_valid_binary, normalize='all')
     pyl.matshow(cm, cmap=mpl.cm.tab20)#, vmin=-1000)
     for (i, j), z in np.ndenumerate(cm):
-        pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-    '''
+        #pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
+        pyl.text(j, i, str(str(z) + ', ' +str(z/half)), ha='center', va='center')
+    
     pyl.title('Confusion Matrix') #(testing data)
     #pyl.colorbar(cmap=mpl.cm.tab10)#cool)
     pyl.xlabel('Predicted labels')
