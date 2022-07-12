@@ -204,7 +204,7 @@ def validate_CNN(model_dir_name, data):
     pyl.matshow(cm, cmap=mpl.cm.tab20)#, vmin=-1000)
     for (i, j), z in np.ndenumerate(cm):
         #pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-        pyl.text(j, i, str(str(z) + ', ' +str(z/half)), ha='center', va='center')
+        pyl.text(j, i, str(str(z) + ', ' +str(round(z/half,2))), ha='center', va='center')
     
     pyl.title('Confusion Matrix') #(testing data)
     #pyl.colorbar(cmap=mpl.cm.tab10)#cool)
