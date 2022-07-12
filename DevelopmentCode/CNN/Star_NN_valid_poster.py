@@ -306,7 +306,7 @@ def validate_CNN(model_dir_name, data):
     pyl.hist(test_good_p, label = 'normalized confidence histogram', bins='auto', alpha=0.5, normed=True)#density=True)
     pyl.plot(confidence_queries, good_star_acc, label='good source classification accuracy', alpha=0.8)
     pyl.xlabel('Good Source Confidence')
-    pyl.ylim(-0.05, 1.1)
+    pyl.ylim(-0.05, 1.4)
     #pyl.ylabel('Count')
     pyl.legend(loc='best')
     pyl.show()
