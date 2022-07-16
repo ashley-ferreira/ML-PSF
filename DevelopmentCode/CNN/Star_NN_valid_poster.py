@@ -260,10 +260,10 @@ def validate_CNN(model_dir_name, data):
     fig, ax = pyl.subplots(constrained_layout=True)
     ax.hist(fwhms, label = 'full test set', bins='auto', alpha=0.7, color='cornflowerblue') 
     ax.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.5, color='darkviolet')#'purple') 
-    ax.xlabel('FWHM (pixels)') # DO FOR TRAINING SET TOO
-    ax.ylabel('Count')
+    ax.set_xlabel('FWHM (pixels)') # DO FOR TRAINING SET TOO
+    ax.set_ylabel('Count')
     ax.legend(loc='best')
-    ax.title('Histogram of FWHMs')
+    ax.set_title('Histogram of FWHMs')
     def pix2ang(x):
         return x * np.pi / 180
 
