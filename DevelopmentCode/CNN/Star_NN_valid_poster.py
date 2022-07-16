@@ -256,12 +256,22 @@ def validate_CNN(model_dir_name, data):
     pyl.close()
     pyl.clf()
 
-    pyl.hist(fwhms, label = 'full test set', bins='auto', alpha=0.7, color='cornflowerblue') 
-    pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.5, color='darkviolet')#'purple') 
-    pyl.xlabel('FWHM')
-    pyl.ylabel('Count')
-    pyl.legend(loc='best')
-    pyl.title('Histogram of FWHMs')
+    fig, ax = pyl.subplots(constrained_layout=True)
+    ax.hist(fwhms, label = 'full test set', bins='auto', alpha=0.7, color='cornflowerblue') 
+    ax.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.5, color='darkviolet')#'purple') 
+    ax.xlabel('FWHM (pixels)') # DO FOR TRAINING SET TOO
+    ax.ylabel('Count')
+    ax.legend(loc='best')
+    ax.title('Histogram of FWHMs')
+    def pix2ang(x):
+        return x * np.pi / 180
+
+    def ang2pix(x):
+        return x * 180 / np.pi
+
+    secax = pyl.secondary_xaxis('top', functions=(pix2ang, ang2pix))
+    secax.set_xlabel('angle [rad]')
+
     pyl.show()
     pyl.close()
     pyl.clf()
@@ -309,7 +319,7 @@ def validate_CNN(model_dir_name, data):
     bins = np.linspace(0, 1, 100)
     weights = np.ones_like(test_good_p)/len(test_good_p)
     pyl.vlines(0.5, ymin=0, ymax=1, alpha=0.5, color='purple', linestyle='--', label='default 0.5 confidence cutoff')
-    pyl.hist(test_good_p, label='normalized confidence histogram', bins=bins, alpha=0.5, weights=weights*3.5, color='dodgerblue')#normed=True)#density=True)
+    pyl.hist(test_good_p, label='normalized confidence histogram', bins=bins, alpha=0.5, weights=weights*3, color='cornflowerblue')#normed=True)#density=True)
     pyl.plot(confidence_queries, good_star_acc, label='good source classification accuracy', alpha=0.8, color='orange')
     pyl.xlabel('Good Source Confidence')
     #pyl.yscale('log')
