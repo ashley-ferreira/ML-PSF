@@ -257,9 +257,9 @@ def validate_CNN(model_dir_name, data):
             pyl.close()
             '''
     # try and also add training set here?
-    pyl.hist(train_fwhms, label = 'full test set', bins=50, alpha=0.5, density=True) 
-    pyl.hist(fwhms, label = 'full training set', bins=50, alpha=0.3, color='purple', density=True) 
-    pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins=50, alpha=0.6, color='lightgreen', density=True) 
+    pyl.hist(train_fwhms, label = 'full train set', bins=50, alpha=0.5, density=True) 
+    pyl.hist(fwhms, label = 'full test set', bins=50, alpha=0.3, color='purple', density=True) 
+    pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins=50, alpha=0.5, color='lightgreen', density=True) 
     pyl.xlabel('FWHM')
     pyl.ylabel('Density')
     pyl.legend(loc='best')
