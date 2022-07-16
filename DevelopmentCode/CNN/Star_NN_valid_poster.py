@@ -211,7 +211,7 @@ def validate_CNN(model_dir_name, data):
     #plot_confusion_matrix(preds_valid_binary, X_valid, y_valid_binary)  
     
     cm = confusion_matrix(y_valid_binary, preds_valid_binary)#, normalize='all')
-    pyl.matshow(cm, cmap=mpl.cm.tab20)#, vmin=-1000)
+    pyl.matshow(cm, cmap=mpl.cm.tab20)#, vmin=-1000) FLIP COLOURS SOMEHOW?
     for (i, j), z in np.ndenumerate(cm):
         #pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
         pyl.text(j, i, str(str(z) + ', ' +str(round(z*100/half,2)) + '%'), ha='center', va='center')
@@ -257,7 +257,7 @@ def validate_CNN(model_dir_name, data):
             pyl.close()
             '''
     # try and also add training set here?
-    pyl.hist(train_fwhms, label = 'full train set', bins=50, alpha=0.5, density=True) 
+    pyl.hist(train_fwhms, label = 'full train + valid set', bins=50, alpha=0.6, density=True) 
     pyl.hist(fwhms, label = 'full test set', bins=50, alpha=0.3, color='purple', density=True) 
     # can make this lighter or weight ti a bit less
     pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins=50, alpha=0.5, color='lightgreen', density=True) 
@@ -291,7 +291,7 @@ def validate_CNN(model_dir_name, data):
     pyl.clf()
     '''
     # accuracy vs confidence plot
-    confidence_step = 0.0001 # likely automatic way to do this but i didn't easily find
+    confidence_step = 0.0001/10 # likely automatic way to do this but i didn't easily find
     confidence_queries = np.arange(confidence_step, 1, confidence_step) 
     good_star_acc = []
     bad_star_acc = []
@@ -339,7 +339,7 @@ def validate_CNN(model_dir_name, data):
     #pyl.yscale('log')
     #pyl.ylim(-0.05, 1.1)
     #pyl.ylabel('Count')
-    pyl.legend(loc='best')
+    pyl.legend(loc='center')
     pyl.show()
     pyl.close()
     pyl.clf()
