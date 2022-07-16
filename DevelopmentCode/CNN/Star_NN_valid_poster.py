@@ -261,7 +261,7 @@ def validate_CNN(model_dir_name, data):
     pyl.hist(fwhms, label = 'full test set', bins=50, alpha=0.3, color='purple', density=True) 
     # can make this lighter or weight ti a bit less
     pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins=50, alpha=0.5, color='lightgreen', density=True) 
-    pyl.xlabel('FWHM')
+    pyl.xlabel('FWHM (pixels)')
     pyl.ylabel('Density')
     pyl.legend(loc='best')
     pyl.title('Normalized Histogram of FWHMs')
@@ -269,6 +269,7 @@ def validate_CNN(model_dir_name, data):
     pyl.close()
     pyl.clf()
 
+    '''
     fig, ax = pyl.subplots(constrained_layout=True)
     ax.hist(fwhms, label = 'full test set', bins='auto', alpha=0.7, color='cornflowerblue') 
     ax.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.5, color='darkviolet')#'purple') 
@@ -288,7 +289,7 @@ def validate_CNN(model_dir_name, data):
     pyl.show()
     pyl.close()
     pyl.clf()
-
+    '''
     # accuracy vs confidence plot
     confidence_step = 0.001 # likely automatic way to do this but i didn't easily find
     confidence_queries = np.arange(confidence_step, 1, confidence_step) 
