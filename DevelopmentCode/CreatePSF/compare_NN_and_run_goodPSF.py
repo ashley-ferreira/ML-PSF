@@ -98,7 +98,7 @@ def non_ML_timing(file_dir, input_file, cutout):
     scamp.runSex('HSC.sex', 'junk.fits' ,options={'CATALOG_NAME':f'{file_dir}/{input_file}.cat'},verbose=False)
  
     print('starting non-ML timer')
-    start = time.time()
+    start_noml = time.time()
     # just to get a rough idea of time
     catalog = scamp.getCatalog(f'{file_dir}/{input_file}.cat',paramFile='def.param')
     os.system('rm junk.fits')
@@ -111,12 +111,13 @@ def non_ML_timing(file_dir, input_file, cutout):
     ## load the PSF that Wes generated at an earlier point. This is not a great PSF!
     file_psf = input_file.replace('.fits','.psf_cleaned.fits')
     goodPSF = psf.modelPSF(restore=file_dir+'psfStars/'+file_psf)
-    print(start-time.time())
+    print(time.time()-start_noml)
 
     cutoutWidth = 111//2
 
     ## fit each star with the PSF to get its brightness and position.
     #start = time.time()
+    start2_noml = time.time()
     stds, seconds, peaks, xs, ys = [], [], [], [], []
     for i in range(len(X_ALL)):
         x, y = X_ALL[i], Y_ALL[i]
@@ -172,7 +173,6 @@ def non_ML_timing(file_dir, input_file, cutout):
     ys = np.array(ys)
     peaks = np.array(peaks)
     
-    start = time.time()
     ## select only those stars with really low STD
     w = np.where(stds/np.std(stds)<0.001)
     stds = stds[w]
@@ -199,9 +199,9 @@ def non_ML_timing(file_dir, input_file, cutout):
             label = 0
     
   
-    end = time.time()
-    print('non-ML process completed in', round(end-start, 10), ' seconds')
-
+    end_noml = time.time()
+    print('non-ML process completed in', round(end_noml-start2_noml, 10), ' seconds')
+    # this is much shorter than what is timed?
 
 def crop_center(img, cropx, cropy):
     '''
@@ -392,7 +392,7 @@ def compare_NN_goodPSF(inputs):
 
     # use std and mean to regularize cutout
     cutouts = regularize(cutouts_cleaned, mean, std)
-    output = model.predict(cutouts)
+    #output = model.predict(cutouts)
 
     xs_best = []
     ys_best = []
