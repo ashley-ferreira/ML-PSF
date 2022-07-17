@@ -188,17 +188,6 @@ def non_ML_timing(file_dir, input_file, cutout):
     args = np.argsort(dist)
     best = args[:25]
 
-    # end after label part (what do you need from beginning?)
-    count = 0
-    for x,y in zip(xs,ys): 
-        count +=1 
-
-        if x in xs[best]:
-            label = 1
-        else: 
-            label = 0
-    
-  
     end_noml = time.time()
     print('non-ML process completed in', round(end_noml-start2_noml, 10), ' seconds')
     # this is much shorter than what is timed?
@@ -342,30 +331,6 @@ def compare_NN_goodPSF(inputs):
         print(outFile_wMetadata)
         #print(outFile_simple)
 
-    cutouts_cleaned = []
-    for cutout in cutouts: # does this need to be forced?
-        inf_or_nan = np.isfinite(cutout)
-        if False in inf_or_nan:#not(inf_or_nan.any()): # if any is false then go for this
-            print("non finite values in array")
-            #pass
-            # dont need both of these and maybe not either if you have above
-        elif cutout.min() < -2000 or cutout.max() > 130000:
-            print("very big or small pix vals")
-            #pass
-        #elif cutout.min() < -200 or cutout.max() > 65536:
-        elif cutout.min() < -200 or cutout.max() > 65536/3:# see if this is needed
-            print("big or small pix value")
-            #label = 0 # add this in somehow, take it out
-            #pass
-        else:
-            cutouts_cleaned.append(cutout)
-
-        
-
-            
-        
-    cutouts_cleaned = np.array(cutouts_cleaned)
-
     # load previously trained Neural Network 
     model_found = False 
     for file in os.listdir(model_dir_name):
@@ -390,21 +355,26 @@ def compare_NN_goodPSF(inputs):
     with open(model_dir_name + '../regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
-    # use std and mean to regularize cutout
-    cutouts = regularize(cutouts_cleaned, mean, std)
-    #output = model.predict(cutouts)
-
     xs_best = []
     ys_best = []
     cn_prob = []
 
     
     start = time.time()
-    output = model.predict(cutouts)
-    end = time.time()
-    print('ML process completed in', round(end-start, 10), ' seconds')
+    cutouts_cleaned = []
+    for cutout in cutouts: 
+        inf_or_nan = np.isfinite(cutout)
+        if False in inf_or_nan:
+            pass
+        elif cutout.min() < -200 or cutout.max() > 65536/3:
+            pass
+        else:
+            cutouts_cleaned.append(cutout)
 
-    non_ML_timing(file_dir, input_file, cutouts) #s right?
+    cutouts_cleaned = np.array(cutouts_cleaned)
+    # use std and mean to regularize cutout
+    cutouts = regularize(cutouts_cleaned, mean, std)
+    output = model.predict(cutouts)
 
     for i in range(len(cutouts)):
         good_probability = output[i][1]
@@ -412,30 +382,18 @@ def compare_NN_goodPSF(inputs):
 
     cn_prob, xs, ys, cutouts = zip(*sorted(zip(cn_prob, xs, ys, cutouts), reverse = True))
 
-    fig, axs = plt.subplots(5,5,figsize=(10, 12))
-    axs = axs.ravel()
-    plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6.5) 
     plotted_stars = 0
     for i in range(len(cutouts)): 
-        if plotted_stars < 25:#min_num_stars:
+        if plotted_stars < 25:
             good_probability = cn_prob[i]
-            center = crop_center(cutouts[i],5,5)
-            sum_c = center.sum()
-            SNR_proxy = math.sqrt(abs(sum_c))
-            #print(good_probability, SNR_proxy)
-            if good_probability > conf_cutoff: #SNR_proxy > SNR_proxy_cutoff and       
+            if good_probability > conf_cutoff:       
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
-                #print(good_probability)
-                (z1, z2) = zscale.get_limits(cutouts[i])
-                normer = interval.ManualInterval(z1,z2)
-                axs[plotted_stars].imshow(normer(cutouts[i]))
-                axs[plotted_stars].set_xticks([])
-                axs[plotted_stars].set_yticks([])
-                axs[plotted_stars].text(0.1, -1, 'conf:' + str(good_probability))
-                axs[plotted_stars].text(0.1, -15, 'min, max:' + str(cutouts[i].min()) + '   ' + str(cutouts[i].max())[:7])
 
-                plotted_stars += 1 
+    end = time.time()
+    print('ML process completed in', round(end-start, 10), ' seconds')
+            
+    print(plotted_stars)
 
     if plotted_stars < min_num_stars: 
         print('You requested a minimum of', min_num_stars)
@@ -446,6 +404,8 @@ def compare_NN_goodPSF(inputs):
 
     plt.subplots_adjust(wspace=0., hspace=0.3)
     plt.show()
+
+    non_ML_timing(file_dir, input_file, cutouts) #s right?
 
     # load image data
     with fits.open(file_dir+input_file) as han:
