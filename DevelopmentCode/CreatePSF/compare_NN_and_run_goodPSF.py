@@ -49,7 +49,7 @@ parser.add_option('-i', '--img_file', dest='img_file',
         help='input file to use for comparison, default=%default.')
 
 parser.add_option('-C', '--conf_cutoff', dest='conf_cutoff', 
-        default='0.95', type='float', \
+        default='0.9', type='float', \
         help='confidence cutoff, default=%default.')
 
 parser.add_option('-S', '--SNR_proxy_cutoff', dest='SNR_proxy_cutoff', 
@@ -57,7 +57,7 @@ parser.add_option('-S', '--SNR_proxy_cutoff', dest='SNR_proxy_cutoff',
         help='SNR proxy cutoff, default=%default.')
 
 parser.add_option('-s', '--min_num_stars', dest='min_num_stars', 
-        default='10', type='int', 
+        default='20', type='int', 
         help='minimum number of stars acceptable, default=%default.')
 
 parser.add_option('-f', '--file_dir', dest='file_dir', 
