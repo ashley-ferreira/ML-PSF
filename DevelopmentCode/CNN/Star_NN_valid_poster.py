@@ -291,7 +291,7 @@ def validate_CNN(model_dir_name, data):
     pyl.clf()
     '''
     # accuracy vs confidence plot
-    confidence_step = 0.0001 # likely automatic way to do this but i didn't easily find
+    confidence_step = 0.0001*10 # likely automatic way to do this but i didn't easily find
     confidence_queries = np.arange(confidence_step, 1, confidence_step) 
     good_star_acc = []
     bad_star_acc = []
@@ -329,9 +329,11 @@ def validate_CNN(model_dir_name, data):
         fp_rate.append(good_stars_incorrect/(good_stars_incorrect+bad_stars_correct)) 
         precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
 
-    pyl.plot(confidence_queries, recall)
+    pyl.plot(confidence_queries, recall, label='recall')
+    pyl.plot(confidence_queries, good_star_acc, label='good star acc')
+    pyl.plot(confidence_queries, precision, label='precision')
     pyl.xlabel('Confidence')
-    pyl.ylabel('Recall')
+    pyl.legend()
     pyl.show()
     pyl.close()
     pyl.clf()
