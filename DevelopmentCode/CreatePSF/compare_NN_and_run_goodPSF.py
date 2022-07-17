@@ -363,7 +363,7 @@ def compare_NN_goodPSF(inputs):
     for file in os.listdir(model_dir_name):
         # TEMP 
         print(file)
-        if file.startswith('model_20'): 
+        if file.startswith('model_60'): 
             print(file)
             model = keras.models.load_model(model_dir_name + file)
             break 
@@ -394,7 +394,7 @@ def compare_NN_goodPSF(inputs):
     end = time.time()
     print('ML process completed in', round(end-start, 10), ' seconds')
 
-    non_ML_timing(file_dir, input_file, cutout)
+    non_ML_timing(file_dir, input_file, cutouts) #s right?
 
     for i in range(len(cutouts)):
         good_probability = output[i][1]
