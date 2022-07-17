@@ -72,27 +72,6 @@ parser.add_option('-d', '--data_dir', dest='data_dir',
 #def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len, training_dir):
 def non_ML_timing(file_dir, input_file, cutout):
     '''
-    This function uses Source-Extractor to create cutouts from all the sources 
-    in an image.
-    
-    Adapted from:  https://github.com/fraserw
-
-    Parameters:    
-
-        file_dir (str): directory where inputFile is saved
-
-        input_file (str): original image file
-
-        cutout_file (str): filename to save cutouts of all sources in image 
-
-        fixed_cutout_len (int): force cutouts to have shape
-                                (fixed_cutout_len, fixed_cutout_len)
-
-                        --> set to zero for cutoutWidth = max(30, int(5*fwhm))
-
-    Returns:
-        
-        None
 
     '''
 
@@ -118,6 +97,7 @@ def non_ML_timing(file_dir, input_file, cutout):
     fits.writeto('junk.fits', img_data, header=header, overwrite=True)
     scamp.runSex('HSC.sex', 'junk.fits' ,options={'CATALOG_NAME':f'{file_dir}/{input_file}.cat'},verbose=False)
  
+    print('starting non-ML timer')
     start = time.time()
     # just to get a rough idea of time
     catalog = scamp.getCatalog(f'{file_dir}/{input_file}.cat',paramFile='def.param')
@@ -216,6 +196,7 @@ def non_ML_timing(file_dir, input_file, cutout):
             label = 1
         else: 
             label = 0
+    
   
     end = time.time()
     print('non-ML process completed in', round(end-start, 10), ' seconds')
@@ -410,11 +391,13 @@ def compare_NN_goodPSF(inputs):
 
     # use std and mean to regularize cutout
     cutouts = regularize(cutouts_cleaned, mean, std)
+    output = model.predict(cutouts)
 
     xs_best = []
     ys_best = []
     cn_prob = []
 
+    
     start = time.time()
     output = model.predict(cutouts)
     end = time.time()
