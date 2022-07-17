@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-names = ['216652-000', '216652-001']
+names = ['216652-000', '216652-001', '216652-002', '216652-003', '216652-004', '216652-005']
 ml_preds = [0.5049, 0.627114]
 time_ml = [0.5796, 0.72742]
 time_nonml = [61.096, 118.0005]
@@ -14,6 +14,7 @@ time_nonml = [61.096, 118.0005]
 print('average predictions', np.average(ml_preds))
 print('average ml', np.average(time_ml))
 print('average no ml', np.average(time_nonml))
+print('average ml / no ml', np.average(time_ml)/np.average(time_nonml))
 
 x = np.arange(len(names))
 width = 0.2
