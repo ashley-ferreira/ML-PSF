@@ -1,7 +1,6 @@
 # run on basic model, existing
 # high qual fine tune set from half of validation set and then test agasint that
 
-
 import os
 import sys
 import numpy as np

@@ -344,7 +344,7 @@ def validate_CNN(model_dir_name, data):
     pyl.vlines(0.5, ymin=0, ymax=1, alpha=0.5, color='purple', linestyle='--', label='default 0.5 confidence cutoff')
     pyl.hist(test_good_p, label='normalized confidence histogram', bins=bins, alpha=0.5, weights=weights*2.5)#, color='cornflowerblue')#normed=True)#density=True)
     pyl.plot(confidence_queries, good_star_acc, label='recall (good source classification accuracy)', alpha=0.8, color='orange')
-    pyl.xlabel('Good Source Confidence')
+    pyl.xlabel('Good Source Confidence Cutoff')
     #pyl.yscale('log')
     #pyl.ylim(-0.05, 1.1)
     #pyl.ylabel('Count')
