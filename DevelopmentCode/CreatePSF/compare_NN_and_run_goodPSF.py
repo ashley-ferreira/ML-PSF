@@ -102,8 +102,24 @@ def non_ML_timing(file_dir, input_file, cutout):
         header = han[0].header
     (A,B)  = img_data.shape
 
+    ### run sextractor
+    scamp.makeParFiles.writeSex('HSC.sex',
+                        minArea=3.,
+                        threshold=5.,
+                        zpt=27.8,
+                        aperture=20.,
+                        min_radius=2.0, 
+                        catalogType='FITS_LDAC',
+                        saturate=64000)
+    scamp.makeParFiles.writeConv()
+    # numAps is thenumber of apertures that you want to use. Here we use 1
+    scamp.makeParFiles.writeParam(numAps=1) 
+
+    fits.writeto('junk.fits', img_data, header=header, overwrite=True)
+    scamp.runSex('HSC.sex', 'junk.fits' ,options={'CATALOG_NAME':f'{file_dir}/{input_file}.cat'},verbose=False)
+
     # just to get a rough idea of time
-    catalog = scamp.getCatalog(f'{file_dir}/{input_file}.cat')#,paramFile='def.param')
+    catalog = scamp.getCatalog(f'{file_dir}/{input_file}.cat',paramFile='def.param')
     os.system('rm junk.fits')
 
     ## select only high SNR stars
