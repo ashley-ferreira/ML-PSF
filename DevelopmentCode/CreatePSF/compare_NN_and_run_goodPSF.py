@@ -102,8 +102,8 @@ def non_ML_timing(file_dir, input_file, cutout):
         header = han[0].header
     (A,B)  = img_data.shape
 
-
-    catalog = scamp.getCatalog(f'{file_dir}/{input_file}.cat',paramFile='def.param')
+    # just to get a rough idea of time
+    catalog = scamp.getCatalog(f'{file_dir}/{input_file}.cat')#,paramFile='def.param')
     os.system('rm junk.fits')
 
     ## select only high SNR stars
