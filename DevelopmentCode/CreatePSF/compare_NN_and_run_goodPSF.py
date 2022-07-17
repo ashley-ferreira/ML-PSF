@@ -374,7 +374,10 @@ def compare_NN_goodPSF(inputs):
     cutouts_cleaned = np.array(cutouts_cleaned)
     # use std and mean to regularize cutout
     cutouts = regularize(cutouts_cleaned, mean, std)
+    start_ml = time.time()
     output = model.predict(cutouts)
+    end_ml = time.time()
+    print('ML predictions completed in', round(end_ml-start_ml, 10), ' seconds')
 
     for i in range(len(cutouts)):
         good_probability = output[i][1]
@@ -389,6 +392,7 @@ def compare_NN_goodPSF(inputs):
             if good_probability > conf_cutoff:       
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
+                plotted_stars += 1
 
     end = time.time()
     print('ML process completed in', round(end-start, 10), ' seconds')
