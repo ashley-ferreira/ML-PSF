@@ -21,7 +21,7 @@ width = 0.2
 # plot data in grouped manner of bar type
 plt.bar(x-0.2, ml_preds, width, alpha=0.5)
 plt.bar(x, time_ml, width, alpha=0.7)
-plt.bar(x+0.2, time_nonml, width, color='purple', alpha=0.7)
+plt.bar(x+0.2, time_nonml, width, color='purple', alpha=0.5)
 plt.yscale('log')
 plt.xticks(x, names)
 plt.title("Source Selection Time Comparison")
