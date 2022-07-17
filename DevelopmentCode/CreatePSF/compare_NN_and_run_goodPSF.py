@@ -111,6 +111,7 @@ def non_ML_timing(file_dir, input_file, cutout):
     ## load the PSF that Wes generated at an earlier point. This is not a great PSF!
     file_psf = input_file.replace('.fits','.psf_cleaned.fits')
     goodPSF = psf.modelPSF(restore=file_dir+'psfStars/'+file_psf)
+    print(start-time.time())
 
     cutoutWidth = 111//2
 
