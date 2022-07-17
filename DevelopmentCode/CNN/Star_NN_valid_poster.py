@@ -163,7 +163,7 @@ def validate_CNN(model_dir_name, data):
 
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
-
+    '''
     print('Begin data loading...')
     with open(model_dir_name + 'USED_111_presaved_data.pickle', 'rb') as used_c:
         [train_cutouts, train_labels, train_xs, train_ys, train_fwhms, train_files] = pickle.load(used_c) 
@@ -173,7 +173,7 @@ def validate_CNN(model_dir_name, data):
     del train_xs 
     del train_ys 
     del train_files
-
+    '''
     # load model                         
     model_found = False 
     #for file in os.listdir(model_dir_name+'models_each_epoch_lr0.0005/'):
@@ -257,7 +257,7 @@ def validate_CNN(model_dir_name, data):
             pyl.close()
             '''
     # try and also add training set here?
-    pyl.hist(train_fwhms, label = 'full train + valid set', bins=50, alpha=0.5, density=True) 
+    #pyl.hist(train_fwhms, label = 'full train + valid set', bins=50, alpha=0.5, density=True) 
     pyl.hist(fwhms, label = 'full test set', bins=50, alpha=0.3, color='purple', density=True) 
     # can make this lighter or weight ti a bit less
     pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins=50, alpha=0.6, color='lightgreen', density=True) 
