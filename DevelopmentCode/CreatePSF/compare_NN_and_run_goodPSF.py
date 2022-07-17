@@ -117,7 +117,8 @@ def non_ML_timing(file_dir, input_file, cutout):
 
     fits.writeto('junk.fits', img_data, header=header, overwrite=True)
     scamp.runSex('HSC.sex', 'junk.fits' ,options={'CATALOG_NAME':f'{file_dir}/{input_file}.cat'},verbose=False)
-
+ 
+    start = time.time()
     # just to get a rough idea of time
     catalog = scamp.getCatalog(f'{file_dir}/{input_file}.cat',paramFile='def.param')
     os.system('rm junk.fits')
@@ -134,7 +135,7 @@ def non_ML_timing(file_dir, input_file, cutout):
     cutoutWidth = 111//2
 
     ## fit each star with the PSF to get its brightness and position.
-    start = time.time()
+    #start = time.time()
     stds, seconds, peaks, xs, ys = [], [], [], [], []
     for i in range(len(X_ALL)):
         x, y = X_ALL[i], Y_ALL[i]
@@ -207,6 +208,15 @@ def non_ML_timing(file_dir, input_file, cutout):
     best = args[:25]
 
     # end after label part (what do you need from beginning?)
+    count = 0
+    for x,y in zip(xs,ys): 
+        count +=1 
+
+        if x in xs[best]:
+            label = 1
+        else: 
+            label = 0
+  
     end = time.time()
     print('non-ML process completed in', round(end-start, 10), ' seconds')
 
