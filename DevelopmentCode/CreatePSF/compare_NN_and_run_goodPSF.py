@@ -378,9 +378,9 @@ def compare_NN_goodPSF(inputs):
     model_found = False 
     for file in os.listdir(model_dir_name):
         # TEMP 
-        print(file)
+        #print(file)
         if file.startswith('model_60'): 
-            print(file)
+            #print(file)
             model = keras.models.load_model(model_dir_name + file)
             break 
     '''
@@ -428,11 +428,11 @@ def compare_NN_goodPSF(inputs):
             center = crop_center(cutouts[i],5,5)
             sum_c = center.sum()
             SNR_proxy = math.sqrt(abs(sum_c))
-            print(good_probability, SNR_proxy)
+            #print(good_probability, SNR_proxy)
             if good_probability > conf_cutoff: #SNR_proxy > SNR_proxy_cutoff and       
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
-                print(good_probability)
+                #print(good_probability)
                 (z1, z2) = zscale.get_limits(cutouts[i])
                 normer = interval.ManualInterval(z1,z2)
                 axs[plotted_stars].imshow(normer(cutouts[i]))
