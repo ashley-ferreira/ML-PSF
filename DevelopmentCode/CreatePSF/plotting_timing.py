@@ -5,7 +5,9 @@ names = ['0216652-000', '0216652-000', '0216652-000', '0216652-000', '0216652-00
 time_ml = []
 time_nonml = []
 
-plt.plot(names) # rotate names and put on x?
+#plt.plot(time_ml, names, 'o', alpha = 0.5, color='b') # rotate names and put on x?
+
+# paired bar charts
 
 print('average ml', np.average(time_ml))
-print('average no ml', np.average(no_ml))
+print('average no ml', np.average(time_nonml))

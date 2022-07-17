@@ -114,6 +114,7 @@ def non_ML_timing(file_dir, input_file, cutout):
     print(time.time()-start_noml)
 
     cutoutWidth = 111//2
+    # error below now
 
     ## fit each star with the PSF to get its brightness and position.
     #start = time.time()
@@ -331,6 +332,8 @@ def compare_NN_goodPSF(inputs):
         print(outFile_wMetadata)
         #print(outFile_simple)
 
+    non_ML_timing(file_dir, input_file, cutouts) #s right?
+
     # load previously trained Neural Network 
     model_found = False 
     for file in os.listdir(model_dir_name):
@@ -408,8 +411,6 @@ def compare_NN_goodPSF(inputs):
 
     plt.subplots_adjust(wspace=0., hspace=0.3)
     plt.show()
-
-    non_ML_timing(file_dir, input_file, cutouts) #s right?
 
     # load image data
     with fits.open(file_dir+input_file) as han:
