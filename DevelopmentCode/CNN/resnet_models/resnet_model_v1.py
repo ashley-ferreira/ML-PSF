@@ -1,11 +1,6 @@
 from keras.models import Model, load_model, Sequential
-from keras.layers import Input, Dense, Activation, Add, ZeroPadding2D, BatchNormalization, Flatten, Conv2D, MaxPool2D, Concatenate
-#from keras.layers.core import Dropout
-#from keras.callbacks import EarlyStopping, ModelCheckpoint
-#from keras.optimizers import Adam
-
-#class ResNet(nn.Module):
-#    def __init__(self, block, layers, image_channels, num_classes):
+from keras.layers import Input, Dense, Activation, Add, ZeroPadding2D, \
+            BatchNormalization, Flatten, Conv2D, MaxPool2D, Concatenate
 
 def identity_block(self, x, filter):
     # copy tensor to variable called x_skip
@@ -41,10 +36,6 @@ def convolutional_block(self, x, filter):
 
 def convnet_model_resnet(input_shape, num_dense_nodes=2, unique_labels=2, dropout_rate=0.2, activation='sigmoid'):
 
-    # init function
-    #self.input_shape = input_shape
-    #self.identity_block(x, filter_size)
-    #self.convolutional_block(x, filter_size)
 
     x = Sequential()
 
@@ -69,12 +60,11 @@ def convnet_model_resnet(input_shape, num_dense_nodes=2, unique_labels=2, dropou
             x = convolutional_block(x, filter_size)
             for j in range(block_layers[i] - 1):
                 x = identity_block(x, filter_size)
+
     # Step 4 End Dense Network
-    #x = AveragePooling2D((2,2), padding = 'same')(x)
     x = MaxPool2D(pool_size=(2,2), padding = 'same')(x)
     x = Flatten()(x)
     x = Dense(num_dense_nodes, activation = activation)(x)
-    #x = Dense(self.num_dense_nodes, activation = self.activation)(x)
     output = Dense(unique_labels, activation = 'softmax')(x)
 
     return output 

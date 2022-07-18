@@ -1,8 +1,6 @@
 from keras.models import Model, load_model, Sequential
-from keras.layers import Input, Dense, Activation, Add, ZeroPadding2D, BatchNormalization, Flatten, Conv2D, MaxPool2D, Concatenate
-#from keras.layers.core import Dropout
-#from keras.callbacks import EarlyStopping, ModelCheckpoint
-#from keras.optimizers import Adam
+from keras.layers import Input, Dense, Activation, Add, ZeroPadding2D, \
+            BatchNormalization, Flatten, Conv2D, MaxPool2D, Concatenate
 
 def identity_block(x, filter):
     # copy tensor to variable called x_skip
