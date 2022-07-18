@@ -337,21 +337,22 @@ def validate_CNN(model_dir_name, data):
     # find metric values at 90% confidence 
     index_conf_90 = np.where(confidence_queries==0.9)[0][0]
     print(index_conf_90)
-    precision_conf_90 = round(precision[index_conf_90],3)
-    recall_conf_90 = round(recall[index_conf_90],3)
-    fpr_conf_90 = round(fp_rate[index_conf_90],3)
+    precision_conf_90 = round(precision[index_conf_90],4)
+    recall_conf_90 = round(recall[index_conf_90],4)
+    fpr_conf_90 = round(fp_rate[index_conf_90],4)
 
 
     pyl.title('Accuracy Curve & Confidence Histogram')
     bins = np.linspace(0, 1, 100)
     weights = np.ones_like(test_good_p)/len(test_good_p)
-    pyl.hist(test_good_p, label='normalized confidence histogram', bins=bins, alpha=0.5, weights=weights*2.5)
-    pyl.plot(confidence_queries, good_star_acc, label='precision (good source classification accuracy)', alpha=0.8, color='orange')
-    pyl.vlines(0.5, ymin=0, ymax=1, alpha=0.5, color='purple', linestyle='--', label='confidence threshold = 0.5')
-    pyl.plot(0.9, precision_conf_90, 'o', label='confidence threshold = 0.9', alpha=1, color='grey') 
+    pyl.hist(test_good_p, bins=bins, alpha=0.5, weights=weights*2.5) # label='normalized confidence histogram'
+    pyl.plot(confidence_queries, good_star_acc, alpha=0.8, color='orange') # label='precision (good source classification accuracy)'
+    pyl.vlines(0.5, ymin=0, ymax=1, alpha=0.5, color='purple', linestyle='-.')#, label='confidence threshold = 0.5')
+    pyl.vlines(0.9, ymin=0, ymax=1, alpha=0.5, color='grey', linestyle='--')#, label='confidence threshold = 0.9')
+    pyl.plot(0.9, precision_conf_90, 'o', alpha=1, color='grey') 
     pyl.text(0.9, precision_conf_90+0.03, str('(0.9,'+str(precision_conf_90)+')'), horizontalalignment='center', fontsize=10)
     pyl.xlabel('confidence')
-    pyl.legend(loc='center')
+    pyl.legend(['normalized confidence histogram', 'precision (good source classification accuracy)', 'confidence threshold = 0.5', 'confidence threshold = 0.9'],loc='center')
     pyl.show()
     pyl.close()
     pyl.clf()
@@ -366,7 +367,7 @@ def validate_CNN(model_dir_name, data):
     pyl.plot(xy, perfect_ROC, '--', label='perfect classifier', color='purple', alpha=0.5)
     pyl.plot(fp_rate, recall, label='trained CNN', alpha=0.8, color='orange')
     pyl.plot(fpr_conf_90, recall_conf_90, 'o', label='confidence threshold = 0.9', alpha=1, color='grey')
-    pyl.text(fpr_conf_90, recall_conf_90+0.05, str('('+str(fpr_conf_90)+','+str(recall_conf_90)+')'), horizontalalignment='center', fontsize=10)
+    pyl.text(fpr_conf_90+0.05, recall_conf_90+0.05, str('('+str(fpr_conf_90)+','+str(recall_conf_90)+')'), horizontalalignment='center', fontsize=10)
     pyl.legend()
     pyl.xlabel('1 - specificity')
     pyl.ylabel('recall')
