@@ -335,7 +335,7 @@ def validate_CNN(model_dir_name, data):
     pyl.clf()
 
     # find metric values at 90% confidence 
-    index_conf_90 = np.where(confidence_queries==0.9)[0]
+    index_conf_90 = np.where(confidence_queries==0.9)[0][0]
     print(index_conf_90)
     precision_conf_90 = precision[index_conf_90]
     recall_conf_90 = recall[index_conf_90]
