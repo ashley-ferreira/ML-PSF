@@ -345,14 +345,15 @@ def validate_CNN(model_dir_name, data):
     pyl.title('Accuracy Curve & Confidence Histogram')
     bins = np.linspace(0, 1, 100)
     weights = np.ones_like(test_good_p)/len(test_good_p)
-    pyl.hist(test_good_p, bins=bins, alpha=0.5, weights=weights*2.5) # label='normalized confidence histogram'
-    pyl.plot(confidence_queries, good_star_acc, alpha=0.8, color='orange') # label='precision (good source classification accuracy)'
-    pyl.vlines(0.5, ymin=0, ymax=1, alpha=0.5, color='purple', linestyle='-.')#, label='confidence threshold = 0.5')
-    pyl.vlines(0.9, ymin=0, ymax=1, alpha=0.5, color='grey', linestyle='--')#, label='confidence threshold = 0.9')
+    pyl.hist(test_good_p, bins=bins, alpha=0.5, weights=weights*2.5, label='normalized confidence histogram')
+    pyl.plot(confidence_queries, good_star_acc, alpha=0.8, color='orange', label='precision (good source classification accuracy)'_
+    pyl.vlines(0.5, ymin=0, ymax=1, alpha=0.5, color='purple', linestyle='-.', label='confidence threshold = 0.5')
+    pyl.vlines(0.9, ymin=0, ymax=1, alpha=0.5, color='grey', linestyle='--', label='confidence threshold = 0.9')
     pyl.plot(0.9, precision_conf_90, 'o', alpha=1, color='grey') 
     pyl.text(0.9, precision_conf_90+0.03, str('(0.9,'+str(precision_conf_90)+')'), horizontalalignment='center', fontsize=10)
     pyl.xlabel('confidence')
-    pyl.legend(['normalized confidence histogram', 'precision (good source classification accuracy)', 'confidence threshold = 0.5', 'confidence threshold = 0.9', 'confidence threshold = 0.9'],loc='center')
+    pyl.legend(loc='center')
+    #pyl.legend(['normalized confidence histogram', 'precision (good source classification accuracy)', 'confidence threshold = 0.5', 'confidence threshold = 0.9', 'confidence threshold = 0.9'],loc='center')
     pyl.show()
     pyl.close()
     pyl.clf()
