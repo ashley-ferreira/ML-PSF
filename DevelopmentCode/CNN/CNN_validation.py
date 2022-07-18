@@ -368,7 +368,7 @@ def validate_CNN(model_dir_name, data):
     pyl.plot(xy, perfect_ROC, '--', label='perfect classifier', color='purple', alpha=0.5)
     pyl.plot(fp_rate, recall, label='trained CNN', alpha=0.8, color='orange')
     pyl.plot(fpr_conf_90, recall_conf_90, 'o', label='confidence threshold = 0.9', alpha=1, color='grey')
-    pyl.text(fpr_conf_90+0.05, recall_conf_90+0.05, str('('+str(fpr_conf_90)+','+str(recall_conf_90)+')'), horizontalalignment='center', fontsize=10)
+    pyl.text(fpr_conf_90+0.2, recall_conf_90+0.05, str('('+str(fpr_conf_90)+','+str(recall_conf_90)+')'), horizontalalignment='center', fontsize=10)
     pyl.legend()
     pyl.xlabel('1 - specificity')
     pyl.ylabel('recall')
