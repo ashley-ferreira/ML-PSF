@@ -122,7 +122,7 @@ def load_presaved_data(cutout_size, model_dir_name):
     print(len(cutouts), '# withheld')
 
 
-    with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
+    with open(model_dir_name + '../regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
     print('std',std)
