@@ -3,13 +3,11 @@ import sys
 import numpy as np
 import matplotlib.pyplot as pyl
 import pickle
-
 import tensorflow as tf
 import keras
 from sklearn.metrics import confusion_matrix
 from sklearn.utils.multiclass import unique_labels
 import matplotlib as mpl
-
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
 
@@ -121,6 +119,9 @@ def load_presaved_data(cutout_size, model_dir_name):
     with open(model_dir_name + 'WITHHELD_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
 
+    print(len(cutouts), '# withheld')
+
+
     with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
@@ -160,20 +161,22 @@ def validate_CNN(model_dir_name, data):
 
     # unpack presaved data
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
-
-    pyl.hist(fwhms, label = 'FWHM of full validation set', bins='auto', alpha=0.5)
-    pyl.xlabel('FWHM')
-    pyl.ylabel('Count')
-    pyl.legend(loc='best')
-    pyl.show()
-    pyl.close()
-    pyl.clf()
-
+    '''
+    print('Begin data loading...')
+    with open(model_dir_name + 'USED_111_presaved_data.pickle', 'rb') as used_c:
+        [train_cutouts, train_labels, train_xs, train_ys, train_fwhms, train_files] = pickle.load(used_c) 
+    print('Data all loaded')
+    del train_cutouts
+    del train_labels
+    del train_xs 
+    del train_ys 
+    del train_files
+    '''
     # load model                         
     model_found = False 
     #for file in os.listdir(model_dir_name+'models_each_epoch_lr0.0005/'):
         #if file.startswith('model_1'):
-    cn_model = keras.models.load_model(model_dir_name + 'models_each_10epochs/model' + "model_100")#'10epochs_basic_model/model_350')#file)
+    cn_model = keras.models.load_model(model_dir_name + '/model_60')#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/' + "model_100")#'10epochs_basic_model/model_350')#file)
     #print('using model:', file)
     model_found = True
         #    break
@@ -192,31 +195,27 @@ def validate_CNN(model_dir_name, data):
     for p in preds_valid:
         test_good_p.append(p[1])
         
-    bins = np.linspace(0, 1, 100)
-    pyl.hist(test_good_p, label = 'validation set confidence', bins=bins, alpha=0.5, density=True)
-    pyl.xlabel('Good Star Confidence')
-    pyl.ylabel('Count')
-    pyl.legend(loc='best')
-    pyl.show()
-    pyl.close()
-    pyl.clf()
 
-    results = cn_model.evaluate(X_valid, y_valid_binary, batch_size=batch_size)
+    results = cn_model.evaluate(X_valid, y_valid_binary)#, batch_size=batch_size)
     print("validation loss, validation acc:", results)
 
     zscale = ZScaleInterval()
     X_valid = np.squeeze(X_valid, axis=3)
-
+    half = len(X_valid)/2
     # plot confusion matrix
     fig2 = pyl.figure()
     y_valid_binary = np.argmax(y_valid_binary, axis = 1)
     preds_valid_binary = np.argmax(preds_valid, axis = 1)
-    cm = confusion_matrix(y_valid_binary, preds_valid_binary)
-    pyl.matshow(cm, cmap=mpl.cm.cool)
+    #plot_confusion_matrix(preds_valid_binary, X_valid, y_valid_binary)  
+    
+    cm = confusion_matrix(y_valid_binary, preds_valid_binary)#, normalize='all')
+    pyl.matshow(cm, cmap=mpl.cm.tab20)#, vmin=-1000) FLIP COLOURS SOMEHOW?
     for (i, j), z in np.ndenumerate(cm):
-        pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-    pyl.title('Confusion matrix (validation data)')
-    pyl.colorbar(cmap=mpl.cm.cool)
+        #pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
+        pyl.text(j, i, str(str(z) + ', ' +str(round(z*100/half,2)) + '%'), ha='center', va='center')
+    
+    pyl.title('Confusion Matrix') #(testing data)
+    #pyl.colorbar(cmap=mpl.cm.tab10)#cool)
     pyl.xlabel('Predicted labels')
     pyl.ylabel('True labels')
     pyl.show()
@@ -226,12 +225,14 @@ def validate_CNN(model_dir_name, data):
     fwhms_test_misclass = []
     for i in range(len(preds_valid)):
         if preds_valid[i][1] == 1.0:
+            '''
             (c1, c2) = zscale.get_limits(X_valid[i])
             normer3 = interval.ManualInterval(c1,c2)
             pyl.title('conf=' + str(preds_valid[i][1]))
             pyl.imshow(normer3(X_valid[i]))
             pyl.show()
             pyl.close()
+            '''
 
         if y_valid[i] == 1 and preds_valid[i][0] > 0.5:
             fwhms_test_misclass.append(fwhms[i])
@@ -253,17 +254,42 @@ def validate_CNN(model_dir_name, data):
             pyl.show()
             pyl.close()
             '''
-    pyl.hist(fwhms, label = 'FWHM of full validation set', bins='auto', alpha=0.5) 
-    pyl.hist(fwhms_test_misclass, label = 'FWHM of misclassed validation set', bins='auto', alpha=0.5, color='pink') 
-    pyl.xlabel('FWHM')
-    pyl.ylabel('Count')
+    # try and also add training set here?
+    #pyl.hist(train_fwhms, label = 'full train + valid set', bins=50, alpha=0.5, density=True) 
+    pyl.hist(fwhms, label = 'full test set', bins=50, alpha=0.3, color='purple', density=True) 
+    # can make this lighter or weight ti a bit less
+    pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins=50, alpha=0.6, color='lightgreen', density=True) 
+    pyl.xlabel('FWHM (pixels)')
+    pyl.ylabel('Density')
     pyl.legend(loc='best')
+    pyl.title('Normalized Histogram of FWHMs')
     pyl.show()
     pyl.close()
     pyl.clf()
 
+    '''
+    fig, ax = pyl.subplots(constrained_layout=True)
+    ax.hist(fwhms, label = 'full test set', bins='auto', alpha=0.7, color='cornflowerblue') 
+    ax.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.5, color='darkviolet')#'purple') 
+    ax.set_xlabel('FWHM (pixels)') # DO FOR TRAINING SET TOO
+    ax.set_ylabel('Count')
+    ax.legend(loc='best')
+    ax.set_title('Histogram of FWHMs')
+    def pix2ang(x):
+        return x * np.pi / 180
+
+    def ang2pix(x):
+        return x * 180 / np.pi
+
+    secax = pyl.secondary_xaxis('top', functions=(pix2ang, ang2pix))
+    secax.set_xlabel('angle [rad]')
+
+    pyl.show()
+    pyl.close()
+    pyl.clf()
+    '''
     # accuracy vs confidence plot
-    confidence_step = 0.001 # likely automatic way to do this but i didn't easily find
+    confidence_step = 0.0001*10 # likely automatic way to do this but i didn't easily find
     confidence_queries = np.arange(confidence_step, 1, confidence_step) 
     good_star_acc = []
     bad_star_acc = []
@@ -295,19 +321,32 @@ def validate_CNN(model_dir_name, data):
                     
         #print('good', good_stars_correct, good_stars_incorrect, good_stars_above_c)
         #print('bad', bad_stars_correct, bad_stars_incorrect, bad_stars_above_c)
-        good_star_acc.append(good_stars_correct/good_stars_above_c)
+        good_star_acc.append(good_stars_correct/good_stars_above_c) # TP/(TP+FN)
         bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
         recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) 
         fp_rate.append(good_stars_incorrect/(good_stars_incorrect+bad_stars_correct)) 
         precision.append(good_stars_correct/(good_stars_correct+good_stars_incorrect))
 
-    pyl.title('Accuracy Curve')
-    pyl.plot(confidence_queries, good_star_acc, label='good star classificantion')
-    pyl.plot(confidence_queries, bad_star_acc, label='bad star clasification')
+    pyl.plot(confidence_queries, recall, label='recall')
+    pyl.plot(confidence_queries, good_star_acc, label='good star acc')
+    pyl.plot(confidence_queries, precision, label='precision')
+    pyl.xlabel('Confidence')
     pyl.legend()
-    pyl.grid()
-    pyl.xlabel('Confidence cutoff for good star classification')
-    pyl.ylabel('Accuracy')
+    pyl.show()
+    pyl.close()
+    pyl.clf()
+
+    pyl.title('Accuracy Curve & Confidence Histogram')
+    bins = np.linspace(0, 1, 100)
+    weights = np.ones_like(test_good_p)/len(test_good_p)
+    pyl.vlines(0.5, ymin=0, ymax=1, alpha=0.5, color='purple', linestyle='--', label='default 0.5 confidence cutoff')
+    pyl.hist(test_good_p, label='normalized confidence histogram', bins=bins, alpha=0.5, weights=weights*2.5)#, color='cornflowerblue')#normed=True)#density=True)
+    pyl.plot(confidence_queries, good_star_acc, label='recall (good source classification accuracy)', alpha=0.8, color='orange')
+    pyl.xlabel('Good Source Confidence Cutoff')
+    #pyl.yscale('log')
+    #pyl.ylim(-0.05, 1.1)
+    #pyl.ylabel('Count')
+    pyl.legend(loc='center')
     pyl.show()
     pyl.close()
     pyl.clf()
@@ -318,13 +357,13 @@ def validate_CNN(model_dir_name, data):
     perfect_ROC = np.ones(len(xy))
     perfect_ROC[0] = 0
 
-    pyl.title('ROC Curve')
-    pyl.plot(xy, xy, '--', label='random chance refence line')
-    pyl.plot(xy, perfect_ROC, '--', label='perfect classifier')
-    pyl.plot(fp_rate, recall, label='trained CNN') # fp too big
+    pyl.title('Receiver Operating Characteristic (ROC) Curve')
+    pyl.plot(xy, xy, '-.', label='random chance refence line', alpha=0.5)
+    pyl.plot(fp_rate, recall, label='trained CNN', alpha=0.8) # fp too big
+    pyl.plot(xy, perfect_ROC, '--', label='perfect classifier', color='purple', alpha=0.5)
     pyl.legend()
-    pyl.xlabel('False Positive Rate')
-    pyl.ylabel('True Positive Rate (Recall)')
+    pyl.xlabel('1 - specificity')#('False Positive Rate')
+    pyl.ylabel('recall')#('True Positive Rate')
     pyl.show()
     pyl.close()
     pyl.clf()
@@ -333,13 +372,13 @@ def validate_CNN(model_dir_name, data):
     perfect_PR = np.ones(len(xy))
     perfect_PR[len(xy)-1] = 0
 
-    pyl.title('PR Curve')
-    pyl.plot(xy, np.ones(len(xy))/2, '--', label='random chance refence line')
-    pyl.plot(xy, perfect_PR, '--', label='perfect classifier')
-    pyl.plot(recall, precision, label='trained CNN')
+    pyl.title('Precision-Recall (PR) Curve')
+    pyl.plot(xy, np.ones(len(xy))/2, '-.', label='random chance refence line', alpha=0.5)
+    pyl.plot(recall, precision, label='trained CNN', alpha=0.8)
+    pyl.plot(xy, perfect_PR, '--', label='perfect classifier', color='purple', alpha=0.5)
     pyl.legend()
-    pyl.xlabel('Recall')
-    pyl.ylabel('Precision')
+    pyl.xlabel('recall')
+    pyl.ylabel('precision')
     pyl.show()
     pyl.close()
     pyl.clf()
