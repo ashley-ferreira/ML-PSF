@@ -122,7 +122,7 @@ def load_presaved_data(cutout_size, model_dir_name):
     print(len(cutouts), '# withheld')
 
 
-    with open(model_dir_name + '../regularization_data.pickle', 'rb') as han:
+    with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
     print('std',std)
@@ -176,7 +176,7 @@ def validate_CNN(model_dir_name, data):
     model_found = False 
     #for file in os.listdir(model_dir_name+'models_each_epoch_lr0.0005/'):
         #if file.startswith('model_1'):
-    cn_model = keras.models.load_model(model_dir_name + '/model_60')
+    cn_model = keras.models.load_model(model_dir_name + 'models_each_10epochs_BASIC/model_60')
     #print('using model:', file)
     model_found = True
         #    break
@@ -394,7 +394,7 @@ def main():
     model_dir_name, cutout_size, pwd, training_subdir = get_user_input()
 
     if True:#try:
-        data = load_presaved_data(cutout_size, training_subdir)
+        data = load_presaved_data(cutout_size, model_dir_name)
         validate_CNN(model_dir_name, data)
 
     '''
