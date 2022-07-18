@@ -394,7 +394,7 @@ def main():
     model_dir_name, cutout_size, pwd, training_subdir = get_user_input()
 
     if True:#try:
-        data = load_presaved_data(cutout_size, model_dir_name)
+        data = load_presaved_data(cutout_size, training_subdir)
         validate_CNN(model_dir_name, data)
 
     '''
