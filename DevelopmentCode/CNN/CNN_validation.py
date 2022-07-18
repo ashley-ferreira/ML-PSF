@@ -176,7 +176,7 @@ def validate_CNN(model_dir_name, data):
     model_found = False 
     #for file in os.listdir(model_dir_name+'models_each_epoch_lr0.0005/'):
         #if file.startswith('model_1'):
-    cn_model = keras.models.load_model(model_dir_name + '/model_60')#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/' + "model_100")#'10epochs_basic_model/model_350')#file)
+    cn_model = keras.models.load_model(model_dir_name + '/model_60')
     #print('using model:', file)
     model_found = True
         #    break
@@ -208,14 +208,13 @@ def validate_CNN(model_dir_name, data):
     preds_valid_binary = np.argmax(preds_valid, axis = 1)
     #plot_confusion_matrix(preds_valid_binary, X_valid, y_valid_binary)  
     
-    cm = confusion_matrix(y_valid_binary, preds_valid_binary)#, normalize='all')
-    pyl.matshow(cm, cmap=mpl.cm.tab20)#, vmin=-1000) FLIP COLOURS SOMEHOW?
+    cm = confusion_matrix(y_valid_binary, preds_valid_binary)
+    pyl.matshow(cm, cmap=mpl.cm.tab20)
     for (i, j), z in np.ndenumerate(cm):
         #pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
         pyl.text(j, i, str(str(z) + ', ' +str(round(z*100/half,2)) + '%'), ha='center', va='center')
     
-    pyl.title('Confusion Matrix') #(testing data)
-    #pyl.colorbar(cmap=mpl.cm.tab10)#cool)
+    pyl.title('Confusion Matrix') 
     pyl.xlabel('Predicted labels')
     pyl.ylabel('True labels')
     pyl.show()
@@ -254,10 +253,9 @@ def validate_CNN(model_dir_name, data):
             pyl.show()
             pyl.close()
             '''
-    # try and also add training set here?
+
     #pyl.hist(train_fwhms, label = 'full train + valid set', bins=50, alpha=0.5, density=True) 
     pyl.hist(fwhms, label = 'full test set', bins=50, alpha=0.3, color='purple', density=True) 
-    # can make this lighter or weight ti a bit less
     pyl.hist(fwhms_test_misclass, label = 'misclassed test set', bins=50, alpha=0.6, color='lightgreen', density=True) 
     pyl.xlabel('FWHM (pixels)')
     pyl.ylabel('Density')
@@ -321,7 +319,7 @@ def validate_CNN(model_dir_name, data):
                     
         #print('good', good_stars_correct, good_stars_incorrect, good_stars_above_c)
         #print('bad', bad_stars_correct, bad_stars_incorrect, bad_stars_above_c)
-        good_star_acc.append(good_stars_correct/good_stars_above_c) # TP/(TP+FN)
+        good_star_acc.append(good_stars_correct/good_stars_above_c) 
         bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
         recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) 
         fp_rate.append(good_stars_incorrect/(good_stars_incorrect+bad_stars_correct)) 
@@ -340,12 +338,10 @@ def validate_CNN(model_dir_name, data):
     bins = np.linspace(0, 1, 100)
     weights = np.ones_like(test_good_p)/len(test_good_p)
     pyl.vlines(0.5, ymin=0, ymax=1, alpha=0.5, color='purple', linestyle='--', label='default 0.5 confidence cutoff')
-    pyl.hist(test_good_p, label='normalized confidence histogram', bins=bins, alpha=0.5, weights=weights*2.5)#, color='cornflowerblue')#normed=True)#density=True)
+    pyl.hist(test_good_p, label='normalized confidence histogram', bins=bins, alpha=0.5, weights=weights*2.5)
     pyl.plot(confidence_queries, good_star_acc, label='recall (good source classification accuracy)', alpha=0.8, color='orange')
+    pyl.plot(confidence_queries, good_star_acc, 'o', label='90\% confidence, ', alpha=1, color='lightgreen')
     pyl.xlabel('Good Source Confidence Cutoff')
-    #pyl.yscale('log')
-    #pyl.ylim(-0.05, 1.1)
-    #pyl.ylabel('Count')
     pyl.legend(loc='center')
     pyl.show()
     pyl.close()
@@ -353,17 +349,16 @@ def validate_CNN(model_dir_name, data):
 
     # create ROC and PR curves
     xy = np.arange(0,1, confidence_step)
-    #perfect_ROC = np.concatenate(([0],np.ones(int(1/confidence_step)-1)))
     perfect_ROC = np.ones(len(xy))
     perfect_ROC[0] = 0
 
     pyl.title('Receiver Operating Characteristic (ROC) Curve')
     pyl.plot(xy, xy, '-.', label='random chance refence line', alpha=0.5)
-    pyl.plot(fp_rate, recall, label='trained CNN', alpha=0.8) # fp too big
+    pyl.plot(fp_rate, recall, label='trained CNN', alpha=0.8) 
     pyl.plot(xy, perfect_ROC, '--', label='perfect classifier', color='purple', alpha=0.5)
     pyl.legend()
-    pyl.xlabel('1 - specificity')#('False Positive Rate')
-    pyl.ylabel('recall')#('True Positive Rate')
+    pyl.xlabel('1 - specificity')
+    pyl.ylabel('recall')
     pyl.show()
     pyl.close()
     pyl.clf()
