@@ -334,13 +334,21 @@ def validate_CNN(model_dir_name, data):
     pyl.close()
     pyl.clf()
 
+    # find metric values at 90% confidence 
+    index_conf_90 = confidence_queries.index(0.9)
+    precision_conf_90 = precision[index_conf_90]
+    recall_conf_90 = recall[index_conf_90]
+    fpr_conf_90 = fp_rate[index_conf_90]
+
+
     pyl.title('Accuracy Curve & Confidence Histogram')
     bins = np.linspace(0, 1, 100)
     weights = np.ones_like(test_good_p)/len(test_good_p)
     pyl.vlines(0.5, ymin=0, ymax=1, alpha=0.5, color='purple', linestyle='--', label='default 0.5 confidence cutoff')
     pyl.hist(test_good_p, label='normalized confidence histogram', bins=bins, alpha=0.5, weights=weights*2.5)
-    pyl.plot(confidence_queries, good_star_acc, label='recall (good source classification accuracy)', alpha=0.8, color='orange')
-    pyl.plot(confidence_queries, good_star_acc, 'o', label='90\% confidence, ', alpha=1, color='lightgreen')
+    pyl.plot(confidence_queries, good_star_acc, label='precision (good source classification accuracy)', alpha=0.8, color='orange')
+    pyl.plot(0.9, good_star_acc, 'o', label='confidence=0.9', alpha=1, color='lightgreen') #text?
+    pyl.text(0.9, precision_conf_90, str('(0.9,'+str(precision_conf_90)+')'))
     pyl.xlabel('Good Source Confidence Cutoff')
     pyl.legend(loc='center')
     pyl.show()
@@ -356,6 +364,8 @@ def validate_CNN(model_dir_name, data):
     pyl.plot(xy, xy, '-.', label='random chance refence line', alpha=0.5)
     pyl.plot(fp_rate, recall, label='trained CNN', alpha=0.8) 
     pyl.plot(xy, perfect_ROC, '--', label='perfect classifier', color='purple', alpha=0.5)
+    pyl.plot(fpr_conf_90, recall_conf_90, 'o', label='confidence=0.9', alpha=1, color='lightgreen')
+    pyl.text(fpr_conf_90, recall_conf_90, str('('+str(fpr_conf_90)+','+str(recall_conf_90)+')'))
     pyl.legend()
     pyl.xlabel('1 - specificity')
     pyl.ylabel('recall')
@@ -363,7 +373,6 @@ def validate_CNN(model_dir_name, data):
     pyl.close()
     pyl.clf()
 
-    #perfect_PR = np.concatenate((np.ones(len(confidence_queries)-1), [0]))
     perfect_PR = np.ones(len(xy))
     perfect_PR[len(xy)-1] = 0
 
@@ -371,12 +380,15 @@ def validate_CNN(model_dir_name, data):
     pyl.plot(xy, np.ones(len(xy))/2, '-.', label='random chance refence line', alpha=0.5)
     pyl.plot(recall, precision, label='trained CNN', alpha=0.8)
     pyl.plot(xy, perfect_PR, '--', label='perfect classifier', color='purple', alpha=0.5)
+    pyl.plot(recall_conf_90, precision_conf_90, 'o', label='confidence=0.9', alpha=1, color='lightgreen')
+    pyl.text(recall_conf_90, precision_conf_90, str('('+str(recall_conf_90)+','+str(precision_conf_90)+')'))
     pyl.legend()
     pyl.xlabel('recall')
     pyl.ylabel('precision')
     pyl.show()
     pyl.close()
     pyl.clf()
+
 
 def main():
     model_dir_name, cutout_size, pwd, training_subdir = get_user_input()
