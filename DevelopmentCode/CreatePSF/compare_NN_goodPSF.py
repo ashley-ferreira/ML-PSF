@@ -29,7 +29,7 @@ parser.add_option('-c', '--cutout_size', dest='cutout_size', \
         default=cutout_size, type='int', \
         help='c is size of cutout required, produces (c,c) shape, default=%default.')
 
-night_dir = '03068' #'03074'
+night_dir = '03068' 
 parser.add_option('-n', '--night_dir', dest='night_dir', 
         default=night_dir, type='str', \
         help='image file directory, default=%default.')
@@ -187,6 +187,7 @@ def compare_NN_goodPSF(inputs):
     # read in cutout data for input_file
     outFile_wMetadata = data_dir+input_file.replace('.fits', '_'+str(cutout_size)+'_cutouts_savedFits.pickle')
     #outFile_simple = file_dir+input_file.replace('.fits', '_cutouts_savedFits.pickle')
+
     if os.path.exists(outFile_wMetadata):
         with open(outFile_wMetadata, 'rb') as han:
             [std, seconds, peaks, xs, ys, cutouts, fwhm, inputFile] = pickle.load(han)
@@ -199,40 +200,28 @@ def compare_NN_goodPSF(inputs):
         #print(outFile_simple)
 
     cutouts_cleaned = []
-    for cutout in cutouts: # does this need to be forced?
+    for cutout in cutouts: 
         inf_or_nan = np.isfinite(cutout)
-        if False in inf_or_nan:#not(inf_or_nan.any()): # if any is false then go for this
+        if False in inf_or_nan:
             print("non finite values in array")
-            #pass
-            # dont need both of these and maybe not either if you have above
+            
         elif cutout.min() < -2000 or cutout.max() > 130000:
+            # redundant from below
             print("very big or small pix vals")
-            #pass
-        #elif cutout.min() < -200 or cutout.max() > 65536:
-        elif cutout.min() < -200 or cutout.max() > 65536/3:# see if this is needed
+            
+        elif cutout.min() < -200 or cutout.max() > 65536/2:
             print("big or small pix value")
-            #label = 0 # add this in somehow, take it out
-            #pass
+            
         else:
             cutouts_cleaned.append(cutout)
 
         
-
-            
-        
     cutouts_cleaned = np.array(cutouts_cleaned)
 
-    # load previously trained Neural Network 
+    # load previously trained model 
     model_found = False 
     for file in os.listdir(model_dir_name):
-        # TEMP 
-        print(file)
-        if file.startswith('model_20'): 
-            print(file)
-            model = keras.models.load_model(model_dir_name + file)
-            break 
-    '''
-        if file.startswith('model_traintime=*'):
+        if file.startswith('model_best'):
             model = keras.models.load_model(model_dir_name + file)
             model_found = True
             break

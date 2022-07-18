@@ -117,7 +117,7 @@ def get_user_input():
     plots_dir = model_dir_name + 'plots/'
     if not(os.path.exists(plots_dir)):
         os.mkdir(plots_dir)
-    submodels_dir = model_dir_name + 'models_each_10epochs_basic2finetune/'
+    submodels_dir = model_dir_name + 'models_each_10epochs/'
     if not(os.path.exists(submodels_dir)):
         os.mkdir(submodels_dir)
     
@@ -495,7 +495,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         y_valid (arr): real y values (labels) for validation
 
     '''
-    sub_mod_dir = model_dir_name + 'best_model/'
+    sub_mod_dir = model_dir_name + 'models_each_10epochs/'
     if not(os.path.exists(sub_mod_dir)):
         os.mkdir(sub_mod_dir)
     class CustomSaver(keras.callbacks.Callback):
@@ -528,6 +528,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         ys_train, ys_valid = xs[train_index], xs[valid_index]
         files_train, files_valid = files[train_index], files[valid_index]
         fwhms_train, fwhms_valid = fwhms[train_index], fwhms[valid_index]
+
     print('Data split into training and validation')
     unique_labs = len(np.unique(y_train)) # should be 2
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
@@ -564,7 +565,7 @@ def train_CNN(model_dir_name, num_epochs, data):
 
     ax1 = pyl.subplot(121)
     ax1.plot(classifier.history['accuracy'], color='darkslategray', linewidth=2, label='training')
-    ax1.plot(classifier.history['val_accuracy'], linewidth=2, label='valiation') # azure linewidth=2, label='testing')
+    ax1.plot(classifier.history['val_accuracy'], linewidth=2, label='valiation') 
     ax1.legend()
     ax1.set_title('Model Accuracy')
     ax1.set_ylabel('Accuracy')
