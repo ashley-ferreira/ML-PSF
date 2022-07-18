@@ -352,7 +352,7 @@ def validate_CNN(model_dir_name, data):
     pyl.plot(0.9, precision_conf_90, 'o', alpha=1, color='grey') 
     pyl.text(0.9, precision_conf_90+0.03, str('(0.9,'+str(precision_conf_90)+')'), horizontalalignment='center', fontsize=10)
     pyl.xlabel('confidence')
-    pyl.legend(['normalized confidence histogram', 'precision (good source classification accuracy)', 'confidence threshold = 0.5', 'confidence threshold = 0.9'],loc='center')
+    pyl.legend(['normalized confidence histogram', 'precision (good source classification accuracy)', 'confidence threshold = 0.5', 'confidence threshold = 0.9', 'confidence threshold = 0.9'],loc='center')
     pyl.show()
     pyl.close()
     pyl.clf()
