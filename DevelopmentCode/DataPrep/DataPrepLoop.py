@@ -16,7 +16,7 @@ parser.add_option('-l', '--fixed_cutout_length', dest='fixed_cutout_len',
     default=fixed_cutout_len, type='int', 
     help='l is size of cutout required, produces (l,l) shape. enter 0 for FWHM*5 size default=%default.')
 
-night_dir = '03068' # TEMP - change back to 03074 or figure out how to fix this (need to do f too)
+night_dir = '03068' 
 parser.add_option('-n', '--night_dir', dest='night_dir', 
     default=night_dir, type='str', help='directory for specific night to use, default=%default.')
 

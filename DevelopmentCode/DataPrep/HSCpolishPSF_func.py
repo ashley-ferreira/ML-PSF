@@ -32,7 +32,6 @@ def HSCpolishPSF_main(file_dir, input_file, cutout_file, fixed_cutout_len, train
         None
 
     '''
-    #   outFile = dir+'/'+inputFile.replace('.fits', str(fixed_cutout_len) + '_cutouts_savedFits.pickle')
     try:
         # read in saved cutout file created from HSCgetStars_main    
         with open(cutout_file, 'rb') as han:
