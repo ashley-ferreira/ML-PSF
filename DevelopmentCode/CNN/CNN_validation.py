@@ -362,11 +362,11 @@ def validate_CNN(model_dir_name, data):
     perfect_ROC[0] = 0
 
     pyl.title('Receiver Operating Characteristic (ROC) Curve')
-    pyl.plot(xy, xy, '-.', label='random chance refence line', alpha=0.5)
-    pyl.plot(fp_rate, recall, label='trained CNN', alpha=0.8) 
+    pyl.plot(xy, xy, '-.', label='random chance refence line', alpha=0.5) 
     pyl.plot(xy, perfect_ROC, '--', label='perfect classifier', color='purple', alpha=0.5)
-    pyl.plot(fpr_conf_90, recall_conf_90+0.03, 'o', label='confidence threshold = 0.9', alpha=1, color='grey')
-    pyl.text(fpr_conf_90, recall_conf_90, str('('+str(fpr_conf_90)+','+str(recall_conf_90)+')'), horizontalalignment='center', fontsize=10)
+    pyl.plot(fp_rate, recall, label='trained CNN', alpha=0.8, color='orange')
+    pyl.plot(fpr_conf_90, recall_conf_90, 'o', label='confidence threshold = 0.9', alpha=1, color='grey')
+    pyl.text(fpr_conf_90, recall_conf_90+0.05, str('('+str(fpr_conf_90)+','+str(recall_conf_90)+')'), horizontalalignment='center', fontsize=10)
     pyl.legend()
     pyl.xlabel('1 - specificity')
     pyl.ylabel('recall')
@@ -379,10 +379,10 @@ def validate_CNN(model_dir_name, data):
 
     pyl.title('Precision-Recall (PR) Curve')
     pyl.plot(xy, np.ones(len(xy))/2, '-.', label='random chance refence line', alpha=0.5)
-    pyl.plot(recall, precision, label='trained CNN', alpha=0.8)
     pyl.plot(xy, perfect_PR, '--', label='perfect classifier', color='purple', alpha=0.5)
+    pyl.plot(recall, precision, label='trained CNN', alpha=0.8, color='orange')
     pyl.plot(recall_conf_90, precision_conf_90, 'o', label='confidence threshold = 0.9', alpha=1, color='grey')
-    pyl.text(recall_conf_90, precision_conf_90-0.03, str('('+str(recall_conf_90)+','+str(precision_conf_90)+')'), horizontalalignment='center', fontsize=10)
+    pyl.text(recall_conf_90, precision_conf_90-0.05, str('('+str(recall_conf_90)+','+str(precision_conf_90)+')'), horizontalalignment='center', fontsize=10)
     pyl.legend()
     pyl.xlabel('recall')
     pyl.ylabel('precision')
