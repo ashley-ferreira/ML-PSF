@@ -263,11 +263,6 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
         print('ERROR: MORE GOOD STARS THAN BAD STARS')
 
     print('converting data to arrays...')
-    # mem save ideas (use asrray instead of array? no copy)
-    # should you call it the same thing not list and arr?
-    # split up this conversion to after saving
-    # print to see which line has real issue
-    # append values directly to an array?
 
     # convert lists to arrays and delete lists
     good_x_arr = np.asarray(good_x_lst)
@@ -296,28 +291,12 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     good_cutouts = np.asarray(good_cutouts) 
     print('good cutouts converted')
 
-    #np.save(outfile, bad_cutouts)
-    #del bad_cutouts
-    #outfile.seek(0)
-    #bad_cutouts = np.load(outfile)
-
-    # convert each part of list to array seperately and del as you go?
-    # indicies is good but not for nans but you can do that 
-    # later on once its more balanced
-    # you can take out zeros of array in future?
-
-    #bad_cutouts = np.asarray(bad_cutouts)#, dtype=np.float16)#, dtype=object) .astype(np.float16)
-    # make into arrays directly earlier and combine here? save good cutouts
-    # can also initialize zeros and fill in
-
-    # REMOVE ZEROS HERE (THIS CREATES COPY)
-    #np.delete(bad_arr, range(bad_counted,N_bad))
     print('bad cutouts converted') 
 
     print('all data successfully converted to arrays')
 
     # expand dims of good cutouts (done later for bad cutouts)
-    good_cutouts = np.expand_dims(good_cutouts, axis=3) #worked before, add good cutouts same as bad
+    good_cutouts = np.expand_dims(good_cutouts, axis=3) 
     print('good cutouts dimentions expanded')
 
     # add label 1 to good cutouts 
@@ -359,7 +338,6 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
         print('Weight for class 0: {:.2f}'.format(weight_for_0))
         print('Weight for class 1: {:.2f}'.format(weight_for_1))
 
-
     # combine arrays and delete old bits
     cutouts = np.concatenate((good_cutouts, random_bad_cutouts))
     del good_cutouts
@@ -389,7 +367,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
 
     print('good and bad star arrays have been combined')
 
-    skf_v = StratifiedShuffleSplit(n_splits=1, test_size=validation_fraction)
+    skf_v = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction)
     skf_v.split(cutouts, labels)
 
     for used_index, withheld_index in skf_v.split(cutouts, labels): 
@@ -451,8 +429,9 @@ def load_presaved_data(cutout_size, model_dir_name):
     with open(model_dir_name + 'USED_' + str(cutout_size) + '_presaved_data.pickle', 'rb') as han:
         [cutouts, labels, xs, ys, fwhms, files] = pickle.load(han) 
     print('Data all loaded')
-    # temporary add for old 110k data:
+    
     '''
+    # filtering presaved data
     for i in range(len(cutouts)):
         cutout = np.asarray(cutouts[i]).astype('float32')
         if cutout.min() < -2000 or cutout.max() > 130000:
@@ -516,7 +495,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         y_valid (arr): real y values (labels) for validation
 
     '''
-    sub_mod_dir = model_dir_name + 'models_each_10epochs_basic2finetune/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
+    sub_mod_dir = model_dir_name + 'best_model/'
     if not(os.path.exists(sub_mod_dir)):
         os.mkdir(sub_mod_dir)
     class CustomSaver(keras.callbacks.Callback):
@@ -532,12 +511,12 @@ def train_CNN(model_dir_name, num_epochs, data):
     cutouts, labels, xs, ys, fwhms, files = data[0], data[1], data[2], data[3], data[4], data[5]
 
     # section for setting up some flags and hyperparameters
-    batch_size = 256 # up from 16 --> 1024 --> 32 --> 256
+    batch_size = 256 
     dropout_rate = 0.2
-    valid_fraction = 0.2 # from 0.05
-    learning_rate = 0.0001*2# from 0.001 --> 0.0001
+    valid_fraction = 0.2 
+    learning_rate = 0.0001
 
-    ### now divide the cutouts array into training and testing datasets.
+    # divide the cutouts array into training and validation datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=valid_fraction, random_state=0)
     print(skf)
     skf.split(cutouts, labels)
@@ -609,7 +588,7 @@ def train_CNN(model_dir_name, num_epochs, data):
 
 def valid_CNN(cn_model, model_dir_name, X_train, y_train, X_valid, y_valid):
     ''' 
-    Tests previously trained Convolutional Neural Network (CNN).
+    Validates previously trained Convolutional Neural Network (CNN).
     Plots confusion matrix for 50% confidence cutoff.
 
     Parameters:    
@@ -629,7 +608,7 @@ def valid_CNN(cn_model, model_dir_name, X_train, y_train, X_valid, y_valid):
         None
 
     '''
-    # get the model output classifications for the train and test sets
+    # get the model output classifications for the train and valid sets
     X_valid = np.asarray(X_valid).astype('float32')
     unique_labs = len(np.unique(y_valid)) # should be 2
     y_valid_binary = keras.utils.np_utils.to_categorical(y_valid, unique_labs)
@@ -637,9 +616,9 @@ def valid_CNN(cn_model, model_dir_name, X_train, y_train, X_valid, y_valid):
     preds_valid = cn_model.predict(X_valid, verbose=1)
     preds_train = cn_model.predict(X_train, verbose=1)
 
-    # evanluate test set (50% confidence threshold)
+    # evanluate valid set (50% confidence threshold)
     results = cn_model.evaluate(X_valid, y_valid_binary)
-    print("test loss, test acc:", results)
+    print("valid loss, valid acc:", results)
 
     # plot confusion matrix (50% confidence threshold)
     fig2 = pyl.figure()
@@ -650,7 +629,7 @@ def valid_CNN(cn_model, model_dir_name, X_train, y_train, X_valid, y_valid):
 
     for (i, j), z in np.ndenumerate(cm):
         pyl.text(j, i, '{:0.1f}'.format(z), ha='center', va='center')
-    pyl.title('Confusion matrix (testing data)')
+    pyl.title('Confusion matrix (validation data)')
     pyl.colorbar()
     pyl.xlabel('Predicted labels')
     pyl.ylabel('True labels')
@@ -662,16 +641,16 @@ def valid_CNN(cn_model, model_dir_name, X_train, y_train, X_valid, y_valid):
 def main():
 
     balanced_data_method, data_load, size_of_data, num_epochs, \
-    model_dir_name, cutout_size, pwd, training_subdir, validation_fraction = get_user_input()
+    model_dir_name, cutout_size, pwd, training_subdir, testing_fraction = get_user_input()
 
     data_dir = pwd + training_subdir
 
     if data_load == 'scratch':
-        save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method, validation_fraction)
+        save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method, testing_fraction)
 
-    cn_model, X_train, y_train, X_test, y_test = train_CNN(model_dir_name, num_epochs, load_presaved_data(cutout_size, model_dir_name))
+    cn_model, X_train, y_train, X_valid, y_valid = train_CNN(model_dir_name, num_epochs, load_presaved_data(cutout_size, model_dir_name))
 
-    test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test)
+    valid_CNN(cn_model, model_dir_name, X_train, y_train, X_valid, y_valid)
     
 if __name__ == '__main__':
     main()
