@@ -42,10 +42,6 @@ parser.add_option('-C', '--conf_cutoff', dest='conf_cutoff',
         default='0.95', type='float', \
         help='confidence cutoff, default=%default.')
 
-parser.add_option('-S', '--SNR_proxy_cutoff', dest='SNR_proxy_cutoff', 
-        default='10.0', type='float', 
-        help='SNR proxy cutoff, default=%default.')
-
 parser.add_option('-s', '--min_num_stars', dest='min_num_stars', 
         default='10', type='int', 
         help='minimum number of stars acceptable, default=%default.')
@@ -131,7 +127,7 @@ def get_user_input():
         model_dir_name (str): directory where Neural Network model is saved
         
         NN_cutoff_vals (lst): cutoff values that Neural Network uses when picking
-                              best stars, [conf_cutoff, SNR_proxy_cutoff, min_num_stars]
+                              best stars, [conf_cutoff, min_num_stars]
 
         cutout_size (int): defines shape of cutouts (cutout_size, cutout_size)
 
@@ -140,7 +136,7 @@ def get_user_input():
 
     model_dir_name = model_dir + options.model_name
 
-    NN_cutoff_vals = [options.conf_cutoff, options.SNR_proxy_cutoff, options.min_num_stars]
+    NN_cutoff_vals = [options.conf_cutoff, options.min_num_stars]
 
     input_file = 'CORR-' + str(options.img_file) + '.fits'
 
@@ -167,7 +163,7 @@ def compare_NN_goodPSF(inputs):
         model_dir_name (str): directory where Neural Network model is saved
         
         NN_cutoff_vals (lst): cutoff values that Neural Network uses when picking
-                              best stars, [conf_cutoff, SNR_proxy_cutoff, min_num_stars]
+                              best stars, [conf_cutoff, min_num_stars]
 
         cutout_size (int): defines shape of cutouts (cutout_size, cutout_size)
 
@@ -181,8 +177,7 @@ def compare_NN_goodPSF(inputs):
 
     # unpack cutoff values
     conf_cutoff = NN_cutoff_vals[0]
-    SNR_proxy_cutoff = NN_cutoff_vals[1]
-    min_num_stars = NN_cutoff_vals[2]
+    min_num_stars = NN_cutoff_vals[1]
         
     # read in cutout data for input_file
     outFile_wMetadata = data_dir+input_file.replace('.fits', '_'+str(cutout_size)+'_cutouts_savedFits.pickle')
@@ -228,11 +223,9 @@ def compare_NN_goodPSF(inputs):
     if model_found == False: 
         print('ERROR: no model file in', model_dir_name)
         sys.exit()
-    '''
-
+    
     # load training set std and mean
-    # TEMP UP ONE FOLDER
-    with open(model_dir_name + '../regularization_data.pickle', 'rb') as han:
+    with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
     # use std and mean to regularize cutout
@@ -260,7 +253,7 @@ def compare_NN_goodPSF(inputs):
             sum_c = center.sum()
             SNR_proxy = math.sqrt(abs(sum_c))
             print(good_probability, SNR_proxy)
-            if good_probability > conf_cutoff: #SNR_proxy > SNR_proxy_cutoff and       
+            if good_probability > conf_cutoff:       
                 xs_best.append(xs[i])
                 ys_best.append(ys[i])
                 print(good_probability)
@@ -276,8 +269,7 @@ def compare_NN_goodPSF(inputs):
 
     if plotted_stars < min_num_stars: 
         print('You requested a minimum of', min_num_stars)
-        print('However there are only', plotted_stars, 'with confidence >', \
-            conf_cutoff, 'and SNR proxy >', SNR_proxy_cutoff)
+        print('However there are only', plotted_stars, 'with confidence >', conf_cutoff)
         print('Please lower one of these numbers and try again')
         sys.exit()
 
