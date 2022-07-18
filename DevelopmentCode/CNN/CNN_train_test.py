@@ -24,8 +24,7 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils import class_weight
 from sklearn.utils.multiclass import unique_labels
 
-#from resnet_model_v2 import convnet_model_resnet
-from convnet_model_lesslayers import convnet_model_lesslayers
+from convnet_model import convnet_model_lesslayers
 
 from astropy.visualization import interval, ZScaleInterval
 zscale = ZScaleInterval()
@@ -39,7 +38,7 @@ outfile = TemporaryFile()
 ## initializing random seeds for reproducability
 # tf.random.set_seed(1234)
 # keras.utils.set_random_seed(1234)
-np.random.seed(123) # cahnged from 432
+np.random.seed(123)
 
 pwd = '/arc/projects/uvickbos/ML-PSF/'
 parser.add_option('-p', '--pwd', dest='pwd', 
@@ -78,9 +77,9 @@ parser.add_option('-t', '--training_subdir', dest='training_subdir', \
         default='NN_data_' + str(cutout_size) + '/', type='str', \
         help='subdir in pwd for training data, default=%default.')
 
-parser.add_option('-v', '--validation_fraction', dest='validation_fraction', \
+parser.add_option('-f', '--test_fraction', dest='test_fraction', \
         default='0.1', type='float', \
-        help='fraction of images saved to only use in validation step, default=%default.')
+        help='fraction of images saved to only use in testing step, default=%default.')
 
 def get_user_input():
     '''
@@ -124,7 +123,7 @@ def get_user_input():
     
     return options.balanced_data_method, options.data_load, options.size_of_data, \
             options.num_epochs, model_dir_name, options.cutout_size,  \
-            options.pwd, options.training_subdir, options.validation_fraction
+            options.pwd, options.training_subdir, options.test_fraction
 
 
 def regularize(cutouts, mean, std):
@@ -153,7 +152,7 @@ def regularize(cutouts, mean, std):
     return cutouts
 
 
-def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method, validation_fraction):
+def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balanced_data_method, test_fraction):
     '''
     Create presaved data file to use for neural network training
 
@@ -169,7 +168,7 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
         
         balanced_data_method (str): method to balance class weigths 
 
-        validation_fraction (float): fraction of data to save for validation step only
+        testing_fraction (float): fraction of data to save for testing step only
 
     Returns:
         
@@ -188,9 +187,8 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
     bad_y_lst = []
     bad_inputFile_lst = []
 
-    # TEMP STOPPNG AT THIS N_bad
-    N_bad = 967002 #970000 # then delete extra zero ones, can make this number proportional to good star number
-    bad_arr = np.zeros((N_bad, 111, 111), dtype='float') # correct shape? dont expand dims later
+    N_bad = 967002 
+    bad_arr = np.zeros((N_bad, 111, 111), dtype='float') 
     print(bad_arr.shape)
     # specific float kind?
     good_counted = 0
@@ -214,10 +212,8 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                         elif cutout.shape == (cutout_size, cutout_size):# and np.isfinite(cutout):
                             if cutout.min() < -2000 or cutout.max() > 130000:
                                 pass
-                            else: # want to make good ones better (smaller N?)
-                                if cutout.min() < -200 or cutout.max() > 65536/2:#/4: 200 was/2
-                                    # changes number of bads, make bigger array and takeouts zeros
-                                    # (potentially, but this runs for now)
+                            else: 
+                                if cutout.min() < -200 or cutout.max() > 65536/2:
                                     label = 0
                                 if label == 1:
                                     good_x_lst.append(x)
@@ -226,14 +222,13 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
                                     good_inputFile_lst.append(inputFile)
                                     good_cutouts.append(cutout)
                                     good_counted += 1
-                                # short term sol, long term sol is already decide
-                                # random incidies
+
                                 elif label == 0:
                                     bad_x_lst.append(x)
                                     bad_y_lst.append(y)
                                     bad_fwhm_lst.append(fwhm)
                                     bad_inputFile_lst.append(inputFile)
-                                    bad_arr[bad_counted,:,:] = np.copy(cutout)#expand dims later?
+                                    bad_arr[bad_counted,:,:] = np.copy(cutout)
                                     bad_counted += 1
                                 else:
                                     print('ERROR: label is not 1 or 0, excluding cutout')
@@ -516,9 +511,9 @@ def train_CNN(model_dir_name, num_epochs, data):
         
         y_train (arr): real y values (labels) for training
         
-        X_test (arr): X values (images) for testing 
+        X_valid (arr): X values (images) for validation
         
-        y_test (arr): real y values (labels) for testing 
+        y_valid (arr): real y values (labels) for validation
 
     '''
     sub_mod_dir = model_dir_name + 'models_each_10epochs_basic2finetune/'#'models_lesslay16_256_lr=0.001_drop=0.2_split=0.2/'
@@ -539,22 +534,22 @@ def train_CNN(model_dir_name, num_epochs, data):
     # section for setting up some flags and hyperparameters
     batch_size = 256 # up from 16 --> 1024 --> 32 --> 256
     dropout_rate = 0.2
-    test_fraction = 0.2 # from 0.05
+    valid_fraction = 0.2 # from 0.05
     learning_rate = 0.0001*2# from 0.001 --> 0.0001
 
     ### now divide the cutouts array into training and testing datasets.
-    skf = StratifiedShuffleSplit(n_splits=1, test_size=test_fraction, random_state=0)
+    skf = StratifiedShuffleSplit(n_splits=1, test_size=valid_fraction, random_state=0)
     print(skf)
     skf.split(cutouts, labels)
 
-    for train_index, test_index in skf.split(cutouts, labels):
-        X_train, X_test = cutouts[train_index], cutouts[test_index]
-        y_train, y_test = labels[train_index], labels[test_index]
-        xs_train, xs_test = xs[train_index], xs[test_index]
-        ys_train, ys_test = xs[train_index], xs[test_index]
-        files_train, files_test = files[train_index], files[test_index]
-        fwhms_train, fwhms_test = fwhms[train_index], fwhms[test_index]
-    print('Data split into training and testing')
+    for train_index, valid_index in skf.split(cutouts, labels):
+        X_train, X_valid = cutouts[train_index], cutouts[valid_index]
+        y_train, y_valid = labels[train_index], labels[valid_index]
+        xs_train, xs_valid = xs[train_index], xs[valid_index]
+        ys_train, ys_valid = xs[train_index], xs[valid_index]
+        files_train, files_valid = files[train_index], files[valid_index]
+        fwhms_train, fwhms_valid = fwhms[train_index], fwhms[valid_index]
+    print('Data split into training and validation')
     unique_labs = len(np.unique(y_train)) # should be 2
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
@@ -570,14 +565,14 @@ def train_CNN(model_dir_name, num_epochs, data):
     y_train_binary = np.asarray(y_train_binary).astype('float32')
 
     # REDUNDANT
-    y_test_binary = keras.utils.np_utils.to_categorical(y_test, unique_labs)
-    y_test_binary = np.asarray(y_test_binary).astype('float32')
+    y_valid_binary = keras.utils.np_utils.to_categorical(y_valid, unique_labs)
+    y_valid_binary = np.asarray(y_valid_binary).astype('float32')
 
     print('Model initialized and prepped, begin training...')
 
     # add saver for every 10 epochs
     saver = CustomSaver()
-    classifier = cn_model.fit(X_train, y_train_binary, epochs=num_epochs, batch_size=batch_size, callbacks=[saver], validation_data=(X_test, y_test_binary))
+    classifier = cn_model.fit(X_train, y_train_binary, epochs=num_epochs, batch_size=batch_size, callbacks=[saver], validation_data=(X_valid, y_valid_binary))
 
     end = time.time()
     print('Process completed in', round(end-start, 2), ' seconds')
@@ -590,7 +585,7 @@ def train_CNN(model_dir_name, num_epochs, data):
 
     ax1 = pyl.subplot(121)
     ax1.plot(classifier.history['accuracy'], color='darkslategray', linewidth=2, label='training')
-    ax1.plot(classifier.history['val_accuracy'], linewidth=2, label='testing') # azure linewidth=2, label='testing')
+    ax1.plot(classifier.history['val_accuracy'], linewidth=2, label='valiation') # azure linewidth=2, label='testing')
     ax1.legend()
     ax1.set_title('Model Accuracy')
     ax1.set_ylabel('Accuracy')
@@ -598,21 +593,21 @@ def train_CNN(model_dir_name, num_epochs, data):
 
     ax2 = pyl.subplot(122)
     ax2.plot(classifier.history['loss'], color='crimson', linewidth=2, label='training')
-    ax2.plot(classifier.history['val_loss'], linewidth=2, label='testing')
+    ax2.plot(classifier.history['val_loss'], linewidth=2, label='validation')
     ax2.legend()
     ax2.set_title('Model Loss')
     ax2.set_ylabel('Loss')
     ax2.set_xlabel('Epoch')
 
-    fig1.savefig(model_dir_name +'/plots/'+'NN_training_history_model_traintime=' + str(end) + '.png')
+    fig1.savefig(model_dir_name +'/plots/'+'CNN_training_history_model_traintime=' + str(end) + '.png')
 
     pyl.show()
     pyl.close()
     pyl.clf()
 
-    return cn_model, X_train, y_train, X_test, y_test
+    return cn_model, X_train, y_train, X_valid, y_valid
 
-def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
+def valid_CNN(cn_model, model_dir_name, X_train, y_train, X_valid, y_valid):
     ''' 
     Tests previously trained Convolutional Neural Network (CNN).
     Plots confusion matrix for 50% confidence cutoff.
@@ -625,9 +620,9 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
         
         y_train (arr): real y values (labels) for training
         
-        X_test (arr): X values (images) for testing 
+        X_valid (arr): X values (images) for validation
         
-        y_test (arr): real y values (labels) for testing y
+        y_valid (arr): real y values (labels) for validation
 
     Return: 
 
@@ -635,22 +630,22 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
 
     '''
     # get the model output classifications for the train and test sets
-    X_test = np.asarray(X_test).astype('float32')
-    unique_labs = len(np.unique(y_test)) # should be 2
-    y_test_binary = keras.utils.np_utils.to_categorical(y_test, unique_labs)
-    y_test_binary = np.asarray(y_test_binary).astype('float32')
-    preds_test = cn_model.predict(X_test, verbose=1)
+    X_valid = np.asarray(X_valid).astype('float32')
+    unique_labs = len(np.unique(y_valid)) # should be 2
+    y_valid_binary = keras.utils.np_utils.to_categorical(y_valid, unique_labs)
+    y_valid_binary = np.asarray(y_valid_binary).astype('float32')
+    preds_valid = cn_model.predict(X_valid, verbose=1)
     preds_train = cn_model.predict(X_train, verbose=1)
 
     # evanluate test set (50% confidence threshold)
-    results = cn_model.evaluate(X_test, y_test_binary)
+    results = cn_model.evaluate(X_valid, y_valid_binary)
     print("test loss, test acc:", results)
 
     # plot confusion matrix (50% confidence threshold)
     fig2 = pyl.figure()
-    y_test_binary = np.argmax(y_test_binary, axis = 1) 
-    preds_test_binary = np.argmax(preds_test, axis = 1)
-    cm = confusion_matrix(y_test_binary, preds_test_binary)
+    y_valid_binary = np.argmax(y_valid_binary, axis = 1) 
+    preds_valid_binary = np.argmax(preds_valid, axis = 1)
+    cm = confusion_matrix(y_valid_binary, preds_valid_binary)
     pyl.matshow(cm)
 
     for (i, j), z in np.ndenumerate(cm):
@@ -660,7 +655,7 @@ def test_CNN(cn_model, model_dir_name, X_train, y_train, X_test, y_test):
     pyl.xlabel('Predicted labels')
     pyl.ylabel('True labels')
     pyl.show()
-    fig2.savefig(model_dir_name +'plots/'+'NN_confusion_matrix.png') # add model secific time here
+    fig2.savefig(model_dir_name +'plots/'+'CNN_confusion_matrix.png')
     pyl.close()
     pyl.clf()
 
