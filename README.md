@@ -1,4 +1,4 @@
-# NN-PSF: Almost Done (but not actually done)
+# ML-PSF: Almost Done (but not actually done)
 ### Part of NSERC-CREATE NTCO Training Program Astronomy Research Project
 Student: Ashley Ferreira, Supervisor: Dr. Wesley Fraser
 
