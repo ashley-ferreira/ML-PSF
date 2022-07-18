@@ -140,7 +140,6 @@ def get_user_input():
 
     input_file = 'CORR-' + str(options.img_file) + '.fits'
 
-    #file_dir = options.pwd + 'HSC_May25-lsst/rerun/processCcdOutputs/' + options.night_dir + '/HSC-R2/corr/'
     file_dir = options.file_dir
 
     return input_file, file_dir, options.data_dir, model_dir_name, NN_cutoff_vals, options.cutout_size
@@ -247,7 +246,7 @@ def compare_NN_goodPSF(inputs):
     plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6.5) 
     plotted_stars = 0
     for i in range(len(cutouts)): 
-        if plotted_stars < 25:#min_num_stars:
+        if plotted_stars < 25:
             good_probability = cn_prob[i]
             center = crop_center(cutouts[i],5,5)
             sum_c = center.sum()
@@ -306,7 +305,6 @@ def compare_NN_goodPSF(inputs):
         x_int = int(goodPSF_x[i])
         cutout_goodPSF = img_data[y_int-cutoutWidth:y_int+cutoutWidth+1, x_int-cutoutWidth:x_int+cutoutWidth+1]
    
-        # this isnt actually needed?
         cutout_goodPSF = regularize(cutout_goodPSF, mean, std)
 
         (z1, z2) = zscale.get_limits(cutout_goodPSF)
