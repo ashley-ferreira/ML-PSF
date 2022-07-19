@@ -11,7 +11,7 @@ A poster presentaion elaborating on the process, data used for training (where i
 #### Workflow:
 
 There are two main components: 
-1. FinalModel: the final trained machine learning model as well as a program 'NN_PSF_star_chooser.py' that interfaces with the model for easiest use. 
+1. FinalModel: the final trained machine learning model as well as a program 'CNN_PSF_star_chooser.py' that interfaces with the model for easiest use. 
 2. DevelopmentCode: all of the code which was used to develop the final trained model. This code may be useful for others attempting to do similar work in the future. I have included the specific workflow below: 
 
 >>> DataPrep/DataPrepLoop.py to create training/testing/validation data from images
