@@ -262,7 +262,7 @@ def compare_NN_goodPSF(inputs):
                 axs[plotted_stars].imshow(normer(cutouts[i]))
                 axs[plotted_stars].set_xticks([])
                 axs[plotted_stars].set_yticks([])
-                axs[plotted_stars].text(0.1, -1, 'conf:' + str(good_probability))
+                axs[plotted_stars].text(0.1, -1, 'conf:' + str(round(good_probability,4)))
                 #axs[plotted_stars].text(0.1, -15, 'min, max:' + str((cutouts[i].min()*std)+mean) + '   ' + str((cutouts[i].max()*std)+mean)[:7])
 
                 plotted_stars += 1 
@@ -273,7 +273,7 @@ def compare_NN_goodPSF(inputs):
         print('Please lower one of these numbers and try again')
         sys.exit()
 
-    plt.subplots_adjust(wspace=0., hspace=0.3)
+    plt.subplots_adjust(wspace=0., hspace=0.2)
     plt.show()
 
     # load image data
