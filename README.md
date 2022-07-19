@@ -17,13 +17,13 @@ There are two main components:
 >>> DataPrep/DataPrepLoop.py to create training/testing/validation data from images
 
 
->>> CNN/Star_NN_dev.py organizes data into training/testing/validation sets, trains and tests the model
+>>> CNN/CNN_train_test.py organizes data into training/testing/validation sets, trains and tests the model
 
 
->>> CNN/Star_NN_valid.py analyzes the performance of the model using the validation dataset, randomly chosen data from the larger set of data but which the model has never trained or tested on 
+>>> CNN/CNN_validation.py analyzes the performance of the model using the validation dataset, randomly chosen data from the larger set of data but which the model has never trained or tested on 
 
 
->>> CreatePSF/compare_NN_goodPSF.py a program which plots the chosen sources from the model along with the PSF look-up table that is create by TRIPPy using these sources. This is compared to the 25 stars chosen by a non-machine learning technique and the PSF lookup-table that is created from those. 
+>>> CreatePSF/compare_sources_PSFs.py a program which plots the chosen sources from the model along with the PSF look-up table that is create by TRIPPy using these sources. This is compared to the 25 stars chosen by a non-machine learning technique and the PSF lookup-table that is created from those. 
 
 #### Acknowledgments:
 
