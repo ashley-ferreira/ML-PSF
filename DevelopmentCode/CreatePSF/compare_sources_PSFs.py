@@ -215,7 +215,7 @@ def compare_NN_goodPSF(inputs):
     # load previously trained model 
     model_found = False 
     for file in os.listdir(model_dir_name):
-        if file.startswith('model_best'):
+        if file.startswith('model_60'):#'model_best'):
             model = keras.models.load_model(model_dir_name + file)
             model_found = True
             break
@@ -224,7 +224,7 @@ def compare_NN_goodPSF(inputs):
         sys.exit()
     
     # load training set std and mean
-    with open(model_dir_name + 'regularization_data.pickle', 'rb') as han:
+    with open(model_dir_name + '../regularization_data.pickle', 'rb') as han:
         [std, mean] = pickle.load(han)
 
     # use std and mean to regularize cutout
