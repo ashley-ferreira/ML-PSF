@@ -189,12 +189,10 @@ def save_scratch_data(size_of_data, cutout_size, model_dir_name, data_dir, balan
 
     N_bad = 967002 
     bad_arr = np.zeros((N_bad, 111, 111), dtype='float') 
-    print(bad_arr.shape)
-    # specific float kind?
+    
     good_counted = 0
     bad_counted = 0
     max_num_good = size_of_data//2
-    i=0
     try:
         for filename in os.listdir(data_dir):
             if good_counted < max_num_good and bad_counted <= N_bad:
@@ -530,7 +528,7 @@ def train_CNN(model_dir_name, num_epochs, data):
         fwhms_train, fwhms_valid = fwhms[train_index], fwhms[valid_index]
 
     print('Data split into training and validation')
-    unique_labs = len(np.unique(y_train)) # should be 2
+    unique_labs = len(np.unique(y_train)) 
     y_train_binary = keras.utils.np_utils.to_categorical(y_train, unique_labs)
 
     # train the model

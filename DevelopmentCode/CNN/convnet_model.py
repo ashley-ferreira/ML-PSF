@@ -31,7 +31,7 @@ def convnet_model_lesslayers(input_shape, unique_labels=2, dropout_rate=0.2):
 
     model.add(BatchNormalization())
 
-    #hidden layer 3 with Pooling
+    #hidden layer 2 with Pooling
     model.add(Conv2D(filters=16, input_shape=input_shape, activation='relu', padding='same', kernel_size=(3,3)))
     model.add(Dropout(dropout_rate))
     model.add(MaxPool2D(pool_size=(2, 2), padding='valid'))

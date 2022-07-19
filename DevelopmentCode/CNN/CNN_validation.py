@@ -265,27 +265,6 @@ def validate_CNN(model_dir_name, data):
     pyl.close()
     pyl.clf()
 
-    '''
-    fig, ax = pyl.subplots(constrained_layout=True)
-    ax.hist(fwhms, label = 'full test set', bins='auto', alpha=0.7, color='cornflowerblue') 
-    ax.hist(fwhms_test_misclass, label = 'misclassed test set', bins='auto', alpha=0.5, color='darkviolet')#'purple') 
-    ax.set_xlabel('FWHM (pixels)') # DO FOR TRAINING SET TOO
-    ax.set_ylabel('Count')
-    ax.legend(loc='best')
-    ax.set_title('Histogram of FWHMs')
-    def pix2ang(x):
-        return x * np.pi / 180
-
-    def ang2pix(x):
-        return x * 180 / np.pi
-
-    secax = pyl.secondary_xaxis('top', functions=(pix2ang, ang2pix))
-    secax.set_xlabel('angle [rad]')
-
-    pyl.show()
-    pyl.close()
-    pyl.clf()
-    '''
     # accuracy vs confidence plot
     confidence_step = 0.0001*10 # likely automatic way to do this but i didn't easily find
     confidence_queries = np.arange(confidence_step, 1, confidence_step) 
@@ -317,8 +296,6 @@ def validate_CNN(model_dir_name, data):
                 elif y_valid[i] == 1:
                     bad_stars_incorrect +=1
                     
-        #print('good', good_stars_correct, good_stars_incorrect, good_stars_above_c)
-        #print('bad', bad_stars_correct, bad_stars_incorrect, bad_stars_above_c)
         good_star_acc.append(good_stars_correct/good_stars_above_c) 
         bad_star_acc.append(bad_stars_correct/bad_stars_above_c)
         recall.append(good_stars_correct/(good_stars_correct+bad_stars_incorrect)) 
@@ -353,7 +330,6 @@ def validate_CNN(model_dir_name, data):
     pyl.text(0.9, precision_conf_90+0.03, str('(0.9,'+str(precision_conf_90)+')'), horizontalalignment='center', fontsize=10)
     pyl.xlabel('confidence')
     pyl.legend(loc='center')
-    #pyl.legend(['normalized confidence histogram', 'precision (good source classification accuracy)', 'confidence threshold = 0.5', 'confidence threshold = 0.9', 'confidence threshold = 0.9'],loc='center')
     pyl.show()
     pyl.close()
     pyl.clf()
