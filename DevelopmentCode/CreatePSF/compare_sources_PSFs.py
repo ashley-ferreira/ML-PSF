@@ -217,6 +217,7 @@ def compare_NN_goodPSF(inputs):
     for file in os.listdir(model_dir_name):
         if file.startswith('model_60'):#'model_best'):
             model = keras.models.load_model(model_dir_name + file)
+            print(file)
             model_found = True
             break
     if model_found == False: 
