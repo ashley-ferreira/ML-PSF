@@ -243,7 +243,7 @@ def compare_NN_goodPSF(inputs):
 
     fig, axs = plt.subplots(5,5,figsize=(10, 12))
     axs = axs.ravel()
-    plt.title('NN selected top 25 stars:' + inputFile, x=-1.7, y=6.5) 
+    plt.title('ML selected sources:' + inputFile, x=-1.7, y=6.5) 
     plotted_stars = 0
     for i in range(len(cutouts)): 
         if plotted_stars < 25:
@@ -262,7 +262,7 @@ def compare_NN_goodPSF(inputs):
                 axs[plotted_stars].set_xticks([])
                 axs[plotted_stars].set_yticks([])
                 axs[plotted_stars].text(0.1, -1, 'conf:' + str(good_probability))
-                axs[plotted_stars].text(0.1, -15, 'min, max:' + str(cutouts[i].min()) + '   ' + str(cutouts[i].max())[:7])
+                #axs[plotted_stars].text(0.1, -15, 'min, max:' + str(cutouts[i].min()) + '   ' + str(cutouts[i].max())[:7])
 
                 plotted_stars += 1 
 
@@ -298,7 +298,7 @@ def compare_NN_goodPSF(inputs):
 
     fig, axs = plt.subplots(5,5,figsize=(5,5))
     axs = axs.ravel()
-    plt.title('goodPSF selected top 25 stars:' + input_file, x=-1.5, y=5)
+    plt.title('non-ML selected sources:' + input_file, x=-1.5, y=5)
     cutoutWidth = cutout_size // 2
     for i in range(len(goodPSF_x)):
         y_int = int(goodPSF_y[i])
