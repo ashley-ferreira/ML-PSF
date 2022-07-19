@@ -337,7 +337,7 @@ def compare_NN_goodPSF(inputs):
     (z1, z2) = zscale.get_limits(NN_top25_PSF.lookupTable)
     normer = interval.ManualInterval(z1,z2)
     axes[0].imshow(normer(NN_top25_PSF.lookupTable))
-    title1 = 'ZScaled ' + input_file.replace('.fits','.NN_PSF.fits') 
+    title1 = 'ZScaled ' + input_file.replace('.fits','.ML_PSF.fits') 
     axes[0].set_title(title1,fontsize=12)
     
     
