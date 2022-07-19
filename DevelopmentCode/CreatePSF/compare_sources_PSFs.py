@@ -244,7 +244,7 @@ def compare_NN_goodPSF(inputs):
 
     fig, axs = plt.subplots(5,5,figsize=(10, 12))
     axs = axs.ravel()
-    plt.title('ML selected sources:' + inputFile, x=-1.7, y=6.5) 
+    plt.title('ML selected sources:' + inputFile, x=-2, y=6.5) 
     plotted_stars = 0
     for i in range(len(cutouts)): 
         if plotted_stars < 25:
