@@ -203,7 +203,7 @@ def compare_NN_goodPSF(inputs):
             # redundant from below
             print("very big or small pix vals")
             
-        elif cutout.min() < -200 or cutout.max() > 65536/2:
+        elif cutout.min() < -200 or cutout.max() > 65536*2/3:
             print("big or small pix value")
             
         else:
