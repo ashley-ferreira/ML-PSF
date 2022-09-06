@@ -35,6 +35,9 @@ parser = OptionParser()
 from tempfile import TemporaryFile
 outfile = TemporaryFile()
 
+import wandb
+wandb.init(project="original-code", entity="astro-ml")
+
 ## initializing random seeds for reproducability
 # tf.random.set_seed(1234)
 # keras.utils.set_random_seed(1234)
@@ -513,6 +516,12 @@ def train_CNN(model_dir_name, num_epochs, data):
     dropout_rate = 0.2
     valid_fraction = 0.2 
     learning_rate = 0.0001
+
+    wandb.config = {
+        "learning_rate": learning_rate,
+        "epochs": num_epochs,
+        "batch_size": batch_size
+        }
 
     # divide the cutouts array into training and validation datasets.
     skf = StratifiedShuffleSplit(n_splits=1, test_size=valid_fraction, random_state=0)
