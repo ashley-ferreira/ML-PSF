@@ -1,4 +1,5 @@
-# ML-PSF: a tool to pick good sources for PSF generation (work in progress)
+# ML-PSF: a tool to pick good sources for PSF generation 
+### (work in progress)
 ### Part of NSERC-CREATE NTCO Training Program Astronomy Research Project
 Student: Ashley Ferreira, Supervisor: Dr. Wesley Fraser
 
@@ -6,7 +7,7 @@ Student: Ashley Ferreira, Supervisor: Dr. Wesley Fraser
 
 Given cutout of each source in an image along with their respective x and y coordinates, this program calls on a pre-trained machine learnining model that will return a subset of cutouts of sources to use for point spread function (PSF) creation. It also returns the x and y coordinates of these sources that can be used to pass into the python module TRIPPy in order to create the desired PSF.
 
-A poster presentaion elaborating on the process, data used for training (where it can be accessed), and the results such as how well the algorithm performs is planned to be included as part of this project in the future.
+Posters elaborating on the process and the results such as how well the algorithm performs on a test set is included in the PosterPresentations directory.
 
 #### Workflow:
 
